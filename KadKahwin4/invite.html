@@ -1,9 +1,10 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Jemputan Digital</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -15,7 +16,6 @@
       --text: #fff;
       --muted: rgba(255,255,255,.70);
       --accent: #d4af37;
-      --accent2:#ffffff;
       --radius: 28px;
     }
     body{
@@ -33,9 +33,49 @@
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      position: relative;
+      overflow: hidden;
     }
-    .fadeUp{ animation: fadeUp .65s ease both; }
-    @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
+
+    /* ✨ Watermark Diagonal Premium */
+    .wm-wrap{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 40;
+      opacity: .18;
+      mix-blend-mode: overlay;
+    }
+    .wm{
+      position: absolute;
+      left: -20%;
+      top: 30%;
+      width: 140%;
+      transform: rotate(-18deg);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      filter: blur(.0px);
+    }
+    .wm-row{
+      display:flex;
+      gap: 26px;
+      white-space: nowrap;
+      font-weight: 800;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: rgba(255,255,255,.9);
+      text-shadow: 0 0 10px rgba(0,0,0,.35);
+      animation: wmMove 18s linear infinite;
+    }
+    .wm-row:nth-child(2){ animation-duration: 22s; opacity:.9; }
+    .wm-row:nth-child(3){ animation-duration: 26s; opacity:.75; }
+    @keyframes wmMove{
+      from{ transform: translateX(-6%); }
+      to{ transform: translateX(6%); }
+    }
+
     .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
     .btn{
       border-radius: 16px;
@@ -47,7 +87,7 @@
       background: var(--accent);
       color: #0b0b0b;
       border-color: rgba(255,255,255,.18);
-      font-weight: 700;
+      font-weight: 800;
     }
     .input{
       width:100%;
@@ -64,19 +104,33 @@
       padding: 14px;
       display: inline-block;
     }
+
+    /* Intro gate */
     .gate{
       position: fixed; inset:0;
       background:
         radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.08), transparent 55%),
         linear-gradient(180deg, #070707, #000);
       display:flex; align-items:center; justify-content:center;
-      z-index: 50;
+      z-index: 60;
       padding: 24px;
     }
+    .fadeUp{ animation: fadeUp .65s ease both; }
+    @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
   </style>
 </head>
 
 <body class="p-4 max-w-[560px] mx-auto">
+
+  <!-- Watermark overlay -->
+  <div class="wm-wrap" id="wmWrap">
+    <div class="wm" id="wm">
+      <div class="wm-row" id="wm1"></div>
+      <div class="wm-row" id="wm2"></div>
+      <div class="wm-row" id="wm3"></div>
+    </div>
+  </div>
+
   <!-- INTRO GATE -->
   <div id="gate" class="gate">
     <div class="w-full max-w-md glass p-6 text-center space-y-4 fadeUp">
@@ -97,30 +151,24 @@
   <div class="glass p-6 text-center space-y-5 fadeUp">
     <div class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
+        <span id="chipPkg" class="chip text-xs px-3 py-2 rounded-full">PKG</span>
         <span id="chipStyle" class="chip text-xs px-3 py-2 rounded-full">Style</span>
         <span id="chipVer" class="chip text-xs px-3 py-2 rounded-full">v</span>
       </div>
 
-      <div class="flex items-center gap-2">
-        <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
-          <option value="1">Versi 1</option>
-          <option value="2">Versi 2</option>
-          <option value="3">Versi 3</option>
-          <option value="4">Versi 4</option>
-          <option value="5">Versi 5</option>
-        </select>
-      </div>
+      <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
+        <option value="1">Versi 1</option>
+        <option value="2">Versi 2</option>
+        <option value="3">Versi 3</option>
+        <option value="4">Versi 4</option>
+        <option value="5">Versi 5</option>
+      </select>
     </div>
 
     <div class="space-y-2">
       <div class="text-xs tracking-[.35em] uppercase opacity-70" id="labelTop">Walimatul Urus</div>
       <h1 id="outNames" class="text-4xl font-extrabold leading-tight">Adam & Hawa</h1>
       <p id="outLine" class="text-white/70">Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik</p>
-    </div>
-
-    <div class="space-y-2">
-      <div class="text-lg font-semibold">👨‍💼 Adam bin Ahmad</div>
-      <div class="text-lg font-semibold">👩‍💼 Hawa binti Ali</div>
     </div>
 
     <div class="border-t border-white/10 pt-4 space-y-2 text-sm text-white/80">
@@ -132,13 +180,13 @@
     <div class="space-y-3 pt-2">
       <input id="guest" class="input" placeholder="Nama tetamu" />
       <div class="grid grid-cols-2 gap-3">
-        <button class="btn btnPrimary" onclick="rsvp('Hadir')">Hadir</button>
-        <button class="btn" onclick="rsvp('Tidak Hadir')">Tidak Hadir</button>
+        <button class="btn btnPrimary" onclick="rsvp('Hadir')" id="btnHadir">Hadir</button>
+        <button class="btn" onclick="rsvp('Tidak Hadir')" id="btnTidak">Tidak Hadir</button>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
         <button class="btn" id="btnCopy">Copy Link</button>
-        <button class="btn" id="btnMaps">Buka Maps</button>
+        <button class="btn hidden" id="btnMaps">Buka Maps</button>
       </div>
     </div>
 
@@ -154,38 +202,49 @@
 
 <script>
 /* =========================
-   0) ADMIN CONFIG (tukar sini je)
+   CONFIG DEFAULT (fallback)
 ========================= */
 const CONFIG = {
-  WA_PHONE: "601111661303", // ✅ tukar nombor whatsapp anda
-  MAPS_URL: "https://maps.google.com/?q=Dewan%20Seri%20Melur", // ✅ tukar lokasi maps
+  WA_PHONE: "601111661303",
+  MAPS_URL: "",
   EVENT: {
     names: "Adam & Hawa",
     date: "Sabtu, 12 Oktober 2025",
     time: "11.00 pagi – 4.00 petang",
     location: "Dewan Seri Melur"
   },
-  MUSIC_URL: "" // optional: letak link mp3 (https://...) kalau nak muzik
+  MUSIC_URL: ""
 };
 
 /* =========================
-   1) UTIL
+   Read params
 ========================= */
-const qs = new URLSearchParams(location.search);
-const pkg = (qs.get("pkg") || "pro").toLowerCase();      // basic | pro | ultra
-let v = parseInt(qs.get("v") || "4", 10);                // default v4
-const nameParam = (qs.get("name") || "").trim();
+const p = new URLSearchParams(location.search);
+const pkg = (p.get("pkg") || "pro").toLowerCase();
+let v = parseInt(p.get("v") || "1", 10);
 
 const allowByPkg = {
   basic: [1],
-  pro: [1,2,3],
-  ultra: [1,2,3,4,5]
+  vip: [1,2,3],
+  pro: [1,2,3,4,5]
 };
 const allowed = allowByPkg[pkg] || allowByPkg.pro;
 if (!allowed.includes(v)) v = allowed[0];
 
+/* Override CONFIG from URL */
+(function applyOverrides(){
+  if (p.get("wa"))    CONFIG.WA_PHONE = (p.get("wa") || "").trim().replace(/[^\d]/g,"");
+  if (p.get("maps"))  CONFIG.MAPS_URL = (p.get("maps") || "").trim();
+  if (p.get("music")) CONFIG.MUSIC_URL = (p.get("music") || "").trim();
+
+  if (p.get("names")) CONFIG.EVENT.names = (p.get("names") || "").trim();
+  if (p.get("date"))  CONFIG.EVENT.date  = (p.get("date")  || "").trim();
+  if (p.get("time"))  CONFIG.EVENT.time  = (p.get("time")  || "").trim();
+  if (p.get("loc"))   CONFIG.EVENT.location = (p.get("loc") || "").trim();
+})();
+
 /* =========================
-   2) THEMES 1–5
+   Themes v1–v5
 ========================= */
 const THEMES = {
   1: { style:"Premium",  accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000000", card:"rgba(255,255,255,.06)" },
@@ -196,7 +255,7 @@ const THEMES = {
 };
 
 function applyTheme(ver){
-  const t = THEMES[ver] || THEMES[4];
+  const t = THEMES[ver] || THEMES[1];
   document.documentElement.style.setProperty("--accent", t.accent);
   document.documentElement.style.setProperty("--bg1", t.bg1);
   document.documentElement.style.setProperty("--bg2", t.bg2);
@@ -208,7 +267,7 @@ function applyTheme(ver){
 }
 
 /* =========================
-   3) BM/EN AUTO (simple)
+   BM/EN auto (simple)
 ========================= */
 const isEN = (navigator.language || "").toLowerCase().startsWith("en");
 const T = {
@@ -219,26 +278,61 @@ const T = {
   copy: isEN ? "Copy Link" : "Copy Link",
   maps: isEN ? "Open Maps" : "Buka Maps",
   foot: isEN ? "Digital Invitation • Mobile-friendly" : "Jemputan Digital • Mesra Telefon 📱",
-  gateDesc: isEN ? "Tap to open the invitation." : "Klik untuk buka jemputan."
+  gateDesc: isEN ? "Tap to open the invitation." : "Klik untuk buka jemputan.",
+  musicOn: isEN ? "Music: On" : "Muzik: On",
+  musicOff: isEN ? "Music: Off" : "Muzik: Off",
+  open: isEN ? "Open" : "Buka",
 };
 
 /* =========================
-   4) RENDER DATA
+   Render
 ========================= */
+chipPkg.textContent = (pkg || "pro").toUpperCase();
+labelTop.textContent = T.labelTop;
+outLine.textContent = T.line;
+btnHadir.textContent = T.hadir;
+btnTidak.textContent = T.tidak;
+btnCopy.textContent = T.copy;
+btnMaps.textContent = T.maps;
+footLine.textContent = T.foot;
+
 outNames.textContent = CONFIG.EVENT.names;
 outDate.textContent = CONFIG.EVENT.date;
 outTime.textContent = CONFIG.EVENT.time;
 outLoc.textContent  = CONFIG.EVENT.location;
 
-labelTop.textContent = T.labelTop;
-outLine.textContent  = T.line;
-footLine.textContent = T.foot;
+gLabel.textContent = T.labelTop;
+gDesc.textContent = T.gateDesc;
+btnEnter.textContent = T.open;
 
-// name auto from link
-if (nameParam) guest.value = nameParam;
+/* Name auto */
+const presetName = (p.get("name") || "").trim();
+if (presetName) guest.value = presetName;
 
 /* =========================
-   5) VERSION PICKER + LOCK BY PACKAGE
+   Watermark premium (diagonal)
+========================= */
+function setWatermark(){
+  const pkgName = (pkg || "pro").toUpperCase();
+  const styleName = (THEMES[v]?.style || "PREMIUM").toUpperCase();
+  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName}`;
+
+  // repeat text
+  const makeRow = () => Array.from({length: 8}).map(()=>tag).join("   •   ");
+
+  wm1.textContent = makeRow();
+  wm2.textContent = makeRow();
+  wm3.textContent = makeRow();
+
+  // stronger for Basic
+  if ((pkg||"").toLowerCase() === "basic") {
+    document.getElementById("wmWrap").style.opacity = ".26";
+  }
+}
+setWatermark();
+
+/* =========================
+   Version picker + lock by package
 ========================= */
 function refreshPickerOptions(){
   [...verPicker.options].forEach(opt=>{
@@ -253,16 +347,20 @@ applyTheme(v);
 verPicker.addEventListener("change", ()=>{
   const next = parseInt(verPicker.value,10);
   if (!allowed.includes(next)) return;
-  // update URL so share link keep the version
-  qs.set("v", String(next));
-  qs.set("pkg", pkg);
-  history.replaceState(null, "", location.pathname + "?" + qs.toString());
-  applyTheme(next);
+
+  v = next;
+  p.set("v", String(v));
+  p.set("pkg", pkg);
+  history.replaceState(null, "", location.pathname + "?" + p.toString());
+
+  applyTheme(v);
+  refreshPickerOptions();
   rebuildQR();
+  setWatermark();
 });
 
 /* =========================
-   6) QR + COPY LINK + MAPS
+   QR + Copy + Maps
 ========================= */
 function rebuildQR(){
   const el = document.getElementById("qrcode");
@@ -280,23 +378,23 @@ rebuildQR();
 btnCopy.addEventListener("click", async ()=>{
   try{
     await navigator.clipboard.writeText(window.location.href);
-    btnCopy.textContent = isEN ? "Copied!" : "Dah Copy!";
-    setTimeout(()=>btnCopy.textContent = T.copy, 1200);
+    btnCopy.textContent = "Copied!";
+    setTimeout(()=>btnCopy.textContent = T.copy, 1100);
   }catch(e){
     alert(window.location.href);
   }
 });
 
-btnMaps.addEventListener("click", ()=>{
-  window.open(CONFIG.MAPS_URL, "_blank");
-});
+if (CONFIG.MAPS_URL){
+  btnMaps.classList.remove("hidden");
+  btnMaps.addEventListener("click", ()=> window.open(CONFIG.MAPS_URL, "_blank"));
+}
 
 /* =========================
-   7) RSVP WHATSAPP (BETUL)
+   RSVP WhatsApp (correct)
 ========================= */
 function rsvp(status){
-  const guestName = (document.getElementById("guest").value || "").trim();
-
+  const guestName = (guest.value || "").trim();
   const msg =
 `RSVP ${status}
 Nama: ${guestName || "-"}
@@ -305,15 +403,14 @@ Tarikh: ${CONFIG.EVENT.date}
 Lokasi: ${CONFIG.EVENT.location}`;
 
   const url = "https://wa.me/" + CONFIG.WA_PHONE + "?text=" + encodeURIComponent(msg);
-  window.open(url, "_blank");
+  const w = window.open(url, "_blank");
+  if (!w) window.location.href = url; // popup-proof fallback
 }
+window.rsvp = rsvp;
 
 /* =========================
-   8) INTRO GATE + MUSIC (optional)
+   Intro gate + music (optional)
 ========================= */
-gLabel.textContent = T.labelTop;
-gDesc.textContent = T.gateDesc;
-
 let audio = null;
 let musicOn = false;
 
@@ -323,12 +420,12 @@ function setupAudio(){
   audio.loop = true;
   audio.volume = 0.7;
 }
-
 setupAudio();
 
+btnMute.textContent = T.musicOff;
 btnMute.addEventListener("click", ()=>{
   musicOn = !musicOn;
-  btnMute.textContent = musicOn ? (isEN ? "Music: On" : "Muzik: On") : (isEN ? "Music: Off" : "Muzik: Off");
+  btnMute.textContent = musicOn ? T.musicOn : T.musicOff;
 });
 
 btnEnter.addEventListener("click", ()=>{
@@ -339,4 +436,4 @@ btnEnter.addEventListener("click", ()=>{
 });
 </script>
 </body>
-</html>    
+</html>
