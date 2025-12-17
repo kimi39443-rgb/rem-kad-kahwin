@@ -1,94 +1,360 @@
-
 <!DOCTYPE html>
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pilih Versi Jemputan</title>
-
-  <!-- Tailwind CDN -->
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>R-E-M • Kad Kahwin</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     body{
       background:
-        radial-gradient(800px 500px at 20% 10%, rgba(255,255,255,.06), transparent 40%),
-        linear-gradient(180deg,#050505,#000);
+        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.06), transparent 60%),
+        linear-gradient(180deg,#06070b,#000);
+      color:#fff;
     }
+    .glass{
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:24px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .btn{
+      border-radius:14px;
+      padding:10px 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+    .btn:hover{ background: rgba(255,255,255,.10); }
+    .btn-primary{
+      background:#d4af37;
+      color:#000;
+      font-weight:800;
+      border-color:transparent;
+    }
+    input,select{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      padding:10px 12px;
+      color:#fff;
+      outline:none;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
   </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-6 text-white">
+<body class="min-h-screen p-5">
+  <div class="max-w-2xl mx-auto space-y-4">
 
-  <div class="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl p-6 space-y-6">
+    <!-- PUBLIC SELECTOR (default) -->
+    <div id="publicView" class="glass p-6 space-y-4">
+      <div class="text-xs tracking-[.35em] uppercase opacity-70">R-E-M Digital Invitation</div>
+      <h1 class="text-2xl font-extrabold">Pilih Versi Jemputan</h1>
+      <p class="text-white/60 text-sm">Demo untuk pelanggan. Admin panel hanya melalui route tersembunyi.</p>
 
-    <!-- Header -->
-    <div class="text-center space-y-2">
-      <div class="text-xs tracking-[0.3em] text-white/50 uppercase">
-        R-E-M Digital Invitation
+      <div class="grid grid-cols-1 gap-2 pt-2">
+        <a class="btn block" href="./invite.html?v=1&pkg=basic">Versi 1 — BASIC</a>
+        <a class="btn block" href="./invite.html?v=2&pkg=vip">Versi 2 — VIP</a>
+        <a class="btn block" href="./invite.html?v=3&pkg=vip">Versi 3 — VIP</a>
+        <a class="btn block" href="./invite.html?v=4&pkg=family">Versi 4 — FAMILY</a>
+        <a class="btn block" href="./invite.html?v=5&pkg=pro">Versi 5 — PRO</a>
       </div>
-      <h1 class="text-2xl font-semibold tracking-wide">
-        Pilih Versi Jemputan
-      </h1>
-      <p class="text-sm text-white/60">
-        Setiap versi mempunyai tema & warna berbeza
-      </p>
+
+      <div class="text-xs text-white/45 pt-2">© R-E-M</div>
     </div>
 
-    <!-- Version Buttons -->
-    <div class="grid gap-3 pt-2">
-      <a href="./invite.html?v=1"
-         class="group flex justify-between items-center px-5 py-4 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 transition">
-        <span>
-          <div class="font-medium">Versi 1</div>
-          <div class="text-xs text-white/60">Premium Gold</div>
-        </span>
-        <span class="text-white/40 group-hover:text-white">→</span>
-      </a>
+    <!-- ADMIN LOGIN (hidden unless ?admin=1) -->
+    <div id="adminShell" class="hidden space-y-4">
+      <div id="loginScreen" class="glass p-6 max-w-md w-full mx-auto space-y-4">
+        <div class="text-center space-y-2">
+          <div class="text-xs tracking-[.35em] uppercase opacity-70">R-E-M System</div>
+          <h2 class="text-2xl font-extrabold">Admin Login</h2>
+          <p class="text-white/60 text-sm">2-step: Password + PIN</p>
+        </div>
 
-      <a href="./invite.html?v=2"
-         class="group flex justify-between items-center px-5 py-4 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 transition">
-        <span>
-          <div class="font-medium">Versi 2</div>
-          <div class="text-xs text-white/60">Modern Neon</div>
-        </span>
-        <span class="text-white/40 group-hover:text-white">→</span>
-      </a>
+        <div id="stepPass" class="space-y-3">
+          <input id="adminPass" type="password" placeholder="Admin password" />
+          <button id="btnPass" class="btn btn-primary w-full">Next</button>
+        </div>
 
-      <a href="./invite.html?v=3"
-         class="group flex justify-between items-center px-5 py-4 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 transition">
-        <span>
-          <div class="font-medium">Versi 3</div>
-          <div class="text-xs text-white/60">Minimal Mono</div>
-        </span>
-        <span class="text-white/40 group-hover:text-white">→</span>
-      </a>
+        <div id="stepPin" class="space-y-3 hidden">
+          <input id="adminPin" inputmode="numeric" maxlength="6" placeholder="PIN (contoh 4 digit)" />
+          <button id="btnPin" class="btn btn-primary w-full">Masuk</button>
+          <button id="btnBack" class="btn w-full">Kembali</button>
+        </div>
 
-      <a href="./invite.html?v=4"
-         class="group flex justify-between items-center px-5 py-4 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 transition">
-        <span>
-          <div class="font-medium">Versi 4</div>
-          <div class="text-xs text-white/60">Islamic Emerald</div>
-        </span>
-        <span class="text-white/40 group-hover:text-white">→</span>
-      </a>
+        <p id="loginError" class="text-red-400 text-sm hidden text-center">Salah. Cuba lagi.</p>
+        <div class="text-xs text-white/45 text-center">Route admin: <span class="mono">?admin=1</span></div>
+      </div>
 
-      <a href="./invite.html?v=5"
-         class="group flex justify-between items-center px-5 py-4 rounded-2xl border border-white/10 bg-white/10 hover:bg-white/20 transition">
-        <span>
-          <div class="font-medium">Versi 5</div>
-          <div class="text-xs text-white/60">Royal Purple</div>
-        </span>
-        <span class="text-white/40 group-hover:text-white">→</span>
-      </a>
-    </div>
+      <!-- ADMIN PANEL -->
+      <div id="adminPanel" class="hidden glass p-6 space-y-4">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <div class="text-xs tracking-[.35em] uppercase opacity-70">Admin Panel</div>
+            <h2 class="text-2xl font-extrabold mt-1">Generate Link (1–5)</h2>
+            <p class="text-white/60 text-sm">Auto logout selepas 5 minit idle.</p>
+          </div>
+          <button id="btnLogout" class="btn">Logout</button>
+        </div>
 
-    <!-- Footer -->
-    <div class="pt-2 text-center text-xs text-white/40">
-      © R-E-M • Mesra Telefon • Premium Digital Invite
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <div class="text-xs text-white/60 mb-1">Nama Pengantin</div>
+            <input id="f_names" value="Adam & Hawa">
+          </div>
+          <div>
+            <div class="text-xs text-white/60 mb-1">WhatsApp (tanpa +)</div>
+            <input id="f_wa" value="601111661303">
+          </div>
+
+          <div>
+            <div class="text-xs text-white/60 mb-1">Tarikh</div>
+            <input id="f_date" value="Sabtu, 12 Oktober 2025">
+          </div>
+          <div>
+            <div class="text-xs text-white/60 mb-1">Masa</div>
+            <input id="f_time" value="11.00 pagi – 4.00 petang">
+          </div>
+
+          <div class="md:col-span-2">
+            <div class="text-xs text-white/60 mb-1">Lokasi</div>
+            <input id="f_loc" value="Dewan Seri Melur">
+          </div>
+
+          <div class="md:col-span-2">
+            <div class="text-xs text-white/60 mb-1">Google Maps URL (optional)</div>
+            <input id="f_maps" placeholder="https://maps.google.com/?q=..." value="">
+          </div>
+
+          <div class="md:col-span-2">
+            <div class="text-xs text-white/60 mb-1">Music MP3 URL (optional)</div>
+            <input id="f_music" placeholder="https://.../music.mp3" value="">
+          </div>
+
+          <div>
+            <div class="text-xs text-white/60 mb-1">Pakej</div>
+            <select id="f_pkg">
+              <option value="basic">BASIC (V1)</option>
+              <option value="vip">VIP (V1–V3)</option>
+              <option value="family">FAMILY (V1–V4)</option>
+              <option value="pro" selected>PRO (V1–V5)</option>
+            </select>
+          </div>
+
+          <div>
+            <div class="text-xs text-white/60 mb-1">Nama Tetamu (optional)</div>
+            <input id="f_guest" placeholder="Encik Ali">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2">
+          <button id="btn_all" class="btn btn-primary">Generate Link</button>
+          <button id="btn_copy_all" class="btn">Copy Semua</button>
+          <button id="btn_preview" class="btn">Preview</button>
+          <button id="btn_clear" class="btn">Clear</button>
+        </div>
+
+        <div id="out_list" class="space-y-2"></div>
+        <div class="text-xs text-white/45 pt-2">© R-E-M</div>
+      </div>
     </div>
 
   </div>
 
+<script>
+  /* ========= Hidden admin route ========= */
+  const isAdminRoute = new URLSearchParams(location.search).get("admin") === "1";
+  const publicView = document.getElementById("publicView");
+  const adminShell = document.getElementById("adminShell");
+  if (isAdminRoute){
+    publicView.classList.add("hidden");
+    adminShell.classList.remove("hidden");
+  }
+
+  /* ========= 2-step login ========= */
+  const ADMIN_PASSWORD = "rem2025";
+  const ADMIN_PIN = "4433";
+
+  const stepPass = document.getElementById("stepPass");
+  const stepPin  = document.getElementById("stepPin");
+  const loginError = document.getElementById("loginError");
+  const btnPass = document.getElementById("btnPass");
+  const btnPin  = document.getElementById("btnPin");
+  const btnBack = document.getElementById("btnBack");
+  const loginScreen = document.getElementById("loginScreen");
+  const adminPanel  = document.getElementById("adminPanel");
+
+  function showError(){
+    loginError.classList.remove("hidden");
+    setTimeout(()=>loginError.classList.add("hidden"), 1200);
+  }
+  btnPass?.addEventListener("click", ()=>{
+    if ((document.getElementById("adminPass").value||"") === ADMIN_PASSWORD){
+      stepPass.classList.add("hidden");
+      stepPin.classList.remove("hidden");
+      document.getElementById("adminPin").focus();
+    } else showError();
+  });
+  btnBack?.addEventListener("click", ()=>{
+    stepPin.classList.add("hidden");
+    stepPass.classList.remove("hidden");
+  });
+  btnPin?.addEventListener("click", ()=>{
+    if ((document.getElementById("adminPin").value||"").trim() === ADMIN_PIN){
+      loginScreen.classList.add("hidden");
+      adminPanel.classList.remove("hidden");
+      startAutoLogout();
+      resetIdle();
+    } else showError();
+  });
+
+  /* ========= Auto logout 5 min ========= */
+  const IDLE_LIMIT_MS = 5 * 60 * 1000;
+  let idleTimer = null;
+
+  function logout(){
+    adminPanel.classList.add("hidden");
+    loginScreen.classList.remove("hidden");
+    stepPin.classList.add("hidden");
+    stepPass.classList.remove("hidden");
+    document.getElementById("adminPass").value = "";
+    document.getElementById("adminPin").value = "";
+    clearTimeout(idleTimer);
+  }
+  function resetIdle(){
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(()=> { alert("Auto logout: idle 5 minit."); logout(); }, IDLE_LIMIT_MS);
+  }
+  function startAutoLogout(){
+    ["click","keydown","mousemove","touchstart","scroll"].forEach(evt=>{
+      document.addEventListener(evt, resetIdle, { passive:true });
+    });
+  }
+  document.getElementById("btnLogout")?.addEventListener("click", logout);
+
+  /* ========= Generate links + copy each ========= */
+  const allowByPkg = {
+    basic:[1],
+    vip:[1,2,3],
+    family:[1,2,3,4],
+    pro:[1,2,3,4,5]
+  };
+
+  function baseInviteUrl(){
+    return location.origin + location.pathname.replace(/\/$/, "") + "/invite.html";
+  }
+  function sanitizePhone(p){ return (p||"").replace(/[^\d]/g,""); }
+
+  function buildLink(v){
+    const pkg = (document.getElementById("f_pkg").value||"pro").toLowerCase();
+    const allowed = allowByPkg[pkg] || allowByPkg.pro;
+    if (!allowed.includes(v)) return null;
+
+    const qs = new URLSearchParams();
+    qs.set("pkg", pkg);
+    qs.set("v", String(v));
+    qs.set("names", (document.getElementById("f_names").value||"").trim());
+    qs.set("wa", sanitizePhone(document.getElementById("f_wa").value));
+    qs.set("date", (document.getElementById("f_date").value||"").trim());
+    qs.set("time", (document.getElementById("f_time").value||"").trim());
+    qs.set("loc", (document.getElementById("f_loc").value||"").trim());
+
+    const maps = (document.getElementById("f_maps").value||"").trim();
+    if (maps) qs.set("maps", maps);
+
+    const music = (document.getElementById("f_music").value||"").trim();
+    if (music) qs.set("music", music);
+
+    const guest = (document.getElementById("f_guest").value||"").trim();
+    if (guest) qs.set("name", guest);
+
+    return baseInviteUrl() + "?" + qs.toString();
+  }
+
+  function renderLinks(){
+    resetIdle();
+    const out = document.getElementById("out_list");
+    out.innerHTML = "";
+
+    const pkg = (document.getElementById("f_pkg").value||"pro").toLowerCase();
+    const allowed = allowByPkg[pkg] || allowByPkg.pro;
+
+    const links = [];
+    for (let v=1; v<=5; v++){
+      if (!allowed.includes(v)) continue;
+      const url = buildLink(v);
+      if (url) links.push({v,url});
+    }
+
+    if (!links.length){
+      out.innerHTML = `<div class="text-white/60">Tiada link untuk pakej ini.</div>`;
+      out.dataset.copyAll = "";
+      return;
+    }
+
+    out.dataset.copyAll = links.map(x=>x.url).join("\n");
+
+    links.forEach(({v,url})=>{
+      const box = document.createElement("div");
+      box.className = "rounded-xl bg-white/5 border border-white/10 p-3 space-y-2";
+      box.innerHTML = `
+        <div class="flex items-center justify-between gap-2">
+          <div class="text-sm font-semibold">Versi ${v}</div>
+          <div class="flex gap-2">
+            <button class="btn text-xs" data-copy="${encodeURIComponent(url)}">Copy</button>
+            <button class="btn text-xs" data-open="${encodeURIComponent(url)}">Open</button>
+          </div>
+        </div>
+        <a class="mono text-xs underline text-white/80 break-all" target="_blank" rel="noopener" href="${url}">${url}</a>
+      `;
+      out.appendChild(box);
+    });
+  }
+
+  document.getElementById("btn_all")?.addEventListener("click", renderLinks);
+
+  document.getElementById("btn_copy_all")?.addEventListener("click", async ()=>{
+    resetIdle();
+    const out = document.getElementById("out_list");
+    const txt = (out.dataset.copyAll || "").trim();
+    if (!txt) return;
+    try{ await navigator.clipboard.writeText(txt); alert("Copied semua link!"); }
+    catch{ alert(txt); }
+  });
+
+  document.getElementById("btn_preview")?.addEventListener("click", ()=>{
+    resetIdle();
+    const out = document.getElementById("out_list");
+    const first = ((out.dataset.copyAll || "").trim().split("\n")[0]) || "";
+    if (first) window.open(first, "_blank");
+  });
+
+  document.getElementById("btn_clear")?.addEventListener("click", ()=>{
+    resetIdle();
+    const out = document.getElementById("out_list");
+    out.innerHTML = "";
+    out.dataset.copyAll = "";
+  });
+
+  document.getElementById("out_list")?.addEventListener("click", async (e)=>{
+    resetIdle();
+    const c = e.target.closest("button[data-copy]");
+    const o = e.target.closest("button[data-open]");
+    if (c){
+      const url = decodeURIComponent(c.getAttribute("data-copy"));
+      try{ await navigator.clipboard.writeText(url); c.textContent="Copied!"; setTimeout(()=>c.textContent="Copy",900); }
+      catch{ alert(url); }
+    }
+    if (o){
+      const url = decodeURIComponent(o.getAttribute("data-open"));
+      window.open(url, "_blank");
+    }
+  });
+</script>
 </body>
 </html>
