@@ -1,129 +1,108 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jemputan Majlis Perkahwinan</title>
-
-  <!-- Tailwind -->
+  <title>Jemputan Digital</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root{
-      --bg:#0b0b0b;
-      --card:#101214;
-      --stroke: rgba(255,255,255,.10);
-      --muted: rgba(255,255,255,.72);
-      --muted2: rgba(255,255,255,.55);
-      --accent:#d4af37;
+      --bg1:#070707; --bg2:#000;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+      --text: #fff;
+      --muted: rgba(255,255,255,.70);
+      --accent: #d4af37;
       --accent2:#ffffff;
-      --shadow: 0 24px 60px rgba(0,0,0,.55);
-      --radius: 22px;
+      --radius: 28px;
     }
     body{
-      background: radial-gradient(1200px 700px at 20% -10%, rgba(212,175,55,.14), transparent 55%),
-                  radial-gradient(900px 600px at 110% 10%, rgba(255,255,255,.07), transparent 50%),
-                  radial-gradient(800px 600px at 40% 110%, rgba(212,175,55,.10), transparent 55%),
-                  var(--bg);
-      color:#fff;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.07), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
     }
     .glass{
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
     }
-    .chip{
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      border-radius: 999px;
-      padding: .35rem .65rem;
-      font-size: .75rem;
-      color: var(--muted2);
-    }
+    .fadeUp{ animation: fadeUp .65s ease both; }
+    @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
+    .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
     .btn{
-      border-radius: 14px;
-      padding: .80rem 1rem;
-      font-weight: 600;
-      letter-spacing: .02em;
+      border-radius: 16px;
       border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.04);
-      transition: transform .08s ease, opacity .15s ease, background .2s ease;
+      padding: 12px 14px;
+      background: rgba(0,0,0,.22);
     }
-    .btn:active{ transform: scale(.99); }
-    .btn-primary{
+    .btnPrimary{
       background: var(--accent);
       color: #0b0b0b;
-      border-color: rgba(0,0,0,.12);
+      border-color: rgba(255,255,255,.18);
+      font-weight: 700;
     }
     .input{
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
+      width:100%;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      padding: 12px 14px;
       background: rgba(0,0,0,.25);
-      padding: .85rem .95rem;
-      outline: none;
-      width: 100%;
-      color: #fff;
-    }
-    .input::placeholder{ color: rgba(255,255,255,.45); }
-    .divider{
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      outline:none;
     }
     .qrWrap{
+      border-radius: 20px;
       border: 1px solid var(--stroke);
-      background: rgba(0,0,0,.25);
-      border-radius: 18px;
-      padding: 12px;
-      display: inline-flex;
-      box-shadow: 0 16px 30px rgba(0,0,0,.35);
+      background: rgba(0,0,0,.18);
+      padding: 14px;
+      display: inline-block;
     }
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      padding: 10px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(12px);
-      color: rgba(255,255,255,.9);
-      font-size: 13px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-6px); }
-    select{
-      background: rgba(0,0,0,.25) !important;
-      border: 1px solid var(--stroke) !important;
-      color: rgba(255,255,255,.9) !important;
-      border-radius: 999px !important;
-      padding: .35rem .75rem !important;
-      font-size: .8rem !important;
-      outline: none !important;
+    .gate{
+      position: fixed; inset:0;
+      background:
+        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.08), transparent 55%),
+        linear-gradient(180deg, #070707, #000);
+      display:flex; align-items:center; justify-content:center;
+      z-index: 50;
+      padding: 24px;
     }
   </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4">
-  <div class="w-full max-w-md glass p-6 md:p-7 space-y-5">
-    <!-- Top bar -->
-    <div class="flex items-center justify-between gap-3">
+<body class="p-4 max-w-[560px] mx-auto">
+  <!-- INTRO GATE -->
+  <div id="gate" class="gate">
+    <div class="w-full max-w-md glass p-6 text-center space-y-4 fadeUp">
+      <div class="text-xs tracking-[.35em] uppercase opacity-70" id="gLabel">Walimatul Urus</div>
+      <div class="text-3xl font-extrabold" id="gTitle">Jemputan Digital</div>
+      <div class="text-white/70 text-sm" id="gDesc">Klik untuk buka jemputan.</div>
+
+      <div class="grid grid-cols-2 gap-2 pt-2">
+        <button id="btnEnter" class="btn btnPrimary">Buka</button>
+        <button id="btnMute" class="btn">Muzik: Off</button>
+      </div>
+
+      <div class="text-xs opacity-50">© R-E-M Digital Invitation</div>
+    </div>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="glass p-6 text-center space-y-5 fadeUp">
+    <div class="flex items-center justify-between gap-2">
       <div class="flex items-center gap-2">
-        <span class="chip" id="badge">Walimatul Urus</span>
-        <span class="chip" id="verChip">v1</span>
+        <span id="chipStyle" class="chip text-xs px-3 py-2 rounded-full">Style</span>
+        <span id="chipVer" class="chip text-xs px-3 py-2 rounded-full">v</span>
       </div>
 
       <div class="flex items-center gap-2">
-        <select id="verSel" title="Pilih Versi">
+        <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
           <option value="1">Versi 1</option>
           <option value="2">Versi 2</option>
           <option value="3">Versi 3</option>
@@ -133,280 +112,231 @@
       </div>
     </div>
 
-    <!-- Header -->
-    <div class="text-center space-y-2">
-      <h1 class="text-3xl font-semibold tracking-tight" id="title">Walimatul Urus</h1>
-      <p class="text-sm" style="color:var(--muted2)" id="subtitle">
-        Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik
-      </p>
+    <div class="space-y-2">
+      <div class="text-xs tracking-[.35em] uppercase opacity-70" id="labelTop">Walimatul Urus</div>
+      <h1 id="outNames" class="text-4xl font-extrabold leading-tight">Adam & Hawa</h1>
+      <p id="outLine" class="text-white/70">Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik</p>
     </div>
 
-    <!-- Names -->
-    <div class="text-center space-y-2">
-      <div class="text-lg font-medium" id="groom">👨‍💼 Adam bin Ahmad</div>
-      <div class="text-lg font-medium" id="bride">👩‍💼 Hawa binti Ali</div>
+    <div class="space-y-2">
+      <div class="text-lg font-semibold">👨‍💼 Adam bin Ahmad</div>
+      <div class="text-lg font-semibold">👩‍💼 Hawa binti Ali</div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- Details -->
-    <div class="space-y-2 text-sm" style="color:var(--muted)">
-      <div class="flex items-center justify-center gap-2" id="dateRow">📅 Sabtu, 12 Oktober 2025</div>
-      <div class="flex items-center justify-center gap-2" id="timeRow">🕰️ 11.00 pagi – 4.00 petang</div>
-      <div class="flex items-center justify-center gap-2" id="locRow">📍 Dewan Seri Melur</div>
+    <div class="border-t border-white/10 pt-4 space-y-2 text-sm text-white/80">
+      <div>📅 <span id="outDate">Sabtu, 12 Oktober 2025</span></div>
+      <div>🕚 <span id="outTime">11.00 pagi – 4.00 petang</span></div>
+      <div>📍 <span id="outLoc">Dewan Seri Melur</span></div>
     </div>
 
-    <!-- Guest -->
-    <div class="space-y-3">
+    <div class="space-y-3 pt-2">
       <input id="guest" class="input" placeholder="Nama tetamu" />
       <div class="grid grid-cols-2 gap-3">
-        <button class="btn btn-primary" onclick="rsvp('Hadir')" id="btnHadir">Hadir</button>
-        <button class="btn" onclick="rsvp('Tidak Hadir')" id="btnTidak">Tidak Hadir</button>
+        <button class="btn btnPrimary" onclick="rsvp('Hadir')">Hadir</button>
+        <button class="btn" onclick="rsvp('Tidak Hadir')">Tidak Hadir</button>
       </div>
 
-      <div class="flex items-center justify-center gap-3 pt-1">
-        <button class="btn text-xs px-3 py-2" onclick="copyLink()">Copy Link</button>
-        <button class="btn text-xs px-3 py-2" onclick="openMap()">Buka Maps</button>
+      <div class="grid grid-cols-2 gap-3">
+        <button class="btn" id="btnCopy">Copy Link</button>
+        <button class="btn" id="btnMaps">Buka Maps</button>
       </div>
     </div>
 
-    <!-- QR -->
-    <div class="text-center space-y-3 pt-1">
+    <div class="pt-2">
       <div class="qrWrap">
         <div id="qrcode"></div>
       </div>
-      <p class="text-xs" style="color:var(--muted2)">
-        Jemputan Digital • Mesra Telefon 📱
-      </p>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- Footer -->
-    <div class="text-center text-xs" style="color:var(--muted2)">
-      © R-E-M Digital Invitation
-    </div>
+    <div class="text-xs opacity-60" id="footLine">Jemputan Digital • Mesra Telefon 📱</div>
+    <div class="text-xs opacity-50">© R-E-M Digital Invitation</div>
   </div>
 
-  <div class="toast" id="toast">OK</div>
+<script>
+/* =========================
+   0) ADMIN CONFIG (tukar sini je)
+========================= */
+const CONFIG = {
+  WA_PHONE: "601111661303", // ✅ tukar nombor whatsapp anda
+  MAPS_URL: "https://maps.google.com/?q=Dewan%20Seri%20Melur", // ✅ tukar lokasi maps
+  EVENT: {
+    names: "Adam & Hawa",
+    date: "Sabtu, 12 Oktober 2025",
+    time: "11.00 pagi – 4.00 petang",
+    location: "Dewan Seri Melur"
+  },
+  MUSIC_URL: "" // optional: letak link mp3 (https://...) kalau nak muzik
+};
 
-  <script>
-    /***********************
-     *  ✅ SETUP ANDA
-     ***********************/
-    // 1) Tukar nombor WhatsApp (boleh letak lebih dari 1 nombor)
-    // Format betul: 60 + nombor (tanpa +, tanpa space, tanpa dash)
-    // Contoh: "60123456789"
-    const WA_NUMBERS = [
-      "601111661303"
-    ];
+/* =========================
+   1) UTIL
+========================= */
+const qs = new URLSearchParams(location.search);
+const pkg = (qs.get("pkg") || "pro").toLowerCase();      // basic | pro | ultra
+let v = parseInt(qs.get("v") || "4", 10);                // default v4
+const nameParam = (qs.get("name") || "").trim();
 
-    // 2) (OPTIONAL) Google Sheet webhook (kalau ada)
-    // Kalau belum ada, BIAR KOSONG.
-    const SHEET_WEBHOOK_URL = "";
+const allowByPkg = {
+  basic: [1],
+  pro: [1,2,3],
+  ultra: [1,2,3,4,5]
+};
+const allowed = allowByPkg[pkg] || allowByPkg.pro;
+if (!allowed.includes(v)) v = allowed[0];
 
-    // 3) Lokasi Google Maps (tukar ikut dewan)
-    const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Dewan%20Seri%20Melur";
+/* =========================
+   2) THEMES 1–5
+========================= */
+const THEMES = {
+  1: { style:"Premium",  accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000000", card:"rgba(255,255,255,.06)" },
+  2: { style:"Modern",   accent:"#39ffcf", bg1:"#070a12", bg2:"#000000", card:"rgba(57,255,207,.06)" },
+  3: { style:"Minimal",  accent:"#ffffff", bg1:"#0a0a0a", bg2:"#000000", card:"rgba(255,255,255,.06)" },
+  4: { style:"Islamic",  accent:"#2ecc71", bg1:"#07120a", bg2:"#000000", card:"rgba(46,204,113,.06)" },
+  5: { style:"Royal",    accent:"#a78bfa", bg1:"#0a0712", bg2:"#000000", card:"rgba(167,139,250,.06)" },
+};
 
-    /***********************
-     *  ✅ DATA MAJLIS
-     ***********************/
-    const EVENT = {
-      title: "Walimatul Urus",
-      subtitle: "Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik",
-      groom: "👨‍💼 Adam bin Ahmad",
-      bride: "👩‍💼 Hawa binti Ali",
-      dateDisplay: "Sabtu, 12 Oktober 2025",
-      timeDisplay: "11.00 pagi – 4.00 petang",
-      locationDisplay: "Dewan Seri Melur"
-    };
+function applyTheme(ver){
+  const t = THEMES[ver] || THEMES[4];
+  document.documentElement.style.setProperty("--accent", t.accent);
+  document.documentElement.style.setProperty("--bg1", t.bg1);
+  document.documentElement.style.setProperty("--bg2", t.bg2);
+  document.documentElement.style.setProperty("--card", t.card);
 
-    /***********************
-     *  ✅ VERSI 1–5 (THEME)
-     ***********************/
-    const THEMES = {
-      1: { // Premium Gold (default)
-        badge: "Walimatul Urus",
-        accent: "#d4af37",
-        bg: "#0b0b0b",
-        card: "#101214",
-        stroke: "rgba(255,255,255,.10)"
-      },
-      2: { // Modern Neon
-        badge: "Modern",
-        accent: "#7CFFB2",
-        bg: "#070A0F",
-        card: "#0C111B",
-        stroke: "rgba(124,255,178,.18)"
-      },
-      3: { // Minimal Mono
-        badge: "Minimal",
-        accent: "#ffffff",
-        bg: "#0a0a0a",
-        card: "#101010",
-        stroke: "rgba(255,255,255,.12)"
-      },
-      4: { // Islamic Emerald
-        badge: "Islamic",
-        accent: "#35d0a6",
-        bg: "#06110E",
-        card: "#081a16",
-        stroke: "rgba(53,208,166,.20)"
-      },
-      5: { // Royal Purple
-        badge: "Royal",
-        accent: "#b89bff",
-        bg: "#090612",
-        card: "#110b1f",
-        stroke: "rgba(184,155,255,.20)"
-      }
-    };
+  chipStyle.textContent = t.style;
+  chipVer.textContent = "v" + ver;
+  verPicker.value = String(ver);
+}
 
-    function setTheme(v){
-      const t = THEMES[v] || THEMES[1];
-      document.documentElement.style.setProperty("--accent", t.accent);
-      document.documentElement.style.setProperty("--bg", t.bg);
-      document.documentElement.style.setProperty("--card", t.card);
-      document.documentElement.style.setProperty("--stroke", t.stroke);
+/* =========================
+   3) BM/EN AUTO (simple)
+========================= */
+const isEN = (navigator.language || "").toLowerCase().startsWith("en");
+const T = {
+  labelTop: isEN ? "Wedding Invitation" : "Walimatul Urus",
+  line: isEN ? "With gratitude, we invite you to attend" : "Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik",
+  hadir: isEN ? "Attend" : "Hadir",
+  tidak: isEN ? "Not attending" : "Tidak Hadir",
+  copy: isEN ? "Copy Link" : "Copy Link",
+  maps: isEN ? "Open Maps" : "Buka Maps",
+  foot: isEN ? "Digital Invitation • Mobile-friendly" : "Jemputan Digital • Mesra Telefon 📱",
+  gateDesc: isEN ? "Tap to open the invitation." : "Klik untuk buka jemputan."
+};
 
-      document.getElementById("badge").textContent = t.badge;
-      document.getElementById("verChip").textContent = "v" + v;
-    }
+/* =========================
+   4) RENDER DATA
+========================= */
+outNames.textContent = CONFIG.EVENT.names;
+outDate.textContent = CONFIG.EVENT.date;
+outTime.textContent = CONFIG.EVENT.time;
+outLoc.textContent  = CONFIG.EVENT.location;
 
-    function fillEvent(){
-      document.getElementById("title").textContent = EVENT.title;
-      document.getElementById("subtitle").textContent = EVENT.subtitle;
-      document.getElementById("groom").textContent = EVENT.groom;
-      document.getElementById("bride").textContent = EVENT.bride;
-      document.getElementById("dateRow").textContent = "📅 " + EVENT.dateDisplay;
-      document.getElementById("timeRow").textContent = "🕰️ " + EVENT.timeDisplay;
-      document.getElementById("locRow").textContent = "📍 " + EVENT.locationDisplay;
-    }
+labelTop.textContent = T.labelTop;
+outLine.textContent  = T.line;
+footLine.textContent = T.foot;
 
-    /***********************
-     *  ✅ QR (URL page)
-     ***********************/
-    function buildQR(){
-      const el = document.getElementById("qrcode");
-      el.innerHTML = "";
-      new QRCode(el, {
-        text: window.location.href,
-        width: 140,
-        height: 140,
-        colorDark: "#ffffff",
-        colorLight: "transparent"
-      });
-    }
+// name auto from link
+if (nameParam) guest.value = nameParam;
 
-    /***********************
-     *  ✅ UTIL
-     ***********************/
-    function toast(msg){
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1600);
-    }
+/* =========================
+   5) VERSION PICKER + LOCK BY PACKAGE
+========================= */
+function refreshPickerOptions(){
+  [...verPicker.options].forEach(opt=>{
+    const n = parseInt(opt.value,10);
+    opt.disabled = !allowed.includes(n);
+    opt.textContent = "Versi " + n + (opt.disabled ? " (Lock)" : "");
+  });
+}
+refreshPickerOptions();
+applyTheme(v);
 
-    function pickWAnumber(){
-      // Round-robin simple ikut masa (kalau ada banyak nombor)
-      if(!WA_NUMBERS.length) return "";
-      const i = Math.floor(Date.now() / 1000) % WA_NUMBERS.length;
-      return WA_NUMBERS[i];
-    }
+verPicker.addEventListener("change", ()=>{
+  const next = parseInt(verPicker.value,10);
+  if (!allowed.includes(next)) return;
+  // update URL so share link keep the version
+  qs.set("v", String(next));
+  qs.set("pkg", pkg);
+  history.replaceState(null, "", location.pathname + "?" + qs.toString());
+  applyTheme(next);
+  rebuildQR();
+});
 
-    function safeOpen(url){
-      // Kadang popup block: fallback guna location.href
-      const w = window.open(url, "_blank");
-      if(!w) window.location.href = url;
-    }
+/* =========================
+   6) QR + COPY LINK + MAPS
+========================= */
+function rebuildQR(){
+  const el = document.getElementById("qrcode");
+  el.innerHTML = "";
+  new QRCode(el, {
+    text: window.location.href,
+    width: 210,
+    height: 210,
+    colorDark: "#ffffff",
+    colorLight: "transparent"
+  });
+}
+rebuildQR();
 
-    /***********************
-     *  ✅ RSVP (WHATSAPP + OPTIONAL SHEET)
-     ***********************/
-    async function sendToSheet(payload){
-      if(!SHEET_WEBHOOK_URL) return;
-      try{
-        await fetch(SHEET_WEBHOOK_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-      }catch(e){
-        // diam sahaja (tak kacau flow WhatsApp)
-      }
-    }
+btnCopy.addEventListener("click", async ()=>{
+  try{
+    await navigator.clipboard.writeText(window.location.href);
+    btnCopy.textContent = isEN ? "Copied!" : "Dah Copy!";
+    setTimeout(()=>btnCopy.textContent = T.copy, 1200);
+  }catch(e){
+    alert(window.location.href);
+  }
+});
 
-    function rsvp(status){
-      const guestEl = document.getElementById("guest");
-      const guestName = (guestEl.value || "").trim();
+btnMaps.addEventListener("click", ()=>{
+  window.open(CONFIG.MAPS_URL, "_blank");
+});
 
-      const msg =
+/* =========================
+   7) RSVP WHATSAPP (BETUL)
+========================= */
+function rsvp(status){
+  const guestName = (document.getElementById("guest").value || "").trim();
+
+  const msg =
 `RSVP ${status}
 Nama: ${guestName || "-"}
-Majlis: ${EVENT.groom.replace("👨‍💼 ","")} & ${EVENT.bride.replace("👩‍💼 ","")}
-Tarikh: ${EVENT.dateDisplay}
-Lokasi: ${EVENT.locationDisplay}`;
+Majlis: ${CONFIG.EVENT.names}
+Tarikh: ${CONFIG.EVENT.date}
+Lokasi: ${CONFIG.EVENT.location}`;
 
-      const wa = pickWAnumber();
-      if(!wa){
-        toast("Nombor WhatsApp belum diisi");
-        return;
-      }
+  const url = "https://wa.me/" + CONFIG.WA_PHONE + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
+}
 
-      // OPTIONAL: simpan ke Google Sheet
-      sendToSheet({
-        status,
-        nama: guestName || "-",
-        majlis: `${EVENT.groom} & ${EVENT.bride}`,
-        tarikh: EVENT.dateDisplay,
-        lokasi: EVENT.locationDisplay,
-        url: window.location.href,
-        time: new Date().toISOString()
-      });
+/* =========================
+   8) INTRO GATE + MUSIC (optional)
+========================= */
+gLabel.textContent = T.labelTop;
+gDesc.textContent = T.gateDesc;
 
-      const url = "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg);
-      toast("Buka WhatsApp…");
-      safeOpen(url);
-    }
+let audio = null;
+let musicOn = false;
 
-    function copyLink(){
-      const link = window.location.href;
-      navigator.clipboard?.writeText(link).then(()=>{
-        toast("Link disalin");
-      }).catch(()=>{
-        toast("Tak dapat copy");
-      });
-    }
+function setupAudio(){
+  if (!CONFIG.MUSIC_URL) return;
+  audio = new Audio(CONFIG.MUSIC_URL);
+  audio.loop = true;
+  audio.volume = 0.7;
+}
 
-    function openMap(){
-      safeOpen(MAPS_URL);
-    }
+setupAudio();
 
-    /***********************
-     *  ✅ INIT (v=1..5)
-     ***********************/
-    function getVersion(){
-      const v = new URLSearchParams(window.location.search).get("v");
-      const n = parseInt(v || "1", 10);
-      if([1,2,3,4,5].includes(n)) return n;
-      return 1;
-    }
+btnMute.addEventListener("click", ()=>{
+  musicOn = !musicOn;
+  btnMute.textContent = musicOn ? (isEN ? "Music: On" : "Muzik: On") : (isEN ? "Music: Off" : "Muzik: Off");
+});
 
-    const verSel = document.getElementById("verSel");
-    const currentV = getVersion();
-    verSel.value = String(currentV);
-
-    verSel.addEventListener("change", (e)=>{
-      const v = e.target.value;
-      const url = new URL(window.location.href);
-      url.searchParams.set("v", v);
-      window.location.href = url.toString();
-    });
-
-    fillEvent();
-    setTheme(currentV);
-    buildQR();
-  </script>
+btnEnter.addEventListener("click", ()=>{
+  gate.style.display = "none";
+  if (musicOn && audio){
+    audio.play().catch(()=>{});
+  }
+});
+</script>
 </body>
-</html>
+</html>    
