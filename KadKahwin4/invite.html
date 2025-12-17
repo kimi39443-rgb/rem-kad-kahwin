@@ -88,17 +88,17 @@ new QRCode(document.getElementById("qrcode"), {
 });
 
 function rsvp(status){
-  const guest = document.getElementById("guest").value || "-";
+  const guestEl = document.getElementById("guest");
+  const guestName = (guestEl.value || "").trim();
+
   const msg =
 `RSVP ${status}
-Nama: ${guest}
+Nama: ${guestName || "-"}
 Majlis: Adam & Hawa
 Tarikh: 12 Oktober 2025`;
 
-  window.open(
-    "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(msg),
-    "_blank"
-  );
+  const url = "https://wa.me/" + WA_PHONE + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
 }
 </script>
 
