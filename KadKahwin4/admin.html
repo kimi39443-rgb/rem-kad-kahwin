@@ -377,6 +377,65 @@
       }
     } catch {}
   };
+  // =========================
+  // KOD ADMIN SEDIA ADA
+  // =========================
+  const list = loadCustomers();
+  ...
+  $("importFile").onchange = async (e) => { ... };
+
+  // =========================
+  // 🔐 KOD PASSWORD ADMIN (TAMBAH DI SINI)
+  // =========================
+  const LS_PASS = "REM_ADMIN_PASS_V1";
+  const LS_OK   = "REM_ADMIN_OK_V1";
+
+  if(!localStorage.getItem(LS_PASS)){
+    localStorage.setItem(LS_PASS, "123456");
+  }
+
+  function requireLogin(){
+    const pass = prompt("Admin Password:");
+    if(pass !== localStorage.getItem(LS_PASS)){
+      alert("Password salah");
+      location.href = "./index.html";
+      return false;
+    }
+    localStorage.setItem(LS_OK, "1");
+    return true;
+  }
+
+  if(localStorage.getItem(LS_OK) !== "1"){
+    requireLogin();
+  }
+
+  function changeAdminPassword(){
+    const oldP = prompt("Password lama:");
+    if(oldP !== localStorage.getItem(LS_PASS)){
+      alert("Password lama salah");
+      return;
+    }
+    const newP = prompt("Password baru (min 6):");
+    if(!newP || newP.length < 6){
+      alert("Password baru terlalu pendek");
+      return;
+    }
+    localStorage.setItem(LS_PASS, newP);
+    alert("✅ Password berjaya ditukar");
+  }
+
+  function adminLogout(){
+    localStorage.removeItem(LS_OK);
+    alert("Logout");
+    location.href = "./index.html";
+  }
+
+  window.changeAdminPassword = changeAdminPassword;
+  window.adminLogout = adminLogout;
+
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
