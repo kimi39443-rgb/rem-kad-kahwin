@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Kad Kahwin Digital</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
 
     body {
@@ -23,21 +23,18 @@
     /* VIDEO BACKGROUND */
     #bgVideo {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
       z-index: -2;
+      background: #000;
     }
 
     /* OVERLAY GELAP (PREMIUM) */
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       background: rgba(0,0,0,0.55);
       z-index: -1;
     }
@@ -53,59 +50,179 @@
     }
 
     .card {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(8px);
-      padding: 30px 20px;
-      border-radius: 16px;
+      background: rgba(255,255,255,0.10);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 30px 22px;
+      border-radius: 18px;
       max-width: 420px;
       width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.16);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: .95;
+      margin-bottom: 14px;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 30px;
+      line-height: 1.15;
       margin-bottom: 10px;
+      letter-spacing: 0.2px;
     }
 
     p {
       opacity: 0.9;
       margin-bottom: 20px;
+      line-height: 1.45;
     }
 
-    button {
-      padding: 12px 20px;
+    .btn {
+      padding: 12px 22px;
       border-radius: 30px;
       border: none;
       background: #fff;
       color: #000;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
+      transition: transform .12s ease, opacity .12s ease;
     }
+    .btn:active { transform: scale(0.98); }
+    .btn:hover { opacity: 0.95; }
+
+    /* TAP TO PLAY (Fix Chrome autoplay) */
+    #tapToPlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      padding: 22px;
+    }
+
+    .tapCard {
+      width: min(520px, 100%);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 18px;
+      padding: 22px 18px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    }
+
+    .tapTitle {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .tapDesc {
+      font-size: 13px;
+      opacity: .85;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    .tapBtn {
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .12s ease, opacity .12s ease;
+    }
+    .tapBtn:active { transform: scale(0.98); }
+    .tapBtn:hover { opacity: 0.95; }
   </style>
 </head>
 
 <body>
 
   <!-- VIDEO BACKGROUND -->
-  <video id="bgVideo" autoplay muted loop playsinline>
-    <source src="assets/bg.mp4" type="video/mp4">
+  <video id="bgVideo" muted loop playsinline preload="auto">
+    <source src="assets/bg.mp4" type="video/mp4" />
     Browser anda tidak menyokong video.
   </video>
 
   <!-- OVERLAY -->
   <div class="overlay"></div>
 
-  <!-- CONTENT -->
-  <div class="content">
-    <div class="card">
-      <h1>Walimatul Urus</h1>
-      <p>Dengan penuh kesyukuran kami menjemput anda hadir</p>
-      <button onclick="alert('Contoh butang')">Lihat Jemputan</button>
+  <!-- TAP TO PLAY (Chrome fix) -->
+  <div id="tapToPlay">
+    <div class="tapCard">
+      <div class="tapTitle">Ketik untuk mula</div>
+      <div class="tapDesc">
+        Untuk Chrome/Android, video perlu dimulakan selepas satu sentuhan.
+      </div>
+      <button class="tapBtn" id="tapBtn">Mulakan</button>
     </div>
   </div>
 
-  <!-- SCRIPT (JANGAN LETAK HTML DALAM SINI) -->
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="card">
+      <div class="badge">Wedding Invitation</div>
+      <h1>Walimatul Urus</h1>
+      <p>Dengan penuh kesyukuran kami menjemput anda hadir</p>
+
+      <button class="btn" onclick="alert('Contoh butang')">Lihat Jemputan</button>
+    </div>
+  </div>
+
   <script>
-    console.log("Video background loaded");
+    const v = document.getElementById("bgVideo");
+    const tapLayer = document.getElementById("tapToPlay");
+    const tapBtn = document.getElementById("tapBtn");
+
+    // cuba autoplay bila page siap
+    async function tryPlay() {
+      try {
+        v.muted = true;
+        await v.play();
+        // kalau berjaya, tutup layer
+        tapLayer.style.display = "none";
+        return true;
+      } catch (e) {
+        // autoplay blocked -> biar layer kekal
+        return false;
+      }
+    }
+
+    window.addEventListener("load", () => {
+      tryPlay();
+    });
+
+    // bila user ketik butang Mulakan
+    tapBtn.addEventListener("click", async () => {
+      const ok = await tryPlay();
+      if (!ok) alert("Browser masih sekat. Cuba refresh dan ketik sekali lagi.");
+    });
+
+    // optional: pause bila tab hidden, resume bila balik
+    document.addEventListener("visibilitychange", async () => {
+      if (document.hidden) {
+        try { v.pause(); } catch(e) {}
+      } else {
+        // cuba sambung semula (kalau dah pernah interact, biasanya ok)
+        try { await v.play(); } catch(e) {}
+      }
+    });
   </script>
 
 </body>
