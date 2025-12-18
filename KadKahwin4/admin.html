@@ -1,441 +1,525 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin Panel • R-E-M</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ color-scheme: dark; }
+    body{ background:#050505; }
+    .glass{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
+    .btn{ padding:.85rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); }
+    .btn:hover{ background:rgba(255,255,255,.10); }
+    .btnPrimary{ background:rgba(255,255,255,.92); color:#111; border-color:rgba(255,255,255,.0); font-weight:800; }
+    .btnPrimary:hover{ background:#fff; }
+    .field{ width:100%; padding:.9rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); outline:none; }
+    .label{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; opacity:.6; margin-bottom:.35rem; }
+    .hr{ border-top:1px solid rgba(255,255,255,.10); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
 </head>
-<body class="min-h-screen bg-black text-white p-4">
-  <div class="max-w-3xl mx-auto space-y-4">
-    <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-      <div class="flex items-center justify-between gap-3">
-        <div>
-          <h1 class="text-xl font-semibold">Admin Panel</h1>
-          <p class="text-white/60 text-sm">Edit info pelanggan → jana 5 link versi → copy.</p>
-        </div>
-        <button id="btnLogout" class="px-3 py-2 rounded-xl bg-white/10 border border-white/10">Logout</button>
+
+<body class="min-h-screen p-4">
+  <div class="max-w-[980px] mx-auto space-y-4">
+
+    <!-- Header -->
+    <div class="glass rounded-3xl p-5 flex items-center justify-between gap-3">
+      <div>
+        <div class="text-xl font-semibold">Admin Panel</div>
+        <div class="text-white/60 text-sm">Edit info pelanggan → jana 5 link versi → copy.</div>
+      </div>
+      <div class="flex gap-2">
+        <button id="btnChangePass" class="btn">Tukar Password</button>
+        <button id="btnLogout" class="btn">Logout</button>
       </div>
     </div>
 
-    <!-- LOGIN -->
-    <div id="loginBox" class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3 hidden">
-      <div class="text-white/80">Masukkan password admin:</div>
-      <input id="pass" type="password" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="Password" />
-      <button id="btnLogin" class="w-full px-4 py-3 rounded-xl bg-white text-black font-semibold">Masuk</button>
+    <!-- Login card -->
+    <div id="loginCard" class="glass rounded-3xl p-5 space-y-3 hidden">
+      <div class="text-lg font-semibold">Masukkan password admin</div>
+      <input id="passInput" type="password" class="field" placeholder="Password" />
+      <button id="btnLogin" class="btnPrimary w-full">Masuk</button>
       <div id="loginMsg" class="text-sm text-red-300"></div>
+      <div class="text-xs text-white/50">
+        Default password (kali pertama): <span class="mono">123456</span>
+      </div>
     </div>
 
-    <!-- MAIN -->
-    <div id="mainBox" class="space-y-4 hidden">
-      <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
-        <div class="flex flex-wrap gap-2 items-center justify-between">
-          <div class="flex gap-2 items-center">
-            <select id="customerSelect" class="px-3 py-2 rounded-xl bg-black/40 border border-white/10">
-            </select>
-            <button id="btnNew" class="px-3 py-2 rounded-xl bg-white/10 border border-white/10">+ New</button>
-            <button id="btnDelete" class="px-3 py-2 rounded-xl bg-red-500/20 border border-red-400/30 text-red-200">Delete</button>
+    <!-- App -->
+    <div id="app" class="glass rounded-3xl p-5 hidden">
+      <div class="grid md:grid-cols-2 gap-4">
+
+        <!-- Left: Customer list -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <div class="label">Pelanggan</div>
+              <div class="text-lg font-semibold">Senarai</div>
+            </div>
+            <div class="flex gap-2">
+              <button id="btnNew" class="btn">+ Baru</button>
+              <button id="btnDelete" class="btn">Padam</button>
+            </div>
+          </div>
+
+          <select id="customerSelect" class="field"></select>
+
+          <div class="hr"></div>
+
+          <div class="label">Backup</div>
+          <div class="flex flex-wrap gap-2">
+            <button id="btnExport" class="btn">Export JSON</button>
+            <label class="btn cursor-pointer">
+              Import JSON
+              <input id="importFile" type="file" accept="application/json" class="hidden">
+            </label>
+            <button id="btnResetAll" class="btn">Reset Semua</button>
+          </div>
+
+          <div class="text-xs text-white/45">
+            Data disimpan dalam <span class="mono">localStorage</span> (device ini). Kalau buka di phone lain, data tak sama.
+          </div>
+        </div>
+
+        <!-- Right: Form -->
+        <div class="space-y-3">
+          <div>
+            <div class="label">Maklumat Majlis</div>
+            <div class="text-lg font-semibold">Edit</div>
+          </div>
+
+          <div>
+            <div class="label">Base URL (auto)</div>
+            <input id="baseUrl" class="field mono" placeholder="Auto: https://.../KadKahwin4/" />
+            <div class="text-xs text-white/45 mt-1">Biarkan auto. Kalau link jadi pelik, paste URL folder KadKahwin4 anda.</div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <div class="label">Nama Pengantin</div>
+              <input id="names" class="field" placeholder="Adam & Hawa" />
+            </div>
+            <div>
+              <div class="label">WhatsApp (60...) </div>
+              <input id="wa" class="field mono" placeholder="601111661303" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <div class="label">Tarikh</div>
+              <input id="date" class="field" placeholder="Sabtu, 12 Oktober 2025" />
+            </div>
+            <div>
+              <div class="label">Masa</div>
+              <input id="time" class="field" placeholder="11.00 pagi – 4.00 petang" />
+            </div>
+          </div>
+
+          <div>
+            <div class="label">Lokasi</div>
+            <input id="location" class="field" placeholder="Dewan Seri Melur" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <div class="label">Google Maps URL (optional)</div>
+              <input id="maps" class="field mono" placeholder="https://maps.google.com/..." />
+            </div>
+            <div>
+              <div class="label">Music URL (optional)</div>
+              <input id="music" class="field mono" placeholder="https://.../song.mp3" />
+            </div>
           </div>
 
           <div class="flex gap-2">
-            <button id="btnExport" class="px-3 py-2 rounded-xl bg-white/10 border border-white/10">Export JSON</button>
-            <label class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 cursor-pointer">
-              Import JSON <input id="importFile" type="file" accept="application/json" class="hidden">
-            </label>
+            <button id="btnSave" class="btnPrimary w-full">Simpan</button>
+            <button id="btnOpenInvite" class="btn w-full">Preview</button>
           </div>
+
+          <div class="hr"></div>
+
+          <!-- Links -->
+          <div>
+            <div class="label">Jana 5 Link Versi</div>
+            <div id="links" class="space-y-2"></div>
+          </div>
+
         </div>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <div class="text-xs text-white/60 mb-1">Nama Pengantin Lelaki</div>
-            <input id="groom" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="Adam bin Ahmad">
-          </div>
-          <div>
-            <div class="text-xs text-white/60 mb-1">Nama Pengantin Perempuan</div>
-            <input id="bride" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="Hawa binti Ali">
-          </div>
-
-          <div>
-            <div class="text-xs text-white/60 mb-1">Tarikh</div>
-            <input id="date" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="Sabtu, 12 Oktober 2025">
-          </div>
-          <div>
-            <div class="text-xs text-white/60 mb-1">Masa</div>
-            <input id="time" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="11.00 pagi – 4.00 petang">
-          </div>
-
-          <div>
-            <div class="text-xs text-white/60 mb-1">Lokasi (Nama Dewan)</div>
-            <input id="venue" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="Dewan Seri Melur">
-          </div>
-          <div>
-            <div class="text-xs text-white/60 mb-1">Google Maps Link</div>
-            <input id="maps" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="https://maps.google.com/?q=...">
-          </div>
-
-          <div>
-            <div class="text-xs text-white/60 mb-1">WhatsApp (format antarabangsa tanpa +)</div>
-            <input id="wa" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="601111661303">
-          </div>
-          <div>
-            <div class="text-xs text-white/60 mb-1">Watermark</div>
-            <input id="wm" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="© R-E-M Digital Invitation">
-          </div>
-
-          <div>
-            <div class="text-xs text-white/60 mb-1">VIP / Family Label (optional)</div>
-            <input id="tag" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none" placeholder="VIP / FAMILY / kosong">
-          </div>
-          <div>
-            <div class="text-xs text-white/60 mb-1">Base URL folder (auto)</div>
-            <input id="baseUrl" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none">
-          </div>
-        </div>
-
-        <div class="flex flex-wrap gap-2">
-          <button id="btnSave" class="px-4 py-3 rounded-xl bg-white text-black font-semibold">Save Customer</button>
-          <button id="btnOpen" class="px-4 py-3 rounded-xl bg-white/10 border border-white/10">Open Invite</button>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-        <div class="flex items-center justify-between gap-3">
-          <div>
-            <div class="font-semibold">Generate 5 Link Versi</div>
-            <div class="text-white/60 text-sm">Setiap link siap config (c=...). Tekan Copy.</div>
-          </div>
-        </div>
-
-        <div id="links" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
       </div>
     </div>
+
+    <div class="text-center text-xs text-white/35 select-none">
+      © R-E-M Digital Invitation • Admin
+    </div>
+
   </div>
 
 <script>
-  // ===== SETTINGS =====
-  const ADMIN_PASS = "1234"; // ✅ tukar password sini
+/* =========================
+   STORAGE KEYS
+========================= */
+const LS_PASS = "REM_ADMIN_PASS_V1";
+const LS_OK   = "REM_ADMIN_OK_V1";
+const LS_CUSTOMERS = "REM_CUSTOMERS_V1";
 
-  // ===== UTIL =====
-  const $ = (id) => document.getElementById(id);
-  const storeKey = "rem_customers_v1";
+/* =========================
+   DEFAULT PASSWORD (sekali)
+========================= */
+if(!localStorage.getItem(LS_PASS)){
+  localStorage.setItem(LS_PASS, "123456");
+}
 
-  function b64Encode(str){
-    return btoa(unescape(encodeURIComponent(str)));
-  }
-  function b64Decode(str){
-    return decodeURIComponent(escape(atob(str)));
-  }
+/* =========================
+   HELPERS
+========================= */
+const $ = (id)=>document.getElementById(id);
 
-  function loadCustomers(){
-    try { return JSON.parse(localStorage.getItem(storeKey) || "[]"); }
-    catch { return []; }
-  }
-  function saveCustomers(list){
-    localStorage.setItem(storeKey, JSON.stringify(list));
-  }
+function toast(msg){
+  alert(msg);
+}
 
-  function uid(){
-    return "C" + Math.random().toString(16).slice(2) + Date.now().toString(16);
-  }
+function getBaseUrlAuto(){
+  // Pastikan base URL berakhir dengan /
+  const url = new URL(location.href);
+  url.hash = ""; url.search = "";
+  // admin.html dalam folder KadKahwin4 → base = folder itu
+  url.pathname = url.pathname.replace(/\/[^\/]*$/, "/");
+  return url.toString();
+}
 
-  function getBaseUrlAuto(){
-    // contoh: https://xxx.github.io/rem-kad-kahwin/KadKahwin4/
-    const p = location.href.split("/").slice(0, -1).join("/") + "/";
-    return p;
-  }
+function loadCustomers(){
+  try{ return JSON.parse(localStorage.getItem(LS_CUSTOMERS) || "[]"); }
+  catch(e){ return []; }
+}
+function saveCustomers(list){
+  localStorage.setItem(LS_CUSTOMERS, JSON.stringify(list));
+}
 
-  function currentForm(){
-    return {
-      id: $("customerSelect").value || uid(),
-      groom: $("groom").value.trim(),
-      bride: $("bride").value.trim(),
-      date: $("date").value.trim(),
-      time: $("time").value.trim(),
-      venue: $("venue").value.trim(),
-      maps: $("maps").value.trim(),
-      wa: $("wa").value.trim(),
-      wm: $("wm").value.trim(),
-      tag: $("tag").value.trim(),
-    };
-  }
+function uid(){
+  return "C" + Math.random().toString(16).slice(2,10) + Date.now().toString(16);
+}
 
-  function fillForm(c){
-    $("groom").value = c.groom || "";
-    $("bride").value = c.bride || "";
-    $("date").value = c.date || "";
-    $("time").value = c.time || "";
-    $("venue").value = c.venue || "";
-    $("maps").value = c.maps || "";
-    $("wa").value = c.wa || "";
-    $("wm").value = c.wm || "";
-    $("tag").value = c.tag || "";
-  }
-
-  function renderSelect(list, selectedId){
-    $("customerSelect").innerHTML = "";
-    if(list.length === 0){
-      const opt = document.createElement("option");
-      opt.value = "";
-      opt.textContent = "No customers";
-      $("customerSelect").appendChild(opt);
-      return;
-    }
-    list.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.id;
-      opt.textContent = `${c.groom || "?"} & ${c.bride || "?"} (${c.id.slice(0,6)})`;
-      if(c.id === selectedId) opt.selected = true;
-      $("customerSelect").appendChild(opt);
-    });
-  }
-
-  function makeConfigPayload(c){
-    // payload yang dihantar dalam URL
-    const payload = {
-      groom: c.groom, bride: c.bride,
-      date: c.date, time: c.time,
-      venue: c.venue, maps: c.maps,
-      wa: c.wa, wm: c.wm, tag: c.tag
-    };
-    return b64Encode(JSON.stringify(payload));
-  }
-
-  function renderLinks(c){
-    const base = $("baseUrl").value.trim() || getBaseUrlAuto();
-    const payload = makeConfigPayload(c);
-    const versions = [
-      {v:1, name:"Versi 1 — Premium Gold"},
-      {v:2, name:"Versi 2 — Modern Neon"},
-      {v:3, name:"Versi 3 — Minimal Mono"},
-      {v:4, name:"Versi 4 — Islamic Emerald"},
-      {v:5, name:"Versi 5 — Royal Purple"},
-    ];
-
-    $("links").innerHTML = "";
-    versions.forEach(item => {
-      const link = `${base}invite.html?v=${item.v}&c=${encodeURIComponent(payload)}`;
-      const box = document.createElement("div");
-      box.className = "p-3 rounded-2xl bg-black/30 border border-white/10 space-y-2";
-      box.innerHTML = `
-        <div class="text-sm font-semibold">${item.name}</div>
-        <input class="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/10 text-xs"
-               value="${link}" readonly />
-        <div class="flex gap-2">
-          <button class="copy px-3 py-2 rounded-xl bg-white text-black text-sm font-semibold">Copy</button>
-          <a class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-sm"
-             href="${link}" target="_blank">Open</a>
-        </div>
-      `;
-      box.querySelector(".copy").onclick = async () => {
-        await navigator.clipboard.writeText(link);
-        box.querySelector(".copy").textContent = "Copied ✓";
-        setTimeout(()=> box.querySelector(".copy").textContent = "Copy", 1000);
-      };
-      $("links").appendChild(box);
-    });
-  }
-
-  // ===== AUTH =====
-  function isAuthed(){
-    return sessionStorage.getItem("rem_admin_ok") === "1";
-  }
-  function setAuthed(v){
-    sessionStorage.setItem("rem_admin_ok", v ? "1" : "0");
-  }
-
-  function showAuthUI(){
-    $("loginBox").classList.toggle("hidden", isAuthed());
-    $("mainBox").classList.toggle("hidden", !isAuthed());
-  }
-
-  // ===== INIT =====
-  $("baseUrl").value = getBaseUrlAuto();
-  showAuthUI();
-
-  $("btnLogin").onclick = () => {
-    const p = $("pass").value;
-    if(p === ADMIN_PASS){
-      setAuthed(true);
-      $("loginMsg").textContent = "";
-      showAuthUI();
-      boot();
-    } else {
-      $("loginMsg").textContent = "Password salah.";
-    }
+function currentForm(){
+  return {
+    baseUrl: ($("baseUrl").value || "").trim(),
+    names: ($("names").value || "").trim(),
+    wa: ($("wa").value || "").trim().replace(/\s+/g,""),
+    date: ($("date").value || "").trim(),
+    time: ($("time").value || "").trim(),
+    location: ($("location").value || "").trim(),
+    maps: ($("maps").value || "").trim(),
+    music: ($("music").value || "").trim(),
   };
+}
 
-  $("btnLogout").onclick = () => {
-    setAuthed(false);
-    showAuthUI();
-  };
+function fillForm(c){
+  $("baseUrl").value = c.baseUrl || getBaseUrlAuto();
+  $("names").value = c.names || "";
+  $("wa").value = c.wa || "";
+  $("date").value = c.date || "";
+  $("time").value = c.time || "";
+  $("location").value = c.location || "";
+  $("maps").value = c.maps || "";
+  $("music").value = c.music || "";
+}
 
-  function boot(){
-    const list = loadCustomers();
-    if(list.length === 0){
-      const def = {
-        id: uid(),
-        groom:"Adam bin Ahmad", bride:"Hawa binti Ali",
-        date:"Sabtu, 12 Oktober 2025",
-        time:"11.00 pagi – 4.00 petang",
-        venue:"Dewan Seri Melur",
-        maps:"",
-        wa:"601111661303",
-        wm:"© R-E-M Digital Invitation",
-        tag:""
-      };
-      saveCustomers([def]);
-    }
-
-    const list2 = loadCustomers();
-    const selectedId = list2[0]?.id || "";
-    renderSelect(list2, selectedId);
-    const c = list2.find(x => x.id === selectedId);
-    if(c) fillForm(c);
-    renderLinks(currentForm());
+function renderSelect(list, selectedId){
+  const sel = $("customerSelect");
+  sel.innerHTML = "";
+  if(list.length === 0){
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Tiada pelanggan (klik + Baru)";
+    sel.appendChild(opt);
+    sel.disabled = true;
+    return;
   }
-
-  if(isAuthed()) boot();
-
-  $("customerSelect").onchange = () => {
-    const list = loadCustomers();
-    const c = list.find(x => x.id === $("customerSelect").value);
-    if(c) fillForm(c);
-    renderLinks(currentForm());
-  };
-
-  ["groom","bride","date","time","venue","maps","wa","wm","tag"].forEach(id=>{
-    $(id).addEventListener("input", ()=> renderLinks(currentForm()));
-  });
-
-  $("btnSave").onclick = () => {
-    const c = currentForm();
-    const list = loadCustomers();
-    const idx = list.findIndex(x => x.id === c.id);
-    if(idx >= 0) list[idx] = c; else list.unshift(c);
-    saveCustomers(list);
-    renderSelect(list, c.id);
-    renderLinks(c);
-    $("btnSave").textContent = "Saved ✓";
-    setTimeout(()=> $("btnSave").textContent="Save Customer", 900);
-  };
-
-  $("btnNew").onclick = () => {
-    const c = {
-      id: uid(),
-      groom:"", bride:"",
-      date:"", time:"",
-      venue:"", maps:"",
-      wa:"", wm:"© R-E-M Digital Invitation",
-      tag:""
-    };
-    const list = loadCustomers();
-    list.unshift(c);
-    saveCustomers(list);
-    renderSelect(list, c.id);
-    fillForm(c);
-    renderLinks(c);
-  };
-
-  $("btnDelete").onclick = () => {
-    const id = $("customerSelect").value;
-    if(!id) return;
-    const list = loadCustomers().filter(x => x.id !== id);
-    saveCustomers(list);
-    renderSelect(list, list[0]?.id || "");
-    if(list[0]) fillForm(list[0]);
-    renderLinks(list[0] || currentForm());
-  };
-
-  $("btnOpen").onclick = () => {
-    const base = $("baseUrl").value.trim() || getBaseUrlAuto();
-    const payload = makeConfigPayload(currentForm());
-    window.open(`${base}invite.html?v=4&c=${encodeURIComponent(payload)}`, "_blank");
-  };
-
-  $("btnExport").onclick = () => {
-    const data = JSON.stringify(loadCustomers(), null, 2);
-    const blob = new Blob([data], {type:"application/json"});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "rem_customers_backup.json";
-    a.click();
-  };
-
-  $("importFile").onchange = async (e) => {
-    const file = e.target.files[0];
-    if(!file) return;
-    const text = await file.text();
-    try {
-      const list = JSON.parse(text);
-      if(Array.isArray(list)){
-        saveCustomers(list);
-        renderSelect(list, list[0]?.id || "");
-        if(list[0]) fillForm(list[0]);
-        renderLinks(list[0] || currentForm());
-      }
-    } catch {}
-  };
-  // =========================
-  // KOD ADMIN SEDIA ADA
-  // =========================
-  const list = loadCustomers();
-  ...
-  $("importFile").onchange = async (e) => { ... };
-
-  // =========================
-  // 🔐 KOD PASSWORD ADMIN (TAMBAH DI SINI)
-  // =========================
-  const LS_PASS = "REM_ADMIN_PASS_V1";
-  const LS_OK   = "REM_ADMIN_OK_V1";
-
-  if(!localStorage.getItem(LS_PASS)){
-    localStorage.setItem(LS_PASS, "123456");
+  sel.disabled = false;
+  for(const c of list){
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.label || c.names || c.id;
+    sel.appendChild(opt);
   }
+  sel.value = selectedId || list[0].id;
+}
 
-  function requireLogin(){
-    const pass = prompt("Admin Password:");
-    if(pass !== localStorage.getItem(LS_PASS)){
-      alert("Password salah");
-      location.href = "./index.html";
-      return false;
-    }
-    localStorage.setItem(LS_OK, "1");
+function encodePayload(obj){
+  // ringkas & selamat untuk URL
+  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+
+function buildInviteUrl(version, data){
+  const base = (data.baseUrl || getBaseUrlAuto()).replace(/\/?$/, "/");
+  const payload = encodePayload(data);
+  return `${base}invite.html?v=${version}&c=${encodeURIComponent(payload)}`;
+}
+
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    toast("✅ Copy berjaya");
+  }catch(e){
+    // fallback
+    const ta = document.createElement("textarea");
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand("copy");
+    ta.remove();
+    toast("✅ Copy berjaya");
+  }
+}
+
+function renderLinks(data){
+  const wrap = $("links");
+  wrap.innerHTML = "";
+
+  for(let v=1; v<=5; v++){
+    const url = buildInviteUrl(v, data);
+    const card = document.createElement("div");
+    card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
+
+    const left = document.createElement("div");
+    left.className = "min-w-0";
+    left.innerHTML = `<div class="text-sm font-semibold">Versi ${v}</div>
+                      <div class="text-xs text-white/55 mono truncate">${url}</div>`;
+
+    const right = document.createElement("div");
+    right.className = "flex gap-2 shrink-0";
+
+    const btnCopy = document.createElement("button");
+    btnCopy.className = "btn";
+    btnCopy.textContent = "Copy";
+    btnCopy.onclick = ()=>copyText(url);
+
+    const btnOpen = document.createElement("button");
+    btnOpen.className = "btn";
+    btnOpen.textContent = "Buka";
+    btnOpen.onclick = ()=>window.open(url, "_blank");
+
+    right.appendChild(btnCopy);
+    right.appendChild(btnOpen);
+
+    card.appendChild(left);
+    card.appendChild(right);
+    wrap.appendChild(card);
+  }
+}
+
+/* =========================
+   LOGIN
+========================= */
+function showLogin(){
+  $("loginCard").classList.remove("hidden");
+  $("app").classList.add("hidden");
+}
+function showApp(){
+  $("loginCard").classList.add("hidden");
+  $("app").classList.remove("hidden");
+}
+
+function doLogin(pass){
+  const real = localStorage.getItem(LS_PASS);
+  if(pass !== real){
+    $("loginMsg").textContent = "Password salah.";
+    return false;
+  }
+  localStorage.setItem(LS_OK, "1");
+  $("loginMsg").textContent = "";
+  return true;
+}
+
+function requireLogin(){
+  if(localStorage.getItem(LS_OK) === "1"){
     return true;
   }
+  showLogin();
+  return false;
+}
 
-  if(localStorage.getItem(LS_OK) !== "1"){
-    requireLogin();
+/* =========================
+   MAIN APP LOGIC
+========================= */
+let LIST = [];
+let CURRENT_ID = "";
+
+function refresh(){
+  LIST = loadCustomers();
+  if(!LIST.length){
+    const c = {
+      id: uid(),
+      label: "Default",
+      baseUrl: getBaseUrlAuto(),
+      names: "Adam & Hawa",
+      wa: "601111661303",
+      date: "Sabtu, 12 Oktober 2025",
+      time: "11.00 pagi – 4.00 petang",
+      location: "Dewan Seri Melur",
+      maps: "",
+      music: ""
+    };
+    LIST = [c];
+    saveCustomers(LIST);
   }
 
-  function changeAdminPassword(){
-    const oldP = prompt("Password lama:");
-    if(oldP !== localStorage.getItem(LS_PASS)){
-      alert("Password lama salah");
-      return;
-    }
-    const newP = prompt("Password baru (min 6):");
-    if(!newP || newP.length < 6){
-      alert("Password baru terlalu pendek");
-      return;
-    }
-    localStorage.setItem(LS_PASS, newP);
-    alert("✅ Password berjaya ditukar");
+  // pilih current
+  if(!CURRENT_ID || !LIST.some(x=>x.id===CURRENT_ID)){
+    CURRENT_ID = LIST[0].id;
   }
 
-  function adminLogout(){
-    localStorage.removeItem(LS_OK);
-    alert("Logout");
-    location.href = "./index.html";
+  renderSelect(LIST, CURRENT_ID);
+  const c = LIST.find(x=>x.id===CURRENT_ID) || LIST[0];
+  fillForm(c);
+  renderLinks(currentForm());
+}
+
+function saveCurrent(){
+  const data = currentForm();
+  if(!data.names) return toast("Isi Nama Pengantin dulu.");
+  if(!data.wa) return toast("Isi nombor WhatsApp (contoh: 60123456789).");
+
+  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
+  const label = (data.names || "Pelanggan").slice(0,32);
+  const saved = { ...data, id: CURRENT_ID, label };
+  if(idx>=0) LIST[idx] = saved;
+  else LIST.unshift(saved);
+
+  saveCustomers(LIST);
+  refresh();
+  toast("✅ Disimpan");
+}
+
+function newCustomer(){
+  const c = currentForm();
+  const fresh = { ...c, id: uid(), label: "Pelanggan Baru" };
+  LIST.unshift(fresh);
+  saveCustomers(LIST);
+  CURRENT_ID = fresh.id;
+  refresh();
+  toast("✅ Pelanggan baru dibuat");
+}
+
+function deleteCustomer(){
+  if(LIST.length<=1) return toast("Tak boleh padam yang terakhir.");
+  const ok = confirm("Padam pelanggan ini?");
+  if(!ok) return;
+  LIST = LIST.filter(x=>x.id!==CURRENT_ID);
+  saveCustomers(LIST);
+  CURRENT_ID = LIST[0].id;
+  refresh();
+  toast("✅ Dipadam");
+}
+
+function exportJson(){
+  const data = JSON.stringify(loadCustomers(), null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "rem_customers_backup.json";
+  a.click();
+}
+
+async function importJson(file){
+  if(!file) return;
+  const text = await file.text();
+  try{
+    const arr = JSON.parse(text);
+    if(!Array.isArray(arr)) throw new Error("not array");
+    saveCustomers(arr);
+    CURRENT_ID = arr[0]?.id || "";
+    refresh();
+    toast("✅ Import berjaya");
+  }catch(e){
+    toast("❌ File JSON tidak sah");
   }
+}
 
-  window.changeAdminPassword = changeAdminPassword;
-  window.adminLogout = adminLogout;
+function resetAll(){
+  const ok = confirm("Reset semua data pelanggan + logout? (tidak boleh undo)");
+  if(!ok) return;
+  localStorage.removeItem(LS_CUSTOMERS);
+  localStorage.removeItem(LS_OK);
+  toast("✅ Reset siap");
+  location.href = "./index.html";
+}
 
-</script>
-</body>
-</html>
+/* =========================
+   PASSWORD ACTIONS
+========================= */
+function changeAdminPassword(){
+  const oldP = prompt("Password lama:");
+  if(oldP !== localStorage.getItem(LS_PASS)){
+    return toast("Password lama salah");
+  }
+  const newP = prompt("Password baru (min 6):");
+  if(!newP || newP.length < 6){
+    return toast("Password baru terlalu pendek");
+  }
+  localStorage.setItem(LS_PASS, newP);
+  toast("✅ Password berjaya ditukar");
+}
+
+function logout(){
+  localStorage.removeItem(LS_OK);
+  toast("Logout");
+  location.href = "./index.html";
+}
+
+/* =========================
+   WIRE UP EVENTS
+========================= */
+$("btnLogin").onclick = ()=>{
+  const pass = $("passInput").value || "";
+  if(doLogin(pass)){
+    showApp();
+    refresh();
+  }
+};
+
+$("btnLogout").onclick = logout;
+$("btnChangePass").onclick = changeAdminPassword;
+
+$("customerSelect").onchange = ()=>{
+  CURRENT_ID = $("customerSelect").value;
+  refresh();
+};
+
+$("btnSave").onclick = saveCurrent;
+$("btnNew").onclick = newCustomer;
+$("btnDelete").onclick = deleteCustomer;
+
+$("btnOpenInvite").onclick = ()=>{
+  const url = buildInviteUrl(1, currentForm());
+  window.open(url, "_blank");
+};
+
+$("btnExport").onclick = exportJson;
+
+$("importFile").onchange = async (e)=>{
+  const file = e.target.files[0];
+  await importJson(file);
+  e.target.value = "";
+};
+
+$("btnResetAll").onclick = resetAll;
+
+// live update links bila edit
+["baseUrl","names","wa","date","time","location","maps","music"].forEach(id=>{
+  $(id).addEventListener("input", ()=>renderLinks(currentForm()));
+});
+
+/* =========================
+   BOOT
+========================= */
+$("baseUrl").value = getBaseUrlAuto();
+
+if(requireLogin()){
+  showApp();
+  refresh();
+} else {
+  // login UI already shown
+}
 </script>
 </body>
 </html>
