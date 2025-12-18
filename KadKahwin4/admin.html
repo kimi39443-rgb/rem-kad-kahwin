@@ -8,36 +8,73 @@
   <style>
     :root{ color-scheme: dark; }
     body{ background:#050505; }
+
     .glass{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
-    .btn{ padding:.85rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); }
-    .btn:hover{ background:rgba(255,255,255,.10); }
-    .btnPrimary{ background:rgba(255,255,255,.92); color:#111; border-color:rgba(255,255,255,.0); font-weight:800; }
-    .btnPrimary:hover{ background:#fff; }
-    .field{ width:100%; padding:.9rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); outline:none; }
-    .label{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; opacity:.6; margin-bottom:.35rem; }
     .hr{ border-top:1px solid rgba(255,255,255,.10); }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    /* Mobile-first button */
+    .btn{
+      padding:.72rem .9rem;
+      border-radius:1rem;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      font-size:14px;
+      line-height:1.1;
+    }
+    .btn:hover{ background:rgba(255,255,255,.10); }
+    .btnPrimary{
+      background:rgba(255,255,255,.92);
+      color:#111;
+      border-color:rgba(255,255,255,.0);
+      font-weight:800;
+    }
+    .btnPrimary:hover{ background:#fff; }
+
+    .field{
+      width:100%;
+      padding:.85rem .95rem;
+      border-radius:1rem;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06);
+      outline:none;
+      font-size:14px;
+    }
+    .label{
+      font-size:11px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      opacity:.6;
+      margin-bottom:.35rem;
+    }
+
+    /* make long text behave in mobile */
+    .break{
+      word-break: break-word;
+      overflow-wrap:anywhere;
+    }
   </style>
 </head>
 
-<body class="min-h-screen p-4">
-  <div class="max-w-[980px] mx-auto space-y-4">
+<body class="min-h-screen p-2 sm:p-4">
+  <div class="mx-auto w-full max-w-[980px] space-y-3 sm:space-y-4 px-1 sm:px-0">
 
-    <!-- Header -->
-    <div class="glass rounded-3xl p-5 flex items-center justify-between gap-3">
+    <!-- Header (mobile stack) -->
+    <div class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       <div>
-        <div class="text-xl font-semibold">Admin Panel</div>
+        <div class="text-lg sm:text-xl font-semibold">Admin Panel</div>
         <div class="text-white/60 text-sm">Edit info pelanggan → jana 5 link versi → copy.</div>
       </div>
-      <div class="flex gap-2">
-        <button id="btnChangePass" class="btn">Tukar Password</button>
-        <button id="btnLogout" class="btn">Logout</button>
+
+      <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+        <button id="btnChangePass" class="btn w-full sm:w-auto">Tukar Password</button>
+        <button id="btnLogout" class="btn w-full sm:w-auto">Logout</button>
       </div>
     </div>
 
     <!-- Login card -->
-    <div id="loginCard" class="glass rounded-3xl p-5 space-y-3 hidden">
-      <div class="text-lg font-semibold">Masukkan password admin</div>
+    <div id="loginCard" class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 space-y-3 hidden">
+      <div class="text-base sm:text-lg font-semibold">Masukkan password admin</div>
       <input id="passInput" type="password" class="field" placeholder="Password" />
       <button id="btnLogin" class="btnPrimary w-full">Masuk</button>
       <div id="loginMsg" class="text-sm text-red-300"></div>
@@ -47,19 +84,19 @@
     </div>
 
     <!-- App -->
-    <div id="app" class="glass rounded-3xl p-5 hidden">
-      <div class="grid md:grid-cols-2 gap-4">
+    <div id="app" class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
 
         <!-- Left: Customer list -->
         <div class="space-y-3">
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div>
               <div class="label">Pelanggan</div>
-              <div class="text-lg font-semibold">Senarai</div>
+              <div class="text-base sm:text-lg font-semibold">Senarai</div>
             </div>
-            <div class="flex gap-2">
-              <button id="btnNew" class="btn">+ Baru</button>
-              <button id="btnDelete" class="btn">Padam</button>
+            <div class="flex gap-2 w-full sm:w-auto">
+              <button id="btnNew" class="btn w-full sm:w-auto">+ Baru</button>
+              <button id="btnDelete" class="btn w-full sm:w-auto">Padam</button>
             </div>
           </div>
 
@@ -68,13 +105,15 @@
           <div class="hr"></div>
 
           <div class="label">Backup</div>
-          <div class="flex flex-wrap gap-2">
-            <button id="btnExport" class="btn">Export JSON</button>
-            <label class="btn cursor-pointer">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <button id="btnExport" class="btn w-full">Export JSON</button>
+
+            <label class="btn cursor-pointer w-full text-center">
               Import JSON
               <input id="importFile" type="file" accept="application/json" class="hidden">
             </label>
-            <button id="btnResetAll" class="btn">Reset Semua</button>
+
+            <button id="btnResetAll" class="btn w-full">Reset Semua</button>
           </div>
 
           <div class="text-xs text-white/45">
@@ -86,7 +125,7 @@
         <div class="space-y-3">
           <div>
             <div class="label">Maklumat Majlis</div>
-            <div class="text-lg font-semibold">Edit</div>
+            <div class="text-base sm:text-lg font-semibold">Edit</div>
           </div>
 
           <div>
@@ -95,18 +134,18 @@
             <div class="text-xs text-white/45 mt-1">Biarkan auto. Kalau link jadi pelik, paste URL folder KadKahwin4 anda.</div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <div>
               <div class="label">Nama Pengantin</div>
               <input id="names" class="field" placeholder="Adam & Hawa" />
             </div>
             <div>
-              <div class="label">WhatsApp (60...) </div>
+              <div class="label">WhatsApp (60...)</div>
               <input id="wa" class="field mono" placeholder="601111661303" />
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <div>
               <div class="label">Tarikh</div>
               <input id="date" class="field" placeholder="Sabtu, 12 Oktober 2025" />
@@ -122,7 +161,7 @@
             <input id="location" class="field" placeholder="Dewan Seri Melur" />
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <div>
               <div class="label">Google Maps URL (optional)</div>
               <input id="maps" class="field mono" placeholder="https://maps.google.com/..." />
@@ -133,7 +172,8 @@
             </div>
           </div>
 
-          <div class="flex gap-2">
+          <!-- Action buttons (mobile stacked) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <button id="btnSave" class="btnPrimary w-full">Simpan</button>
             <button id="btnOpenInvite" class="btn w-full">Preview</button>
           </div>
@@ -181,10 +221,8 @@ function toast(msg){
 }
 
 function getBaseUrlAuto(){
-  // Pastikan base URL berakhir dengan /
   const url = new URL(location.href);
   url.hash = ""; url.search = "";
-  // admin.html dalam folder KadKahwin4 → base = folder itu
   url.pathname = url.pathname.replace(/\/[^\/]*$/, "/");
   return url.toString();
 }
@@ -247,7 +285,6 @@ function renderSelect(list, selectedId){
 }
 
 function encodePayload(obj){
-  // ringkas & selamat untuk URL
   return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
 }
 
@@ -262,7 +299,6 @@ async function copyText(text){
     await navigator.clipboard.writeText(text);
     toast("✅ Copy berjaya");
   }catch(e){
-    // fallback
     const ta = document.createElement("textarea");
     ta.value = text; document.body.appendChild(ta);
     ta.select(); document.execCommand("copy");
@@ -271,40 +307,40 @@ async function copyText(text){
   }
 }
 
+/* MOBILE-FRIENDLY LINK CARDS */
 function renderLinks(data){
   const wrap = $("links");
   wrap.innerHTML = "";
 
   for(let v=1; v<=5; v++){
     const url = buildInviteUrl(v, data);
+
     const card = document.createElement("div");
-    card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
+    card.className = "glass rounded-2xl p-3";
 
-    const left = document.createElement("div");
-    left.className = "min-w-0";
-    left.innerHTML = `<div class="text-sm font-semibold">Versi ${v}</div>
-                      <div class="text-xs text-white/55 mono truncate">${url}</div>`;
+    card.innerHTML = `
+      <div class="flex items-start justify-between gap-2">
+        <div class="min-w-0">
+          <div class="text-sm font-semibold">Versi ${v}</div>
+          <div class="text-xs text-white/55 mono break mt-1">${url}</div>
+        </div>
+      </div>
 
-    const right = document.createElement("div");
-    right.className = "flex gap-2 shrink-0";
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button class="btn w-full" data-copy="${url}">Copy</button>
+        <button class="btn w-full" data-open="${url}">Buka</button>
+      </div>
+    `;
 
-    const btnCopy = document.createElement("button");
-    btnCopy.className = "btn";
-    btnCopy.textContent = "Copy";
-    btnCopy.onclick = ()=>copyText(url);
-
-    const btnOpen = document.createElement("button");
-    btnOpen.className = "btn";
-    btnOpen.textContent = "Buka";
-    btnOpen.onclick = ()=>window.open(url, "_blank");
-
-    right.appendChild(btnCopy);
-    right.appendChild(btnOpen);
-
-    card.appendChild(left);
-    card.appendChild(right);
     wrap.appendChild(card);
   }
+
+  wrap.querySelectorAll("button[data-copy]").forEach(btn=>{
+    btn.onclick = ()=>copyText(btn.getAttribute("data-copy"));
+  });
+  wrap.querySelectorAll("button[data-open]").forEach(btn=>{
+    btn.onclick = ()=>window.open(btn.getAttribute("data-open"), "_blank");
+  });
 }
 
 /* =========================
@@ -363,7 +399,6 @@ function refresh(){
     saveCustomers(LIST);
   }
 
-  // pilih current
   if(!CURRENT_ID || !LIST.some(x=>x.id===CURRENT_ID)){
     CURRENT_ID = LIST[0].id;
   }
@@ -504,7 +539,6 @@ $("importFile").onchange = async (e)=>{
 
 $("btnResetAll").onclick = resetAll;
 
-// live update links bila edit
 ["baseUrl","names","wa","date","time","location","maps","music"].forEach(id=>{
   $(id).addEventListener("input", ()=>renderLinks(currentForm()));
 });
