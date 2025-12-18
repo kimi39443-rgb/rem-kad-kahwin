@@ -18,28 +18,28 @@
       --accent: #d4af37;
       --radius: 28px;
 
-      /* Motion theme engine */
       --glass: rgba(255,255,255,.06);
       --grid: rgba(255,255,255,.05);
       --motion: 1;
       --glow: 0 0 18px var(--accent), 0 0 42px rgba(255,255,255,.12);
 
-      /* Parallax vars */
       --p1x: 0px; --p1y: 0px;
       --p2x: 0px; --p2y: 0px;
       --p3x: 0px; --p3y: 0px;
 
-      /* Photo layer */
       --photo-url: none;
       --photo-opacity: .38;
       --photo-blur: 0px;
       --photo-dim: .20;
       --photo-fit: cover;
       --photo-pos: 50% 50%;
-      --photo-mode: 0; /* 1=photo ON, 0=photo OFF */
+      --photo-mode: 0;
 
-      /* Auto theme by time */
       --auto-time: 1;
+
+      /* VIDEO BG */
+      --video-mode: 0;      /* 1 = on */
+      --video-opacity: .34; /* feel premium */
     }
     @media (prefers-reduced-motion: reduce){
       :root{ --motion: 0; }
@@ -47,7 +47,6 @@
 
     body{ margin:0; color:var(--text); min-height:100vh; }
 
-    /* ===== Theme Wrap + Layers ===== */
     .theme-wrap{
       position: relative;
       min-height: 100vh;
@@ -57,6 +56,25 @@
         linear-gradient(180deg, var(--bg1), var(--bg2));
     }
     .bg-layer{ position:absolute; inset:0; pointer-events:none; }
+
+    /* ===== VIDEO LAYER ===== */
+    #bgVideo{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity: calc(var(--video-mode) * var(--video-opacity));
+      filter: saturate(1.05) contrast(1.02);
+      transform: translate3d(var(--p1x), var(--p1y), 0) scale(1.05);
+      transition: opacity .25s ease;
+      z-index: 1;
+      display:block;
+    }
+    .video-dim{
+      z-index: 2;
+      background: radial-gradient(900px 520px at 20% 10%, rgba(0,0,0,.18), rgba(0,0,0,.60));
+      opacity: calc(var(--video-mode) * 1);
+      transition: opacity .25s ease;
+    }
 
     /* photo layer */
     .bg-photo{
@@ -68,14 +86,16 @@
       filter: blur(var(--photo-blur)) saturate(1.06) contrast(1.04);
       transform: translate3d(var(--p1x), var(--p1y), 0) scale(1.08);
       transition: opacity .25s ease;
+      z-index: 3;
     }
     .bg-photoDim{
+      z-index: 4;
       background: radial-gradient(900px 520px at 20% 10%, rgba(0,0,0,var(--photo-dim)), rgba(0,0,0,.55));
       opacity: calc(var(--photo-mode) * 1);
       transition: opacity .25s ease;
     }
 
-    /* soft aurora */
+    /* aurora */
     .bg-aurora{
       opacity:.85;
       filter: blur(20px) saturate(1.12);
@@ -86,13 +106,13 @@
       animation: auroraMove 16s ease-in-out infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
       transform: translate3d(var(--p2x), var(--p2y), 0) scale(1.02);
+      z-index: 5;
     }
     @keyframes auroraMove{
       0%,100%{ filter: blur(20px) saturate(1.12); }
       50%{ filter: blur(22px) saturate(1.18); }
     }
 
-    /* grid drift (cyber feel) */
     .bg-grid{
       background-image:
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
@@ -103,18 +123,19 @@
       transform-origin: top;
       animation: gridDrift 12s linear infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
+      z-index: 6;
     }
     @keyframes gridDrift{
       0%{ background-position: 0 0, 0 0; }
       100%{ background-position: 440px 0, 0 440px; }
     }
 
-    /* blobs */
     .bg-blobs{
       filter: blur(28px);
       opacity: .72;
       mix-blend-mode: screen;
       transform: translate3d(var(--p3x), var(--p3y), 0);
+      z-index: 7;
     }
     .blob{
       position:absolute;
@@ -132,7 +153,6 @@
       50%{ transform: translate(18px, -22px) scale(1.06); }
     }
 
-    /* gold shimmer overlay */
     .bg-shimmer{
       opacity:.20;
       mix-blend-mode: overlay;
@@ -144,13 +164,13 @@
         transparent 100%);
       animation: shimmer 4.5s linear infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
+      z-index: 8;
     }
     @keyframes shimmer{
       0%{ transform: translateX(-120%); }
       100%{ transform: translateX(120%); }
     }
 
-    /* galaxy stars */
     .bg-stars{
       opacity:.32;
       background:
@@ -163,13 +183,13 @@
         radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.40), transparent 60%);
       animation: starDrift 18s linear infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
+      z-index: 9;
     }
     @keyframes starDrift{
       0%{ transform: translate3d(0,0,0); }
       100%{ transform: translate3d(-3%,2%,0); }
     }
 
-    /* islamic pattern */
     .bg-islamic{
       opacity:.16;
       background-image:
@@ -180,13 +200,13 @@
       background-position: 0 0, 0 0, 14px 14px;
       animation: patMove 22s linear infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
+      z-index: 10;
     }
     @keyframes patMove{
       0%{ background-position: 0 0, 0 0, 14px 14px; }
       100%{ background-position: 160px 0, 120px 0, 134px 14px; }
     }
 
-    /* marble */
     .bg-marble{
       opacity:.22;
       background:
@@ -195,13 +215,13 @@
         linear-gradient(135deg, rgba(255,255,255,.04), transparent 60%);
       animation: marble 20s ease-in-out infinite;
       animation-play-state: var(--motion)==1 ? running : paused;
+      z-index: 11;
     }
     @keyframes marble{
       0%,100%{ transform: translate3d(0,0,0) scale(1); }
       50%{ transform: translate3d(10px,-10px,0) scale(1.03); }
     }
 
-    /* mood controls */
     [data-mood="aurora"]  .show-aurora{opacity:.85}
     [data-mood="aurora"]  .show-stars{opacity:0}
     [data-mood="aurora"]  .show-grid{opacity:.10}
@@ -245,7 +265,6 @@
     [data-mood="marble"]  .show-stars{opacity:0}
     [data-mood="marble"]  .show-islamic{opacity:0}
 
-    /* ===== Card + components ===== */
     .glass{
       background:var(--card);
       border:1px solid var(--stroke);
@@ -257,33 +276,23 @@
       overflow: hidden;
     }
 
-    /* Watermark Diagonal */
     .wm-wrap{
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       pointer-events: none;
       z-index: 40;
       opacity: .18;
       mix-blend-mode: overlay;
     }
     .wm{
-      position: absolute;
-      left: -20%;
-      top: 30%;
+      position: absolute; left: -20%; top: 30%;
       width: 140%;
       transform: rotate(-18deg);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
+      display:flex; flex-direction:column; gap:18px;
     }
     .wm-row{
-      display:flex;
-      gap: 26px;
-      white-space: nowrap;
-      font-weight: 800;
-      letter-spacing: .35em;
-      text-transform: uppercase;
-      font-size: 13px;
+      display:flex; gap:26px; white-space:nowrap;
+      font-weight:800; letter-spacing:.35em; text-transform:uppercase;
+      font-size:13px;
       color: rgba(255,255,255,.9);
       text-shadow: 0 0 10px rgba(0,0,0,.35);
       animation: wmMove 18s linear infinite;
@@ -323,7 +332,6 @@
       display: inline-block;
     }
 
-    /* Intro gate */
     .gate{
       position: fixed; inset:0;
       background:
@@ -336,7 +344,6 @@
     .fadeUp{ animation: fadeUp .65s ease both; }
     @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
 
-    /* Bottom Theme Sheet */
     .sheetBack{
       position: fixed; inset:0;
       background: rgba(0,0,0,.55);
@@ -352,7 +359,6 @@
     }
     .sheet.open{ transform: translateY(0); }
 
-    /* Confetti canvas */
     #confettiCanvas{
       position: fixed; inset:0;
       pointer-events:none;
@@ -366,6 +372,13 @@
   <canvas id="confettiCanvas"></canvas>
 
   <div class="theme-wrap" id="wrap" data-mood="aurora">
+
+    <!-- VIDEO BG (upload to KadKahwin4/assets/bg1.mp4) -->
+    <video id="bgVideo" class="bg-layer" autoplay muted loop playsinline preload="metadata">
+      <source src="./assets/bg1.mp4" type="video/mp4">
+    </video>
+    <div class="bg-layer video-dim"></div>
+
     <!-- Photo layer (optional) -->
     <div class="bg-layer bg-photo" id="photoLayer"></div>
     <div class="bg-layer bg-photoDim"></div>
@@ -385,7 +398,6 @@
 
     <div class="relative z-10 p-4 max-w-[560px] mx-auto">
 
-      <!-- Watermark overlay -->
       <div class="wm-wrap" id="wmWrap">
         <div class="wm" id="wm">
           <div class="wm-row" id="wm1"></div>
@@ -464,7 +476,6 @@
 
         <div class="text-xs opacity-60" id="footLine">Jemputan Digital • Mesra Telefon 📱</div>
 
-        <!-- Watermark tap to reveal admin -->
         <div class="pt-4 text-xs opacity-40 select-none text-center">
           <button id="wmTap" type="button" class="underline decoration-white/20">
             © R-E-M Digital Invitation
@@ -487,7 +498,6 @@
           <button id="btnCloseSheet" class="chip px-3 py-2 rounded-full">Tutup</button>
         </div>
 
-        <!-- MOOD -->
         <div class="grid grid-cols-2 gap-2">
           <button class="btn" data-m="aurora">Aurora Silk</button>
           <button class="btn" data-m="gold">Gold Foil Luxe</button>
@@ -495,6 +505,17 @@
           <button class="btn" data-m="bokeh">Bokeh Romance</button>
           <button class="btn" data-m="islamic">Islamic Emerald</button>
           <button class="btn" data-m="marble">Royal Marble</button>
+        </div>
+
+        <!-- VIDEO MODE -->
+        <div class="border-t border-white/10 pt-3 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm text-white/70">Video Background (MP4/WebM)</div>
+            <button id="videoToggle" class="btn">Video: OFF</button>
+          </div>
+          <div class="text-xs text-white/50">
+            Fail: <span class="mono">KadKahwin4/assets/bg1.mp4</span> (auto loop).
+          </div>
         </div>
 
         <!-- PHOTO MODE -->
@@ -520,8 +541,7 @@
           </div>
 
           <div class="text-xs text-white/50">
-            Letak gambar di folder: <span class="mono">KadKahwin4/assets/</span><br/>
-            Nama fail disyorkan: <span class="mono">p1.jpg,p2.jpg,p3.jpg,l1.jpg,l2.jpg,l3.jpg</span>
+            Folder gambar: <span class="mono">KadKahwin4/assets/</span> (p1.jpg..l3.jpg)
           </div>
         </div>
 
@@ -541,10 +561,6 @@
             <div class="text-sm text-white/70">Auto tema ikut masa</div>
             <button id="autoTimeBtn" class="btn">Auto: ON</button>
           </div>
-
-          <div class="text-xs text-white/50">
-            URL: <span class="mono">&m=aurora</span> • <span class="mono">&a=ff00aa</span> • <span class="mono">&photo=1</span> • <span class="mono">&img=p1</span>
-          </div>
         </div>
       </div>
     </div>
@@ -553,7 +569,7 @@
 
 <script>
 /* =========================
-   CONFIG DEFAULT (fallback)
+   CONFIG DEFAULT
 ========================= */
 const CONFIG = {
   WA_PHONE: "601111661303",
@@ -568,23 +584,18 @@ const CONFIG = {
 };
 
 /* =========================
-   Read params
+   Params
 ========================= */
 const p = new URLSearchParams(location.search);
 const pkg = (p.get("pkg") || "pro").toLowerCase();
 let v = parseInt(p.get("v") || "1", 10);
 
-/* package lock */
-const allowByPkg = {
-  basic: [1],
-  vip: [1,2,3],
-  pro: [1,2,3,4,5]
-};
+const allowByPkg = { basic:[1], vip:[1,2,3], pro:[1,2,3,4,5] };
 const allowed = allowByPkg[pkg] || allowByPkg.pro;
-if (!allowed.includes(v)) v = allowed[0];
+if(!allowed.includes(v)) v = allowed[0];
 
 /* Override CONFIG from URL */
-(function applyOverrides(){
+(function(){
   if (p.get("wa"))    CONFIG.WA_PHONE = (p.get("wa") || "").trim().replace(/[^\d]/g,"");
   if (p.get("maps"))  CONFIG.MAPS_URL = (p.get("maps") || "").trim();
   if (p.get("music")) CONFIG.MUSIC_URL = (p.get("music") || "").trim();
@@ -596,153 +607,136 @@ if (!allowed.includes(v)) v = allowed[0];
 })();
 
 /* =========================
-   Themes v1–v5 (template style)
+   Themes v1–v5
 ========================= */
 const THEMES = {
-  1: { style:"Premium",  accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000000", card:"rgba(255,255,255,.06)" },
-  2: { style:"Modern",   accent:"#39ffcf", bg1:"#070a12", bg2:"#000000", card:"rgba(57,255,207,.06)" },
-  3: { style:"Minimal",  accent:"#ffffff", bg1:"#0a0a0a", bg2:"#000000", card:"rgba(255,255,255,.06)" },
-  4: { style:"Islamic",  accent:"#2ecc71", bg1:"#07120a", bg2:"#000000", card:"rgba(46,204,113,.06)" },
-  5: { style:"Royal",    accent:"#a78bfa", bg1:"#0a0712", bg2:"#000000", card:"rgba(167,139,250,.06)" },
+  1:{style:"Premium", accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000", card:"rgba(255,255,255,.06)"},
+  2:{style:"Modern",  accent:"#39ffcf", bg1:"#070a12", bg2:"#000", card:"rgba(57,255,207,.06)"},
+  3:{style:"Minimal", accent:"#ffffff", bg1:"#0a0a0a", bg2:"#000", card:"rgba(255,255,255,.06)"},
+  4:{style:"Islamic", accent:"#2ecc71", bg1:"#07120a", bg2:"#000", card:"rgba(46,204,113,.06)"},
+  5:{style:"Royal",   accent:"#a78bfa", bg1:"#0a0712", bg2:"#000", card:"rgba(167,139,250,.06)"},
 };
-
 function applyTheme(ver){
   const t = THEMES[ver] || THEMES[1];
-  document.documentElement.style.setProperty("--accent", t.accent);
   document.documentElement.style.setProperty("--bg1", t.bg1);
   document.documentElement.style.setProperty("--bg2", t.bg2);
   document.documentElement.style.setProperty("--card", t.card);
-
+  // accent akan ikut saved/user; kalau tak ada, fall back
+  if(!localStorage.getItem("REM_ACCENT") && !p.get("a")){
+    document.documentElement.style.setProperty("--accent", t.accent);
+  }
   chipStyle.textContent = t.style;
-  chipVer.textContent = "v" + ver;
+  chipVer.textContent = "v"+ver;
   verPicker.value = String(ver);
 }
 
 /* =========================
-   Mood Themes (moving backgrounds)
+   Mood + Accent + Motion + AutoTime
 ========================= */
-const MOODS = {
-  aurora:  { name:"Aurora Silk" },
-  gold:    { name:"Gold Foil Luxe" },
-  galaxy:  { name:"Starfield Galaxy" },
-  bokeh:   { name:"Bokeh Romance" },
-  islamic: { name:"Islamic Emerald" },
-  marble:  { name:"Royal Marble" },
-};
-
+const MOODS = { aurora:1, gold:1, galaxy:1, bokeh:1, islamic:1, marble:1 };
 function setMood(m, skipUrl=false){
   const wrap = document.getElementById("wrap");
   const key = MOODS[m] ? m : "aurora";
   wrap.setAttribute("data-mood", key);
   localStorage.setItem("REM_MOOD", key);
-  if(!skipUrl){
-    p.set("m", key);
-    history.replaceState(null, "", location.pathname + "?" + p.toString());
-  }
+  if(!skipUrl){ p.set("m", key); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
 }
-
 function setAccent(c, skipUrl=false){
   document.documentElement.style.setProperty("--accent", c);
   localStorage.setItem("REM_ACCENT", c);
-  if(!skipUrl){
-    p.set("a", c.replace("#",""));
-    history.replaceState(null, "", location.pathname + "?" + p.toString());
-  }
+  if(!skipUrl){ p.set("a", c.replace("#","")); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
 }
-
 function setMotion(on){
   document.documentElement.style.setProperty("--motion", on ? "1" : "0");
   localStorage.setItem("REM_MOTION", on ? "1" : "0");
   motionBtn.textContent = "Motion: " + (on ? "ON" : "OFF");
 }
-
-/* =========================
-   PHOTO TEMPLATES
-========================= */
-const PHOTO = {
-  // letak gambar dalam KadKahwin4/assets/
-  p1: "./assets/p1.jpg",
-  p2: "./assets/p2.jpg",
-  p3: "./assets/p3.jpg",
-  l1: "./assets/l1.jpg",
-  l2: "./assets/l2.jpg",
-  l3: "./assets/l3.jpg",
-};
-
-function setPhotoMode(on){
-  document.documentElement.style.setProperty("--photo-mode", on ? "1" : "0");
-  localStorage.setItem("REM_PHOTO_ON", on ? "1" : "0");
-  photoToggle.textContent = "Photo: " + (on ? "ON" : "OFF");
-
-  // URL optional
-  p.set("photo", on ? "1" : "0");
-  history.replaceState(null, "", location.pathname + "?" + p.toString());
-
-  setWatermark();
-  rebuildQR();
-}
-
-function applyPhotoTemplate(key){
-  const url = PHOTO[key];
-  if(!url){
-    // fallback: off if invalid
-    setPhotoMode(false);
-    return;
-  }
-  document.documentElement.style.setProperty("--photo-url", `url("${url}")`);
-  localStorage.setItem("REM_PHOTO_IMG", key);
-
-  p.set("img", key);
-  history.replaceState(null, "", location.pathname + "?" + p.toString());
-}
-
-function applyOrientation(ori){
-  // ori hanya untuk pos/feel, bukan paksa layout page
-  if(ori === "portrait"){
-    document.documentElement.style.setProperty("--photo-pos", "50% 25%");
-    document.documentElement.style.setProperty("--photo-fit", "cover");
-  }else{
-    document.documentElement.style.setProperty("--photo-pos", "50% 45%");
-    document.documentElement.style.setProperty("--photo-fit", "cover");
-  }
-  localStorage.setItem("REM_PHOTO_ORI", ori);
-}
-
-/* =========================
-   Auto theme ikut masa
-========================= */
 function setAutoTime(on){
   document.documentElement.style.setProperty("--auto-time", on ? "1" : "0");
   localStorage.setItem("REM_AUTOTIME", on ? "1" : "0");
   autoTimeBtn.textContent = "Auto: " + (on ? "ON" : "OFF");
 }
-
 function moodByTime(){
-  // kalau versi 4 (Islamic) — prefer Islamic
-  if(v === 4) return "islamic";
-
+  if(v===4) return "islamic";
   const h = new Date().getHours();
-  // 5-11 pagi: bokeh, 12-16 petang: gold, 17-19 senja: aurora, 20-4 malam: galaxy
-  if(h >= 5 && h <= 11) return "bokeh";
-  if(h >= 12 && h <= 16) return "gold";
-  if(h >= 17 && h <= 19) return "aurora";
+  if(h>=5 && h<=11) return "bokeh";
+  if(h>=12 && h<=16) return "gold";
+  if(h>=17 && h<=19) return "aurora";
   return "galaxy";
 }
-
 function maybeApplyAutoTime(){
-  const auto = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() === "1";
+  const auto = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1";
   const urlMood = (p.get("m")||"").toLowerCase();
-  if(urlMood) return; // URL override
-  if(!auto) return;   // auto off
-
-  const autoMood = moodByTime();
-  setMood(autoMood, true);
+  if(urlMood || !auto) return;
+  setMood(moodByTime(), true);
 }
 
 /* =========================
-   BM/EN auto (simple)
+   PHOTO templates
 ========================= */
-const isEN = (navigator.language || "").toLowerCase().startsWith("en");
+const PHOTO = {
+  p1:"./assets/p1.jpg", p2:"./assets/p2.jpg", p3:"./assets/p3.jpg",
+  l1:"./assets/l1.jpg", l2:"./assets/l2.jpg", l3:"./assets/l3.jpg",
+};
+function setPhotoMode(on){
+  // kalau video ON, photo auto OFF
+  if(on && getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1"){
+    on = false;
+  }
+  document.documentElement.style.setProperty("--photo-mode", on ? "1":"0");
+  localStorage.setItem("REM_PHOTO_ON", on ? "1":"0");
+  photoToggle.textContent = "Photo: " + (on ? "ON":"OFF");
+  p.set("photo", on ? "1":"0");
+  history.replaceState(null,"",location.pathname+"?"+p.toString());
+  setWatermark(); rebuildQR();
+}
+function applyPhotoTemplate(key){
+  const url = PHOTO[key];
+  if(!url){ setPhotoMode(false); return; }
+  document.documentElement.style.setProperty("--photo-url", `url("${url}")`);
+  localStorage.setItem("REM_PHOTO_IMG", key);
+  p.set("img", key);
+  history.replaceState(null,"",location.pathname+"?"+p.toString());
+}
+function applyOrientation(ori){
+  if(ori==="portrait"){
+    document.documentElement.style.setProperty("--photo-pos","50% 25%");
+    document.documentElement.style.setProperty("--photo-fit","cover");
+  }else{
+    document.documentElement.style.setProperty("--photo-pos","50% 45%");
+    document.documentElement.style.setProperty("--photo-fit","cover");
+  }
+  localStorage.setItem("REM_PHOTO_ORI", ori);
+}
+
+/* =========================
+   VIDEO toggle (bg1.mp4)
+========================= */
+function setVideoMode(on){
+  document.documentElement.style.setProperty("--video-mode", on ? "1":"0");
+  localStorage.setItem("REM_VIDEO_ON", on ? "1":"0");
+  videoToggle.textContent = "Video: " + (on ? "ON":"OFF");
+  const vid = document.getElementById("bgVideo");
+  if(vid){
+    if(on){
+      // bila video ON, photo OFF
+      document.documentElement.style.setProperty("--photo-mode","0");
+      localStorage.setItem("REM_PHOTO_ON","0");
+      if(typeof photoToggle !== "undefined") photoToggle.textContent = "Photo: OFF";
+      vid.play().catch(()=>{});
+    }else{
+      vid.pause();
+    }
+  }
+  p.set("video", on ? "1":"0");
+  history.replaceState(null,"",location.pathname+"?"+p.toString());
+  setWatermark(); rebuildQR();
+}
+
+/* =========================
+   BM/EN
+========================= */
+const isEN = (navigator.language||"").toLowerCase().startsWith("en");
 const T = {
   labelTop: isEN ? "Wedding Invitation" : "Walimatul Urus",
   line: isEN ? "With gratitude, we invite you to attend" : "Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik",
@@ -757,10 +751,8 @@ const T = {
   open: isEN ? "Open" : "Buka",
 };
 
-/* =========================
-   Render
-========================= */
-chipPkg.textContent = (pkg || "pro").toUpperCase();
+/* Render */
+chipPkg.textContent = (pkg||"pro").toUpperCase();
 labelTop.textContent = T.labelTop;
 outLine.textContent = T.line;
 btnHadir.textContent = T.hadir;
@@ -768,41 +760,33 @@ btnTidak.textContent = T.tidak;
 btnCopy.textContent = T.copy;
 btnMaps.textContent = T.maps;
 footLine.textContent = T.foot;
-
 outNames.textContent = CONFIG.EVENT.names;
 outDate.textContent = CONFIG.EVENT.date;
 outTime.textContent = CONFIG.EVENT.time;
 outLoc.textContent  = CONFIG.EVENT.location;
-
 gLabel.textContent = T.labelTop;
 gDesc.textContent = T.gateDesc;
 btnEnter.textContent = T.open;
+btnMute.textContent = T.musicOff;
 
-/* Name auto */
-const presetName = (p.get("name") || "").trim();
-if (presetName) guest.value = presetName;
+/* name preset */
+const presetName = (p.get("name")||"").trim();
+if(presetName) guest.value = presetName;
 
-/* =========================
-   Watermark premium
-========================= */
+/* watermark */
 function setWatermark(){
-  const pkgName = (pkg || "pro").toUpperCase();
+  const pkgName = (pkg||"pro").toUpperCase();
   const styleName = (THEMES[v]?.style || "PREMIUM").toUpperCase();
   const moodName = (document.getElementById("wrap").getAttribute("data-mood") || "AURORA").toUpperCase();
   const photoOn = (getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1");
-  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName} • ${moodName}${photoOn ? " • PHOTO" : ""}`;
-
-  const makeRow = () => Array.from({length: 8}).map(()=>tag).join("   •   ");
-  wm1.textContent = makeRow();
-  wm2.textContent = makeRow();
-  wm3.textContent = makeRow();
-
-  if ((pkg||"").toLowerCase() === "basic") document.getElementById("wmWrap").style.opacity = ".26";
+  const videoOn = (getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1");
+  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName} • ${moodName}${photoOn?" • PHOTO":""}${videoOn?" • VIDEO":""}`;
+  const makeRow = ()=> Array.from({length:8}).map(()=>tag).join("   •   ");
+  wm1.textContent = makeRow(); wm2.textContent = makeRow(); wm3.textContent = makeRow();
+  if((pkg||"").toLowerCase()==="basic") wmWrap.style.opacity = ".26";
 }
 
-/* =========================
-   Version picker + lock
-========================= */
+/* picker lock */
 function refreshPickerOptions(){
   [...verPicker.options].forEach(opt=>{
     const n = parseInt(opt.value,10);
@@ -810,183 +794,118 @@ function refreshPickerOptions(){
     opt.textContent = "Versi " + n + (opt.disabled ? " (Lock)" : "");
   });
 }
-refreshPickerOptions();
-applyTheme(v);
 
-/* =========================
-   QR + Copy + Maps
-========================= */
+/* QR */
 function rebuildQR(){
   const el = document.getElementById("qrcode");
   el.innerHTML = "";
-  new QRCode(el, {
+  new QRCode(el,{
     text: window.location.href,
-    width: 210,
-    height: 210,
-    colorDark: "#ffffff",
-    colorLight: "transparent"
+    width: 210, height:210,
+    colorDark:"#ffffff",
+    colorLight:"transparent"
   });
 }
 
+/* Copy */
 btnCopy.addEventListener("click", async ()=>{
   try{
     await navigator.clipboard.writeText(window.location.href);
     btnCopy.textContent = "Copied!";
-    setTimeout(()=>btnCopy.textContent = T.copy, 1100);
-  }catch(e){
-    alert(window.location.href);
-  }
+    setTimeout(()=>btnCopy.textContent=T.copy,1100);
+  }catch(e){ alert(window.location.href); }
 });
 
-if (CONFIG.MAPS_URL){
+/* maps */
+if(CONFIG.MAPS_URL){
   btnMaps.classList.remove("hidden");
-  btnMaps.addEventListener("click", ()=> window.open(CONFIG.MAPS_URL, "_blank"));
+  btnMaps.addEventListener("click", ()=>window.open(CONFIG.MAPS_URL,"_blank"));
 }
 
-/* =========================
-   RSVP WhatsApp
-========================= */
+/* RSVP */
 function rsvp(status){
-  const guestName = (guest.value || "").trim();
+  const guestName = (guest.value||"").trim();
   const msg =
 `RSVP ${status}
 Nama: ${guestName || "-"}
 Majlis: ${CONFIG.EVENT.names}
 Tarikh: ${CONFIG.EVENT.date}
 Lokasi: ${CONFIG.EVENT.location}`;
-
   const url = "https://wa.me/" + CONFIG.WA_PHONE + "?text=" + encodeURIComponent(msg);
-  const w = window.open(url, "_blank");
-  if (!w) window.location.href = url;
+  const w = window.open(url,"_blank");
+  if(!w) window.location.href = url;
 }
 window.rsvp = rsvp;
 
-/* =========================
-   Intro gate + music
-========================= */
-let audio = null;
-let musicOn = false;
-
+/* music */
+let audio=null, musicOn=false;
 function setupAudio(){
-  if (!CONFIG.MUSIC_URL) return;
+  if(!CONFIG.MUSIC_URL) return;
   audio = new Audio(CONFIG.MUSIC_URL);
-  audio.loop = true;
-  audio.volume = 0.7;
+  audio.loop=true; audio.volume=0.7;
 }
 setupAudio();
-
-btnMute.textContent = T.musicOff;
 btnMute.addEventListener("click", ()=>{
   musicOn = !musicOn;
   btnMute.textContent = musicOn ? T.musicOn : T.musicOff;
 });
 
-/* =========================
-   Confetti premium (canvas)
-========================= */
+/* confetti */
 const confettiCanvas = document.getElementById("confettiCanvas");
 const cctx = confettiCanvas.getContext("2d");
-let confettiParticles = [];
-let confettiRaf = null;
-
-function resizeConfetti(){
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-}
-window.addEventListener("resize", resizeConfetti);
-
+let confettiParticles=[], confettiRaf=null;
+function resizeConfetti(){ confettiCanvas.width=innerWidth; confettiCanvas.height=innerHeight; }
+addEventListener("resize", resizeConfetti);
 function confettiBurst(){
-  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim() !== "1") return;
-
+  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim()!=="1") return;
   resizeConfetti();
-  confettiCanvas.style.display = "block";
-
-  const colors = [
-    getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d4af37",
-    "#ffffff", "#22c55e", "#60a5fa", "#fb7185", "#a78bfa"
-  ];
-
-  confettiParticles = [];
-  const count = 120;
-
-  for(let i=0;i<count;i++){
-    const x = confettiCanvas.width * (0.2 + Math.random()*0.6);
-    const y = confettiCanvas.height * (0.25 + Math.random()*0.2);
-    const sp = 2 + Math.random()*5;
-    const ang = (-Math.PI/2) + (Math.random()*1.2 - 0.6);
-    confettiParticles.push({
-      x,y,
-      vx: Math.cos(ang)*sp,
-      vy: Math.sin(ang)*sp,
-      g: 0.10 + Math.random()*0.12,
-      r: 2 + Math.random()*3,
-      w: 6 + Math.random()*8,
-      h: 4 + Math.random()*7,
-      rot: Math.random()*Math.PI,
-      vr: (Math.random()*0.25 - 0.12),
-      color: colors[Math.floor(Math.random()*colors.length)],
-      life: 0,
-      max: 140 + Math.random()*70
-    });
+  confettiCanvas.style.display="block";
+  const colors=[getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#d4af37","#fff","#22c55e","#60a5fa","#fb7185","#a78bfa"];
+  confettiParticles=[];
+  for(let i=0;i<120;i++){
+    const x=confettiCanvas.width*(0.2+Math.random()*0.6);
+    const y=confettiCanvas.height*(0.25+Math.random()*0.2);
+    const sp=2+Math.random()*5;
+    const ang=(-Math.PI/2)+(Math.random()*1.2-0.6);
+    confettiParticles.push({x,y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,g:0.10+Math.random()*0.12,w:6+Math.random()*8,h:4+Math.random()*7,rot:Math.random()*Math.PI,vr:(Math.random()*0.25-0.12),color:colors[Math.floor(Math.random()*colors.length)],life:0,max:140+Math.random()*70});
   }
-
-  const loop = ()=>{
-    cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
-
+  const loop=()=>{
+    cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
     confettiParticles.forEach(p=>{
-      p.life++;
-      p.vy += p.g;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.rot += p.vr;
-
-      const a = Math.max(0, 1 - p.life/p.max);
-      cctx.globalAlpha = a;
-
-      cctx.save();
-      cctx.translate(p.x, p.y);
-      cctx.rotate(p.rot);
-      cctx.fillStyle = p.color;
-      cctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      p.life++; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      const a=Math.max(0,1-p.life/p.max);
+      cctx.globalAlpha=a;
+      cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.rot);
+      cctx.fillStyle=p.color; cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
       cctx.restore();
     });
-
-    cctx.globalAlpha = 1;
-    confettiParticles = confettiParticles.filter(p=>p.life < p.max && p.y < confettiCanvas.height+40);
-
-    if(confettiParticles.length){
-      confettiRaf = requestAnimationFrame(loop);
-    }else{
-      confettiCanvas.style.display = "none";
-      cancelAnimationFrame(confettiRaf);
-      confettiRaf = null;
-    }
+    cctx.globalAlpha=1;
+    confettiParticles=confettiParticles.filter(p=>p.life<p.max && p.y<confettiCanvas.height+40);
+    if(confettiParticles.length) confettiRaf=requestAnimationFrame(loop);
+    else{ confettiCanvas.style.display="none"; cancelAnimationFrame(confettiRaf); confettiRaf=null; }
   };
-
   if(!confettiRaf) loop();
 }
 
-/* open gate */
+/* gate open */
 btnEnter.addEventListener("click", ()=>{
-  gate.style.display = "none";
-
-  // confetti + optional music
+  gate.style.display="none";
   confettiBurst();
-  if (musicOn && audio) audio.play().catch(()=>{});
+  if(musicOn && audio) audio.play().catch(()=>{});
+  // video autoplay fallback (Android safe)
+  const vid = document.getElementById("bgVideo");
+  if(vid && getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1"){
+    vid.play().catch(()=>{});
+  }
 });
 
-/* =========================
-   Version change
-========================= */
+/* version change */
 verPicker.addEventListener("change", ()=>{
-  const next = parseInt(verPicker.value,10);
-  if (!allowed.includes(next)) return;
-
-  v = next;
-  p.set("v", String(v));
-  p.set("pkg", pkg);
-  history.replaceState(null, "", location.pathname + "?" + p.toString());
-
+  const next=parseInt(verPicker.value,10);
+  if(!allowed.includes(next)) return;
+  v=next;
+  p.set("v",String(v)); p.set("pkg",pkg);
+  history.replaceState(null,"",location.pathname+"?"+p.toString());
   applyTheme(v);
   maybeApplyAutoTime();
   refreshPickerOptions();
@@ -994,209 +913,153 @@ verPicker.addEventListener("change", ()=>{
   setWatermark();
 });
 
-/* =========================
-   Hidden Admin bila tekan watermark 7x
-========================= */
+/* hidden admin 7 taps */
 (function(){
-  const wm = document.getElementById("wmTap");
-  const admin = document.getElementById("adminLink");
-  if(!wm || !admin) return;
-
-  let taps = 0, tmr = null;
+  const wm=document.getElementById("wmTap");
+  const admin=document.getElementById("adminLink");
+  if(!wm||!admin) return;
+  let taps=0, tmr=null;
   wm.addEventListener("click", ()=>{
-    taps++;
-    clearTimeout(tmr);
-    tmr = setTimeout(()=> taps=0, 1500);
-    if(taps >= 7){
-      admin.classList.remove("hidden");
-      taps = 0;
-    }
+    taps++; clearTimeout(tmr);
+    tmr=setTimeout(()=>taps=0,1500);
+    if(taps>=7){ admin.classList.remove("hidden"); taps=0; }
   });
 })();
 
-/* =========================
-   Theme Sheet UI
-========================= */
-const sheetBack = document.getElementById("sheetBack");
-const sheet = document.getElementById("sheet");
-
-function openSheet(){
-  sheetBack.style.display = "block";
-  setTimeout(()=>sheet.classList.add("open"), 10);
-}
-function closeSheet(){
-  sheet.classList.remove("open");
-  setTimeout(()=>sheetBack.style.display="none", 220);
-}
-
+/* sheet */
+const sheetBack=document.getElementById("sheetBack");
+const sheet=document.getElementById("sheet");
+function openSheet(){ sheetBack.style.display="block"; setTimeout(()=>sheet.classList.add("open"),10); }
+function closeSheet(){ sheet.classList.remove("open"); setTimeout(()=>sheetBack.style.display="none",220); }
 btnTheme.addEventListener("click", openSheet);
 btnCloseSheet.addEventListener("click", closeSheet);
 sheetBack.addEventListener("click", closeSheet);
-
-/* hook mood buttons */
 document.querySelectorAll("[data-m]").forEach(btn=>{
   btn.addEventListener("click", ()=>{
-    // bila user pilih manual, auto-time OFF (lebih logik)
     setAutoTime(false);
     setMood(btn.getAttribute("data-m"));
-    setWatermark();
-    rebuildQR();
+    setWatermark(); rebuildQR();
     closeSheet();
   });
 });
-
-/* accent picker */
 accentPick.addEventListener("input", ()=>{
   setAutoTime(false);
   setAccent(accentPick.value);
   setWatermark();
 });
-
-/* motion */
 motionBtn.addEventListener("click", ()=>{
-  const cur = getComputedStyle(document.documentElement).getPropertyValue("--motion").trim();
-  setMotion(cur !== "1");
+  const cur=getComputedStyle(document.documentElement).getPropertyValue("--motion").trim();
+  setMotion(cur!=="1");
 });
-
-/* auto time toggle */
 autoTimeBtn.addEventListener("click", ()=>{
-  const cur = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() === "1";
+  const cur=getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1";
   setAutoTime(!cur);
   maybeApplyAutoTime();
   setWatermark();
 });
 
+/* VIDEO toggle */
+videoToggle.addEventListener("click", ()=>{
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1";
+  setVideoMode(!cur);
+});
+
 /* photo controls */
 photoToggle.addEventListener("click", ()=>{
-  const cur = getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim() === "1";
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1";
   setPhotoMode(!cur);
 });
 photoPick.addEventListener("change", ()=>{
   applyPhotoTemplate(photoPick.value);
-  setWatermark();
-  rebuildQR();
+  setWatermark(); rebuildQR();
 });
-oriPick.addEventListener("change", ()=>{
-  applyOrientation(oriPick.value);
-});
+oriPick.addEventListener("change", ()=>applyOrientation(oriPick.value));
 
-/* =========================
-   Parallax (scroll + touch move)
-========================= */
-function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
-
-let touchX = 0, touchY = 0;
-window.addEventListener("pointermove", (e)=>{
-  const w = window.innerWidth || 1;
-  const h = window.innerHeight || 1;
-  touchX = ((e.clientX / w) - 0.5) * 2; // -1..1
-  touchY = ((e.clientY / h) - 0.5) * 2;
+/* parallax */
+function clamp(n,a,b){ return Math.max(a,Math.min(b,n)); }
+let touchX=0,touchY=0;
+addEventListener("pointermove",(e)=>{
+  const w=innerWidth||1,h=innerHeight||1;
+  touchX=((e.clientX/w)-0.5)*2;
+  touchY=((e.clientY/h)-0.5)*2;
 },{passive:true});
-
 function parallaxTick(){
-  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim() !== "1"){
-    requestAnimationFrame(parallaxTick);
-    return;
+  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim()!=="1"){
+    requestAnimationFrame(parallaxTick); return;
   }
-
-  const y = window.scrollY || 0;
-  const scrollFactor = clamp(y/600, 0, 1);
-
-  const px = touchX * 10;
-  const py = touchY * 10;
-
-  document.documentElement.style.setProperty("--p1x", (px * 0.25) + "px");
-  document.documentElement.style.setProperty("--p1y", ((-scrollFactor*6) + (py * 0.25)) + "px");
-
-  document.documentElement.style.setProperty("--p2x", (px * 0.45) + "px");
-  document.documentElement.style.setProperty("--p2y", ((-scrollFactor*10) + (py * 0.45)) + "px");
-
-  document.documentElement.style.setProperty("--p3x", (px * 0.70) + "px");
-  document.documentElement.style.setProperty("--p3y", ((-scrollFactor*14) + (py * 0.70)) + "px");
-
+  const y=scrollY||0;
+  const s=clamp(y/600,0,1);
+  const px=touchX*10, py=touchY*10;
+  document.documentElement.style.setProperty("--p1x",(px*0.25)+"px");
+  document.documentElement.style.setProperty("--p1y",((-s*6)+(py*0.25))+"px");
+  document.documentElement.style.setProperty("--p2x",(px*0.45)+"px");
+  document.documentElement.style.setProperty("--p2y",((-s*10)+(py*0.45))+"px");
+  document.documentElement.style.setProperty("--p3x",(px*0.70)+"px");
+  document.documentElement.style.setProperty("--p3y",((-s*14)+(py*0.70))+"px");
   requestAnimationFrame(parallaxTick);
 }
 requestAnimationFrame(parallaxTick);
 
-/* =========================
-   BOOT: mood/accent/motion/photo/auto-time
-========================= */
-(function bootPremium(){
-  // Motion
-  const savedMotion = localStorage.getItem("REM_MOTION");
-  setMotion(savedMotion === null ? true : savedMotion === "1");
+/* BOOT */
+(function boot(){
+  applyTheme(v);
+  refreshPickerOptions();
 
-  // Auto time
-  const savedAuto = localStorage.getItem("REM_AUTOTIME");
-  setAutoTime(savedAuto === null ? true : savedAuto === "1");
+  // motion
+  const m = localStorage.getItem("REM_MOTION");
+  setMotion(m===null ? true : m==="1");
 
-  // Mood priority: URL -> localStorage -> auto-time -> by v
-  const urlMood = (p.get("m")||"").toLowerCase();
-  const savedMood = localStorage.getItem("REM_MOOD");
-  const byV = (v===4) ? "islamic" : (v===1 ? "gold" : (v===2 ? "galaxy" : (v===5 ? "aurora" : "bokeh")));
+  // auto-time
+  const at = localStorage.getItem("REM_AUTOTIME");
+  setAutoTime(at===null ? true : at==="1");
 
-  if(urlMood){
-    setAutoTime(false);
-    setMood(urlMood, true);
-  }else if(savedMood && getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() !== "1"){
-    setMood(savedMood, true);
-  }else{
-    // auto-time path
-    maybeApplyAutoTime();
-    if(!document.getElementById("wrap").getAttribute("data-mood")){
-      setMood(byV, true);
-    }
-  }
+  // mood
+  const urlMood=(p.get("m")||"").toLowerCase();
+  const savedMood=localStorage.getItem("REM_MOOD");
+  const byV=(v===4)?"islamic":(v===1?"gold":(v===2?"galaxy":(v===5?"aurora":"bokeh")));
+  if(urlMood){ setAutoTime(false); setMood(urlMood,true); }
+  else if(savedMood && getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()!=="1"){ setMood(savedMood,true); }
+  else{ maybeApplyAutoTime(); if(!wrap.getAttribute("data-mood")) setMood(byV,true); }
 
-  // Accent priority: URL a=xxxxxx -> localStorage -> theme accent
-  const urlA = (p.get("a")||"").trim();
-  const savedA = localStorage.getItem("REM_ACCENT");
-  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)){
-    setAutoTime(false);
-    setAccent("#"+urlA, true);
-  }else if(savedA){
-    setAccent(savedA, true);
-  }else{
-    setAccent(THEMES[v]?.accent || "#d4af37", true);
-  }
+  // accent
+  const urlA=(p.get("a")||"").trim();
+  const savedA=localStorage.getItem("REM_ACCENT");
+  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)){ setAutoTime(false); setAccent("#"+urlA,true); }
+  else if(savedA){ setAccent(savedA,true); }
   accentPick.value = (getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || accentPick.value);
 
-  // Photo mode: URL -> storage
-  const urlPhoto = (p.get("photo")||"").trim();
-  const urlImg = (p.get("img")||"").trim();
-  const savedPhotoOn = localStorage.getItem("REM_PHOTO_ON");
-  const savedImg = localStorage.getItem("REM_PHOTO_IMG");
-  const savedOri = localStorage.getItem("REM_PHOTO_ORI") || "portrait";
+  // orientation
+  const savedOri=localStorage.getItem("REM_PHOTO_ORI") || "portrait";
+  applyOrientation(savedOri); oriPick.value=savedOri;
 
-  applyOrientation(savedOri);
-  oriPick.value = savedOri;
+  // video (URL -> storage)
+  const urlVideo = (p.get("video")||"").trim();
+  const savedVideo = localStorage.getItem("REM_VIDEO_ON");
+  const videoOn = (urlVideo==="1") ? true : (savedVideo==="1");
+  setVideoMode(videoOn);
 
-  let photoOn = (urlPhoto === "1") ? true : (savedPhotoOn === "1");
+  // photo only if video off
+  const urlPhoto=(p.get("photo")||"").trim();
+  const savedPhoto=localStorage.getItem("REM_PHOTO_ON");
+  const photoOn = (!videoOn) && ((urlPhoto==="1") ? true : (savedPhoto==="1"));
   setPhotoMode(photoOn);
 
+  // photo template
+  const urlImg=(p.get("img")||"").trim();
+  const savedImg=localStorage.getItem("REM_PHOTO_IMG");
   const imgKey = urlImg || savedImg || "p1";
   photoPick.value = PHOTO[imgKey] ? imgKey : "p1";
   applyPhotoTemplate(photoPick.value);
 
-  // UI sync
-  autoTimeBtn.textContent = "Auto: " + (getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1" ? "ON" : "OFF");
-
-  // Initial watermark + QR
   rebuildQR();
   setWatermark();
+
+  // try autoplay video
+  const vid=document.getElementById("bgVideo");
+  if(vid && videoOn){
+    vid.play().catch(()=>{});
+  }
 })();
-
-/* =========================
-   Rebuild QR after load
-========================= */
-window.addEventListener("load", ()=>{
-  rebuildQR();
-  setWatermark();
-});
-
-/* =========================
-   RSVP done
-========================= */
 </script>
 </body>
 </html>
