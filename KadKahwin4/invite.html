@@ -17,15 +17,235 @@
       --muted: rgba(255,255,255,.70);
       --accent: #d4af37;
       --radius: 28px;
+
+      /* Motion theme engine */
+      --glass: rgba(255,255,255,.06);
+      --grid: rgba(255,255,255,.05);
+      --motion: 1;
+      --glow: 0 0 18px var(--accent), 0 0 42px rgba(255,255,255,.12);
+
+      /* Parallax vars */
+      --p1x: 0px; --p1y: 0px;
+      --p2x: 0px; --p2y: 0px;
+      --p3x: 0px; --p3y: 0px;
+
+      /* Photo layer */
+      --photo-url: none;
+      --photo-opacity: .38;
+      --photo-blur: 0px;
+      --photo-dim: .20;
+      --photo-fit: cover;
+      --photo-pos: 50% 50%;
+      --photo-mode: 0; /* 1=photo ON, 0=photo OFF */
+
+      /* Auto theme by time */
+      --auto-time: 1;
     }
-    body{
-      margin:0;
-      color:var(--text);
+    @media (prefers-reduced-motion: reduce){
+      :root{ --motion: 0; }
+    }
+
+    body{ margin:0; color:var(--text); min-height:100vh; }
+
+    /* ===== Theme Wrap + Layers ===== */
+    .theme-wrap{
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
       background:
         radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.07), transparent 55%),
         linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height:100vh;
     }
+    .bg-layer{ position:absolute; inset:0; pointer-events:none; }
+
+    /* photo layer */
+    .bg-photo{
+      opacity: calc(var(--photo-mode) * var(--photo-opacity));
+      background-image: var(--photo-url);
+      background-size: var(--photo-fit);
+      background-position: var(--photo-pos);
+      background-repeat: no-repeat;
+      filter: blur(var(--photo-blur)) saturate(1.06) contrast(1.04);
+      transform: translate3d(var(--p1x), var(--p1y), 0) scale(1.08);
+      transition: opacity .25s ease;
+    }
+    .bg-photoDim{
+      background: radial-gradient(900px 520px at 20% 10%, rgba(0,0,0,var(--photo-dim)), rgba(0,0,0,.55));
+      opacity: calc(var(--photo-mode) * 1);
+      transition: opacity .25s ease;
+    }
+
+    /* soft aurora */
+    .bg-aurora{
+      opacity:.85;
+      filter: blur(20px) saturate(1.12);
+      background:
+        radial-gradient(900px 520px at 10% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 62%),
+        radial-gradient(720px 520px at 90% 15%, rgba(34,197,94,.14), transparent 64%),
+        radial-gradient(980px 620px at 50% 90%, rgba(251,113,133,.12), transparent 66%);
+      animation: auroraMove 16s ease-in-out infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+      transform: translate3d(var(--p2x), var(--p2y), 0) scale(1.02);
+    }
+    @keyframes auroraMove{
+      0%,100%{ filter: blur(20px) saturate(1.12); }
+      50%{ filter: blur(22px) saturate(1.18); }
+    }
+
+    /* grid drift (cyber feel) */
+    .bg-grid{
+      background-image:
+        linear-gradient(to right, var(--grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+      background-size: 44px 44px;
+      opacity: .18;
+      transform: perspective(900px) rotateX(62deg) translateY(10%);
+      transform-origin: top;
+      animation: gridDrift 12s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes gridDrift{
+      0%{ background-position: 0 0, 0 0; }
+      100%{ background-position: 440px 0, 0 440px; }
+    }
+
+    /* blobs */
+    .bg-blobs{
+      filter: blur(28px);
+      opacity: .72;
+      mix-blend-mode: screen;
+      transform: translate3d(var(--p3x), var(--p3y), 0);
+    }
+    .blob{
+      position:absolute;
+      width: 380px; height: 380px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 85%, white), transparent 60%);
+      animation: floaty 10s ease-in-out infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    .blob.b1{ top:-120px; left:-120px; transform: scale(1.05); animation-duration: 12s; }
+    .blob.b2{ bottom:-140px; right:-160px; transform: scale(1.15); animation-duration: 14s; opacity:.8; }
+    .blob.b3{ top:35%; right:-180px; transform: scale(.9); animation-duration: 16s; opacity:.55; }
+    @keyframes floaty{
+      0%,100%{ transform: translate(0,0) scale(1); }
+      50%{ transform: translate(18px, -22px) scale(1.06); }
+    }
+
+    /* gold shimmer overlay */
+    .bg-shimmer{
+      opacity:.20;
+      mix-blend-mode: overlay;
+      background: linear-gradient(110deg,
+        transparent 0%,
+        rgba(255,255,255,.10) 30%,
+        rgba(255,255,255,.22) 45%,
+        rgba(255,255,255,.10) 60%,
+        transparent 100%);
+      animation: shimmer 4.5s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes shimmer{
+      0%{ transform: translateX(-120%); }
+      100%{ transform: translateX(120%); }
+    }
+
+    /* galaxy stars */
+    .bg-stars{
+      opacity:.32;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.65), transparent 55%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,.45), transparent 55%),
+        radial-gradient(2px 2px at 25% 35%, rgba(255,255,255,.40), transparent 60%),
+        radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.40), transparent 60%);
+      animation: starDrift 18s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes starDrift{
+      0%{ transform: translate3d(0,0,0); }
+      100%{ transform: translate3d(-3%,2%,0); }
+    }
+
+    /* islamic pattern */
+    .bg-islamic{
+      opacity:.16;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,.45) 1px, transparent 1px),
+        linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08)),
+        linear-gradient(-45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08));
+      background-size: 32px 32px, 28px 28px, 28px 28px;
+      background-position: 0 0, 0 0, 14px 14px;
+      animation: patMove 22s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes patMove{
+      0%{ background-position: 0 0, 0 0, 14px 14px; }
+      100%{ background-position: 160px 0, 120px 0, 134px 14px; }
+    }
+
+    /* marble */
+    .bg-marble{
+      opacity:.22;
+      background:
+        radial-gradient(700px 500px at 20% 40%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(900px 600px at 80% 70%, rgba(255,255,255,.06), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.04), transparent 60%);
+      animation: marble 20s ease-in-out infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes marble{
+      0%,100%{ transform: translate3d(0,0,0) scale(1); }
+      50%{ transform: translate3d(10px,-10px,0) scale(1.03); }
+    }
+
+    /* mood controls */
+    [data-mood="aurora"]  .show-aurora{opacity:.85}
+    [data-mood="aurora"]  .show-stars{opacity:0}
+    [data-mood="aurora"]  .show-grid{opacity:.10}
+    [data-mood="aurora"]  .show-shimmer{opacity:.08}
+    [data-mood="aurora"]  .show-islamic{opacity:0}
+    [data-mood="aurora"]  .show-marble{opacity:0}
+
+    [data-mood="gold"]    .show-aurora{opacity:.35}
+    [data-mood="gold"]    .show-shimmer{opacity:.22}
+    [data-mood="gold"]    .show-grid{opacity:.12}
+    [data-mood="gold"]    .show-stars{opacity:0}
+    [data-mood="gold"]    .show-islamic{opacity:0}
+    [data-mood="gold"]    .show-marble{opacity:.08}
+
+    [data-mood="galaxy"]  .show-stars{opacity:.34}
+    [data-mood="galaxy"]  .show-aurora{opacity:.28}
+    [data-mood="galaxy"]  .show-grid{opacity:.14}
+    [data-mood="galaxy"]  .show-shimmer{opacity:0}
+    [data-mood="galaxy"]  .show-islamic{opacity:0}
+    [data-mood="galaxy"]  .show-marble{opacity:0}
+
+    [data-mood="bokeh"]   .show-blobs{opacity:.72}
+    [data-mood="bokeh"]   .show-aurora{opacity:.22}
+    [data-mood="bokeh"]   .show-grid{opacity:0}
+    [data-mood="bokeh"]   .show-shimmer{opacity:0}
+    [data-mood="bokeh"]   .show-stars{opacity:0}
+    [data-mood="bokeh"]   .show-islamic{opacity:0}
+    [data-mood="bokeh"]   .show-marble{opacity:0}
+
+    [data-mood="islamic"] .show-islamic{opacity:.18}
+    [data-mood="islamic"] .show-aurora{opacity:.25}
+    [data-mood="islamic"] .show-grid{opacity:.06}
+    [data-mood="islamic"] .show-shimmer{opacity:0}
+    [data-mood="islamic"] .show-stars{opacity:0}
+    [data-mood="islamic"] .show-marble{opacity:0}
+
+    [data-mood="marble"]  .show-marble{opacity:.22}
+    [data-mood="marble"]  .show-aurora{opacity:.18}
+    [data-mood="marble"]  .show-grid{opacity:.06}
+    [data-mood="marble"]  .show-shimmer{opacity:.06}
+    [data-mood="marble"]  .show-stars{opacity:0}
+    [data-mood="marble"]  .show-islamic{opacity:0}
+
+    /* ===== Card + components ===== */
     .glass{
       background:var(--card);
       border:1px solid var(--stroke);
@@ -37,7 +257,7 @@
       overflow: hidden;
     }
 
-    /* ✨ Watermark Diagonal Premium */
+    /* Watermark Diagonal */
     .wm-wrap{
       position: fixed;
       inset: 0;
@@ -55,7 +275,6 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      filter: blur(.0px);
     }
     .wm-row{
       display:flex;
@@ -68,13 +287,11 @@
       color: rgba(255,255,255,.9);
       text-shadow: 0 0 10px rgba(0,0,0,.35);
       animation: wmMove 18s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
     }
     .wm-row:nth-child(2){ animation-duration: 22s; opacity:.9; }
     .wm-row:nth-child(3){ animation-duration: 26s; opacity:.75; }
-    @keyframes wmMove{
-      from{ transform: translateX(-6%); }
-      to{ transform: translateX(6%); }
-    }
+    @keyframes wmMove{ from{ transform: translateX(-6%); } to{ transform: translateX(6%); } }
 
     .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
     .btn{
@@ -88,6 +305,7 @@
       color: #0b0b0b;
       border-color: rgba(255,255,255,.18);
       font-weight: 800;
+      box-shadow: var(--glow);
     }
     .input{
       width:100%;
@@ -117,97 +335,220 @@
     }
     .fadeUp{ animation: fadeUp .65s ease both; }
     @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
+
+    /* Bottom Theme Sheet */
+    .sheetBack{
+      position: fixed; inset:0;
+      background: rgba(0,0,0,.55);
+      z-index: 70;
+      display:none;
+    }
+    .sheet{
+      position: fixed; left: 0; right: 0; bottom: 0;
+      z-index: 71;
+      transform: translateY(110%);
+      transition: .25s ease;
+      padding: 14px;
+    }
+    .sheet.open{ transform: translateY(0); }
+
+    /* Confetti canvas */
+    #confettiCanvas{
+      position: fixed; inset:0;
+      pointer-events:none;
+      z-index: 80;
+      display:none;
+    }
   </style>
 </head>
 
-<body class="p-4 max-w-[560px] mx-auto">
+<body>
+  <canvas id="confettiCanvas"></canvas>
 
-  <!-- Watermark overlay -->
-  <div class="wm-wrap" id="wmWrap">
-    <div class="wm" id="wm">
-      <div class="wm-row" id="wm1"></div>
-      <div class="wm-row" id="wm2"></div>
-      <div class="wm-row" id="wm3"></div>
+  <div class="theme-wrap" id="wrap" data-mood="aurora">
+    <!-- Photo layer (optional) -->
+    <div class="bg-layer bg-photo" id="photoLayer"></div>
+    <div class="bg-layer bg-photoDim"></div>
+
+    <!-- Background Layers -->
+    <div class="bg-layer bg-aurora show-aurora"></div>
+    <div class="bg-layer bg-grid show-grid"></div>
+    <div class="bg-layer bg-stars show-stars"></div>
+    <div class="bg-layer bg-islamic show-islamic"></div>
+    <div class="bg-layer bg-marble show-marble"></div>
+    <div class="bg-layer bg-shimmer show-shimmer"></div>
+    <div class="bg-layer bg-blobs show-blobs">
+      <div class="blob b1"></div>
+      <div class="blob b2"></div>
+      <div class="blob b3"></div>
     </div>
-  </div>
 
-  <!-- INTRO GATE -->
-  <div id="gate" class="gate">
-    <div class="w-full max-w-md glass p-6 text-center space-y-4 fadeUp">
-      <div class="text-xs tracking-[.35em] uppercase opacity-70" id="gLabel">Walimatul Urus</div>
-      <div class="text-3xl font-extrabold" id="gTitle">Jemputan Digital</div>
-      <div class="text-white/70 text-sm" id="gDesc">Klik untuk buka jemputan.</div>
+    <div class="relative z-10 p-4 max-w-[560px] mx-auto">
 
-      <div class="grid grid-cols-2 gap-2 pt-2">
-        <button id="btnEnter" class="btn btnPrimary">Buka</button>
-        <button id="btnMute" class="btn">Muzik: Off</button>
+      <!-- Watermark overlay -->
+      <div class="wm-wrap" id="wmWrap">
+        <div class="wm" id="wm">
+          <div class="wm-row" id="wm1"></div>
+          <div class="wm-row" id="wm2"></div>
+          <div class="wm-row" id="wm3"></div>
+        </div>
       </div>
 
-      <div class="text-xs opacity-50">© R-E-M Digital Invitation</div>
-    </div>
-  </div>
+      <!-- INTRO GATE -->
+      <div id="gate" class="gate">
+        <div class="w-full max-w-md glass p-6 text-center space-y-4 fadeUp">
+          <div class="text-xs tracking-[.35em] uppercase opacity-70" id="gLabel">Walimatul Urus</div>
+          <div class="text-3xl font-extrabold" id="gTitle">Jemputan Digital</div>
+          <div class="text-white/70 text-sm" id="gDesc">Klik untuk buka jemputan.</div>
 
-  <!-- MAIN CARD -->
-  <div class="glass p-6 text-center space-y-5 fadeUp">
-    <div class="flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2">
-        <span id="chipPkg" class="chip text-xs px-3 py-2 rounded-full">PKG</span>
-        <span id="chipStyle" class="chip text-xs px-3 py-2 rounded-full">Style</span>
-        <span id="chipVer" class="chip text-xs px-3 py-2 rounded-full">v</span>
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <button id="btnEnter" class="btn btnPrimary">Buka</button>
+            <button id="btnMute" class="btn">Muzik: Off</button>
+          </div>
+
+          <div class="text-xs opacity-50">© R-E-M Digital Invitation</div>
+        </div>
       </div>
 
-      <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
-        <option value="1">Versi 1</option>
-        <option value="2">Versi 2</option>
-        <option value="3">Versi 3</option>
-        <option value="4">Versi 4</option>
-        <option value="5">Versi 5</option>
-      </select>
-    </div>
+      <!-- MAIN CARD -->
+      <div class="glass p-6 text-center space-y-5 fadeUp">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span id="chipPkg" class="chip text-xs px-3 py-2 rounded-full">PKG</span>
+            <span id="chipStyle" class="chip text-xs px-3 py-2 rounded-full">Style</span>
+            <span id="chipVer" class="chip text-xs px-3 py-2 rounded-full">v</span>
+          </div>
 
-    <div class="space-y-2">
-      <div class="text-xs tracking-[.35em] uppercase opacity-70" id="labelTop">Walimatul Urus</div>
-      <h1 id="outNames" class="text-4xl font-extrabold leading-tight">Adam & Hawa</h1>
-      <p id="outLine" class="text-white/70">Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik</p>
-    </div>
+          <div class="flex items-center gap-2">
+            <button id="btnTheme" class="chip text-sm px-3 py-2 rounded-full">Tema ✨</button>
+            <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
+              <option value="1">Versi 1</option>
+              <option value="2">Versi 2</option>
+              <option value="3">Versi 3</option>
+              <option value="4">Versi 4</option>
+              <option value="5">Versi 5</option>
+            </select>
+          </div>
+        </div>
 
-    <div class="border-t border-white/10 pt-4 space-y-2 text-sm text-white/80">
-      <div>📅 <span id="outDate">Sabtu, 12 Oktober 2025</span></div>
-      <div>🕚 <span id="outTime">11.00 pagi – 4.00 petang</span></div>
-      <div>📍 <span id="outLoc">Dewan Seri Melur</span></div>
-    </div>
+        <div class="space-y-2">
+          <div class="text-xs tracking-[.35em] uppercase opacity-70" id="labelTop">Walimatul Urus</div>
+          <h1 id="outNames" class="text-4xl font-extrabold leading-tight">Adam & Hawa</h1>
+          <p id="outLine" class="text-white/70">Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik</p>
+        </div>
 
-    <div class="space-y-3 pt-2">
-      <input id="guest" class="input" placeholder="Nama tetamu" />
-      <div class="grid grid-cols-2 gap-3">
-        <button class="btn btnPrimary" onclick="rsvp('Hadir')" id="btnHadir">Hadir</button>
-        <button class="btn" onclick="rsvp('Tidak Hadir')" id="btnTidak">Tidak Hadir</button>
+        <div class="border-t border-white/10 pt-4 space-y-2 text-sm text-white/80">
+          <div>📅 <span id="outDate">Sabtu, 12 Oktober 2025</span></div>
+          <div>🕚 <span id="outTime">11.00 pagi – 4.00 petang</span></div>
+          <div>📍 <span id="outLoc">Dewan Seri Melur</span></div>
+        </div>
+
+        <div class="space-y-3 pt-2">
+          <input id="guest" class="input" placeholder="Nama tetamu" />
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn btnPrimary" onclick="rsvp('Hadir')" id="btnHadir">Hadir</button>
+            <button class="btn" onclick="rsvp('Tidak Hadir')" id="btnTidak">Tidak Hadir</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn" id="btnCopy">Copy Link</button>
+            <button class="btn hidden" id="btnMaps">Buka Maps</button>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <div class="qrWrap">
+            <div id="qrcode"></div>
+          </div>
+        </div>
+
+        <div class="text-xs opacity-60" id="footLine">Jemputan Digital • Mesra Telefon 📱</div>
+
+        <!-- Watermark tap to reveal admin -->
+        <div class="pt-4 text-xs opacity-40 select-none text-center">
+          <button id="wmTap" type="button" class="underline decoration-white/20">
+            © R-E-M Digital Invitation
+          </button>
+          <a id="adminLink"
+             class="hidden ml-2 px-3 py-1 rounded-full bg-white/10 border border-white/10"
+             href="./admin.html">
+             Admin
+          </a>
+        </div>
       </div>
+    </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <button class="btn" id="btnCopy">Copy Link</button>
-        <button class="btn hidden" id="btnMaps">Buka Maps</button>
+    <!-- THEME SHEET -->
+    <div id="sheetBack" class="sheetBack"></div>
+    <div id="sheet" class="sheet">
+      <div class="glass p-4 rounded-[24px] max-w-[560px] mx-auto space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="font-extrabold text-lg">Tema Premium</div>
+          <button id="btnCloseSheet" class="chip px-3 py-2 rounded-full">Tutup</button>
+        </div>
+
+        <!-- MOOD -->
+        <div class="grid grid-cols-2 gap-2">
+          <button class="btn" data-m="aurora">Aurora Silk</button>
+          <button class="btn" data-m="gold">Gold Foil Luxe</button>
+          <button class="btn" data-m="galaxy">Starfield Galaxy</button>
+          <button class="btn" data-m="bokeh">Bokeh Romance</button>
+          <button class="btn" data-m="islamic">Islamic Emerald</button>
+          <button class="btn" data-m="marble">Royal Marble</button>
+        </div>
+
+        <!-- PHOTO MODE -->
+        <div class="border-t border-white/10 pt-3 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm text-white/70">Tema Bergambar</div>
+            <button id="photoToggle" class="btn">Photo: OFF</button>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <select id="photoPick" class="chip text-sm px-3 py-3 rounded-2xl bg-transparent">
+              <option value="p1">Portrait • Template 1</option>
+              <option value="p2">Portrait • Template 2</option>
+              <option value="p3">Portrait • Template 3</option>
+              <option value="l1">Landscape • Template 1</option>
+              <option value="l2">Landscape • Template 2</option>
+              <option value="l3">Landscape • Template 3</option>
+            </select>
+            <select id="oriPick" class="chip text-sm px-3 py-3 rounded-2xl bg-transparent">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+
+          <div class="text-xs text-white/50">
+            Letak gambar di folder: <span class="mono">KadKahwin4/assets/</span><br/>
+            Nama fail disyorkan: <span class="mono">p1.jpg,p2.jpg,p3.jpg,l1.jpg,l2.jpg,l3.jpg</span>
+          </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="border-t border-white/10 pt-3 space-y-2">
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm text-white/70">Warna accent</div>
+            <input id="accentPick" type="color" class="w-14 h-11 rounded-xl overflow-hidden border border-white/15 bg-white/5" value="#d4af37">
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm text-white/70">Motion</div>
+            <button id="motionBtn" class="btn">Motion: ON</button>
+          </div>
+
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-sm text-white/70">Auto tema ikut masa</div>
+            <button id="autoTimeBtn" class="btn">Auto: ON</button>
+          </div>
+
+          <div class="text-xs text-white/50">
+            URL: <span class="mono">&m=aurora</span> • <span class="mono">&a=ff00aa</span> • <span class="mono">&photo=1</span> • <span class="mono">&img=p1</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="pt-2">
-      <div class="qrWrap">
-        <div id="qrcode"></div>
-      </div>
-    </div>
-
-    <div class="text-xs opacity-60" id="footLine">Jemputan Digital • Mesra Telefon 📱</div>
-    <div class="pt-4 text-xs opacity-40 select-none text-center">
-  <button id="wmTap" type="button" class="underline decoration-white/20">
-    © R-E-M Digital Invitation
-  </button>
-
-  <a id="adminLink"
-     class="hidden ml-2 px-3 py-1 rounded-full bg-white/10 border border-white/10"
-     href="./admin.html">
-     Admin
-  </a>
-    </div>
   </div>
 
 <script>
@@ -233,6 +574,7 @@ const p = new URLSearchParams(location.search);
 const pkg = (p.get("pkg") || "pro").toLowerCase();
 let v = parseInt(p.get("v") || "1", 10);
 
+/* package lock */
 const allowByPkg = {
   basic: [1],
   vip: [1,2,3],
@@ -254,7 +596,7 @@ if (!allowed.includes(v)) v = allowed[0];
 })();
 
 /* =========================
-   Themes v1–v5
+   Themes v1–v5 (template style)
 ========================= */
 const THEMES = {
   1: { style:"Premium",  accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000000", card:"rgba(255,255,255,.06)" },
@@ -274,6 +616,127 @@ function applyTheme(ver){
   chipStyle.textContent = t.style;
   chipVer.textContent = "v" + ver;
   verPicker.value = String(ver);
+}
+
+/* =========================
+   Mood Themes (moving backgrounds)
+========================= */
+const MOODS = {
+  aurora:  { name:"Aurora Silk" },
+  gold:    { name:"Gold Foil Luxe" },
+  galaxy:  { name:"Starfield Galaxy" },
+  bokeh:   { name:"Bokeh Romance" },
+  islamic: { name:"Islamic Emerald" },
+  marble:  { name:"Royal Marble" },
+};
+
+function setMood(m, skipUrl=false){
+  const wrap = document.getElementById("wrap");
+  const key = MOODS[m] ? m : "aurora";
+  wrap.setAttribute("data-mood", key);
+  localStorage.setItem("REM_MOOD", key);
+  if(!skipUrl){
+    p.set("m", key);
+    history.replaceState(null, "", location.pathname + "?" + p.toString());
+  }
+}
+
+function setAccent(c, skipUrl=false){
+  document.documentElement.style.setProperty("--accent", c);
+  localStorage.setItem("REM_ACCENT", c);
+  if(!skipUrl){
+    p.set("a", c.replace("#",""));
+    history.replaceState(null, "", location.pathname + "?" + p.toString());
+  }
+}
+
+function setMotion(on){
+  document.documentElement.style.setProperty("--motion", on ? "1" : "0");
+  localStorage.setItem("REM_MOTION", on ? "1" : "0");
+  motionBtn.textContent = "Motion: " + (on ? "ON" : "OFF");
+}
+
+/* =========================
+   PHOTO TEMPLATES
+========================= */
+const PHOTO = {
+  // letak gambar dalam KadKahwin4/assets/
+  p1: "./assets/p1.jpg",
+  p2: "./assets/p2.jpg",
+  p3: "./assets/p3.jpg",
+  l1: "./assets/l1.jpg",
+  l2: "./assets/l2.jpg",
+  l3: "./assets/l3.jpg",
+};
+
+function setPhotoMode(on){
+  document.documentElement.style.setProperty("--photo-mode", on ? "1" : "0");
+  localStorage.setItem("REM_PHOTO_ON", on ? "1" : "0");
+  photoToggle.textContent = "Photo: " + (on ? "ON" : "OFF");
+
+  // URL optional
+  p.set("photo", on ? "1" : "0");
+  history.replaceState(null, "", location.pathname + "?" + p.toString());
+
+  setWatermark();
+  rebuildQR();
+}
+
+function applyPhotoTemplate(key){
+  const url = PHOTO[key];
+  if(!url){
+    // fallback: off if invalid
+    setPhotoMode(false);
+    return;
+  }
+  document.documentElement.style.setProperty("--photo-url", `url("${url}")`);
+  localStorage.setItem("REM_PHOTO_IMG", key);
+
+  p.set("img", key);
+  history.replaceState(null, "", location.pathname + "?" + p.toString());
+}
+
+function applyOrientation(ori){
+  // ori hanya untuk pos/feel, bukan paksa layout page
+  if(ori === "portrait"){
+    document.documentElement.style.setProperty("--photo-pos", "50% 25%");
+    document.documentElement.style.setProperty("--photo-fit", "cover");
+  }else{
+    document.documentElement.style.setProperty("--photo-pos", "50% 45%");
+    document.documentElement.style.setProperty("--photo-fit", "cover");
+  }
+  localStorage.setItem("REM_PHOTO_ORI", ori);
+}
+
+/* =========================
+   Auto theme ikut masa
+========================= */
+function setAutoTime(on){
+  document.documentElement.style.setProperty("--auto-time", on ? "1" : "0");
+  localStorage.setItem("REM_AUTOTIME", on ? "1" : "0");
+  autoTimeBtn.textContent = "Auto: " + (on ? "ON" : "OFF");
+}
+
+function moodByTime(){
+  // kalau versi 4 (Islamic) — prefer Islamic
+  if(v === 4) return "islamic";
+
+  const h = new Date().getHours();
+  // 5-11 pagi: bokeh, 12-16 petang: gold, 17-19 senja: aurora, 20-4 malam: galaxy
+  if(h >= 5 && h <= 11) return "bokeh";
+  if(h >= 12 && h <= 16) return "gold";
+  if(h >= 17 && h <= 19) return "aurora";
+  return "galaxy";
+}
+
+function maybeApplyAutoTime(){
+  const auto = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() === "1";
+  const urlMood = (p.get("m")||"").toLowerCase();
+  if(urlMood) return; // URL override
+  if(!auto) return;   // auto off
+
+  const autoMood = moodByTime();
+  setMood(autoMood, true);
 }
 
 /* =========================
@@ -320,29 +783,25 @@ const presetName = (p.get("name") || "").trim();
 if (presetName) guest.value = presetName;
 
 /* =========================
-   Watermark premium (diagonal)
+   Watermark premium
 ========================= */
 function setWatermark(){
   const pkgName = (pkg || "pro").toUpperCase();
   const styleName = (THEMES[v]?.style || "PREMIUM").toUpperCase();
-  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName}`;
+  const moodName = (document.getElementById("wrap").getAttribute("data-mood") || "AURORA").toUpperCase();
+  const photoOn = (getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1");
+  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName} • ${moodName}${photoOn ? " • PHOTO" : ""}`;
 
-  // repeat text
   const makeRow = () => Array.from({length: 8}).map(()=>tag).join("   •   ");
-
   wm1.textContent = makeRow();
   wm2.textContent = makeRow();
   wm3.textContent = makeRow();
 
-  // stronger for Basic
-  if ((pkg||"").toLowerCase() === "basic") {
-    document.getElementById("wmWrap").style.opacity = ".26";
-  }
+  if ((pkg||"").toLowerCase() === "basic") document.getElementById("wmWrap").style.opacity = ".26";
 }
-setWatermark();
 
 /* =========================
-   Version picker + lock by package
+   Version picker + lock
 ========================= */
 function refreshPickerOptions(){
   [...verPicker.options].forEach(opt=>{
@@ -353,21 +812,6 @@ function refreshPickerOptions(){
 }
 refreshPickerOptions();
 applyTheme(v);
-
-verPicker.addEventListener("change", ()=>{
-  const next = parseInt(verPicker.value,10);
-  if (!allowed.includes(next)) return;
-
-  v = next;
-  p.set("v", String(v));
-  p.set("pkg", pkg);
-  history.replaceState(null, "", location.pathname + "?" + p.toString());
-
-  applyTheme(v);
-  refreshPickerOptions();
-  rebuildQR();
-  setWatermark();
-});
 
 /* =========================
    QR + Copy + Maps
@@ -383,7 +827,6 @@ function rebuildQR(){
     colorLight: "transparent"
   });
 }
-rebuildQR();
 
 btnCopy.addEventListener("click", async ()=>{
   try{
@@ -401,7 +844,7 @@ if (CONFIG.MAPS_URL){
 }
 
 /* =========================
-   RSVP WhatsApp (correct)
+   RSVP WhatsApp
 ========================= */
 function rsvp(status){
   const guestName = (guest.value || "").trim();
@@ -414,12 +857,12 @@ Lokasi: ${CONFIG.EVENT.location}`;
 
   const url = "https://wa.me/" + CONFIG.WA_PHONE + "?text=" + encodeURIComponent(msg);
   const w = window.open(url, "_blank");
-  if (!w) window.location.href = url; // popup-proof fallback
+  if (!w) window.location.href = url;
 }
 window.rsvp = rsvp;
 
 /* =========================
-   Intro gate + music (optional)
+   Intro gate + music
 ========================= */
 let audio = null;
 let musicOn = false;
@@ -438,12 +881,122 @@ btnMute.addEventListener("click", ()=>{
   btnMute.textContent = musicOn ? T.musicOn : T.musicOff;
 });
 
+/* =========================
+   Confetti premium (canvas)
+========================= */
+const confettiCanvas = document.getElementById("confettiCanvas");
+const cctx = confettiCanvas.getContext("2d");
+let confettiParticles = [];
+let confettiRaf = null;
+
+function resizeConfetti(){
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeConfetti);
+
+function confettiBurst(){
+  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim() !== "1") return;
+
+  resizeConfetti();
+  confettiCanvas.style.display = "block";
+
+  const colors = [
+    getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#d4af37",
+    "#ffffff", "#22c55e", "#60a5fa", "#fb7185", "#a78bfa"
+  ];
+
+  confettiParticles = [];
+  const count = 120;
+
+  for(let i=0;i<count;i++){
+    const x = confettiCanvas.width * (0.2 + Math.random()*0.6);
+    const y = confettiCanvas.height * (0.25 + Math.random()*0.2);
+    const sp = 2 + Math.random()*5;
+    const ang = (-Math.PI/2) + (Math.random()*1.2 - 0.6);
+    confettiParticles.push({
+      x,y,
+      vx: Math.cos(ang)*sp,
+      vy: Math.sin(ang)*sp,
+      g: 0.10 + Math.random()*0.12,
+      r: 2 + Math.random()*3,
+      w: 6 + Math.random()*8,
+      h: 4 + Math.random()*7,
+      rot: Math.random()*Math.PI,
+      vr: (Math.random()*0.25 - 0.12),
+      color: colors[Math.floor(Math.random()*colors.length)],
+      life: 0,
+      max: 140 + Math.random()*70
+    });
+  }
+
+  const loop = ()=>{
+    cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+
+    confettiParticles.forEach(p=>{
+      p.life++;
+      p.vy += p.g;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.vr;
+
+      const a = Math.max(0, 1 - p.life/p.max);
+      cctx.globalAlpha = a;
+
+      cctx.save();
+      cctx.translate(p.x, p.y);
+      cctx.rotate(p.rot);
+      cctx.fillStyle = p.color;
+      cctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      cctx.restore();
+    });
+
+    cctx.globalAlpha = 1;
+    confettiParticles = confettiParticles.filter(p=>p.life < p.max && p.y < confettiCanvas.height+40);
+
+    if(confettiParticles.length){
+      confettiRaf = requestAnimationFrame(loop);
+    }else{
+      confettiCanvas.style.display = "none";
+      cancelAnimationFrame(confettiRaf);
+      confettiRaf = null;
+    }
+  };
+
+  if(!confettiRaf) loop();
+}
+
+/* open gate */
 btnEnter.addEventListener("click", ()=>{
   gate.style.display = "none";
-  if (musicOn && audio){
-    audio.play().catch(()=>{});
-  }
-});// Hidden Admin bila tekan watermark 7x
+
+  // confetti + optional music
+  confettiBurst();
+  if (musicOn && audio) audio.play().catch(()=>{});
+});
+
+/* =========================
+   Version change
+========================= */
+verPicker.addEventListener("change", ()=>{
+  const next = parseInt(verPicker.value,10);
+  if (!allowed.includes(next)) return;
+
+  v = next;
+  p.set("v", String(v));
+  p.set("pkg", pkg);
+  history.replaceState(null, "", location.pathname + "?" + p.toString());
+
+  applyTheme(v);
+  maybeApplyAutoTime();
+  refreshPickerOptions();
+  rebuildQR();
+  setWatermark();
+});
+
+/* =========================
+   Hidden Admin bila tekan watermark 7x
+========================= */
 (function(){
   const wm = document.getElementById("wmTap");
   const admin = document.getElementById("adminLink");
@@ -460,6 +1013,190 @@ btnEnter.addEventListener("click", ()=>{
     }
   });
 })();
+
+/* =========================
+   Theme Sheet UI
+========================= */
+const sheetBack = document.getElementById("sheetBack");
+const sheet = document.getElementById("sheet");
+
+function openSheet(){
+  sheetBack.style.display = "block";
+  setTimeout(()=>sheet.classList.add("open"), 10);
+}
+function closeSheet(){
+  sheet.classList.remove("open");
+  setTimeout(()=>sheetBack.style.display="none", 220);
+}
+
+btnTheme.addEventListener("click", openSheet);
+btnCloseSheet.addEventListener("click", closeSheet);
+sheetBack.addEventListener("click", closeSheet);
+
+/* hook mood buttons */
+document.querySelectorAll("[data-m]").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    // bila user pilih manual, auto-time OFF (lebih logik)
+    setAutoTime(false);
+    setMood(btn.getAttribute("data-m"));
+    setWatermark();
+    rebuildQR();
+    closeSheet();
+  });
+});
+
+/* accent picker */
+accentPick.addEventListener("input", ()=>{
+  setAutoTime(false);
+  setAccent(accentPick.value);
+  setWatermark();
+});
+
+/* motion */
+motionBtn.addEventListener("click", ()=>{
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--motion").trim();
+  setMotion(cur !== "1");
+});
+
+/* auto time toggle */
+autoTimeBtn.addEventListener("click", ()=>{
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() === "1";
+  setAutoTime(!cur);
+  maybeApplyAutoTime();
+  setWatermark();
+});
+
+/* photo controls */
+photoToggle.addEventListener("click", ()=>{
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim() === "1";
+  setPhotoMode(!cur);
+});
+photoPick.addEventListener("change", ()=>{
+  applyPhotoTemplate(photoPick.value);
+  setWatermark();
+  rebuildQR();
+});
+oriPick.addEventListener("change", ()=>{
+  applyOrientation(oriPick.value);
+});
+
+/* =========================
+   Parallax (scroll + touch move)
+========================= */
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+let touchX = 0, touchY = 0;
+window.addEventListener("pointermove", (e)=>{
+  const w = window.innerWidth || 1;
+  const h = window.innerHeight || 1;
+  touchX = ((e.clientX / w) - 0.5) * 2; // -1..1
+  touchY = ((e.clientY / h) - 0.5) * 2;
+},{passive:true});
+
+function parallaxTick(){
+  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim() !== "1"){
+    requestAnimationFrame(parallaxTick);
+    return;
+  }
+
+  const y = window.scrollY || 0;
+  const scrollFactor = clamp(y/600, 0, 1);
+
+  const px = touchX * 10;
+  const py = touchY * 10;
+
+  document.documentElement.style.setProperty("--p1x", (px * 0.25) + "px");
+  document.documentElement.style.setProperty("--p1y", ((-scrollFactor*6) + (py * 0.25)) + "px");
+
+  document.documentElement.style.setProperty("--p2x", (px * 0.45) + "px");
+  document.documentElement.style.setProperty("--p2y", ((-scrollFactor*10) + (py * 0.45)) + "px");
+
+  document.documentElement.style.setProperty("--p3x", (px * 0.70) + "px");
+  document.documentElement.style.setProperty("--p3y", ((-scrollFactor*14) + (py * 0.70)) + "px");
+
+  requestAnimationFrame(parallaxTick);
+}
+requestAnimationFrame(parallaxTick);
+
+/* =========================
+   BOOT: mood/accent/motion/photo/auto-time
+========================= */
+(function bootPremium(){
+  // Motion
+  const savedMotion = localStorage.getItem("REM_MOTION");
+  setMotion(savedMotion === null ? true : savedMotion === "1");
+
+  // Auto time
+  const savedAuto = localStorage.getItem("REM_AUTOTIME");
+  setAutoTime(savedAuto === null ? true : savedAuto === "1");
+
+  // Mood priority: URL -> localStorage -> auto-time -> by v
+  const urlMood = (p.get("m")||"").toLowerCase();
+  const savedMood = localStorage.getItem("REM_MOOD");
+  const byV = (v===4) ? "islamic" : (v===1 ? "gold" : (v===2 ? "galaxy" : (v===5 ? "aurora" : "bokeh")));
+
+  if(urlMood){
+    setAutoTime(false);
+    setMood(urlMood, true);
+  }else if(savedMood && getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim() !== "1"){
+    setMood(savedMood, true);
+  }else{
+    // auto-time path
+    maybeApplyAutoTime();
+    if(!document.getElementById("wrap").getAttribute("data-mood")){
+      setMood(byV, true);
+    }
+  }
+
+  // Accent priority: URL a=xxxxxx -> localStorage -> theme accent
+  const urlA = (p.get("a")||"").trim();
+  const savedA = localStorage.getItem("REM_ACCENT");
+  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)){
+    setAutoTime(false);
+    setAccent("#"+urlA, true);
+  }else if(savedA){
+    setAccent(savedA, true);
+  }else{
+    setAccent(THEMES[v]?.accent || "#d4af37", true);
+  }
+  accentPick.value = (getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || accentPick.value);
+
+  // Photo mode: URL -> storage
+  const urlPhoto = (p.get("photo")||"").trim();
+  const urlImg = (p.get("img")||"").trim();
+  const savedPhotoOn = localStorage.getItem("REM_PHOTO_ON");
+  const savedImg = localStorage.getItem("REM_PHOTO_IMG");
+  const savedOri = localStorage.getItem("REM_PHOTO_ORI") || "portrait";
+
+  applyOrientation(savedOri);
+  oriPick.value = savedOri;
+
+  let photoOn = (urlPhoto === "1") ? true : (savedPhotoOn === "1");
+  setPhotoMode(photoOn);
+
+  const imgKey = urlImg || savedImg || "p1";
+  photoPick.value = PHOTO[imgKey] ? imgKey : "p1";
+  applyPhotoTemplate(photoPick.value);
+
+  // UI sync
+  autoTimeBtn.textContent = "Auto: " + (getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1" ? "ON" : "OFF");
+
+  // Initial watermark + QR
+  rebuildQR();
+  setWatermark();
+})();
+
+/* =========================
+   Rebuild QR after load
+========================= */
+window.addEventListener("load", ()=>{
+  rebuildQR();
+  setWatermark();
+});
+
+/* =========================
+   RSVP done
+========================= */
 </script>
 </body>
 </html>
