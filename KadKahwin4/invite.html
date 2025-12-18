@@ -2,1033 +2,974 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jemputan Digital</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Jemputan | Walimatul Urus</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Font (optional, selamat kalau tak load pun) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg1:#070707; --bg2:#000;
-      --card: rgba(255,255,255,.06);
+      --bg:#07070a;
+      --card: rgba(255,255,255,.10);
+      --card2: rgba(255,255,255,.07);
       --stroke: rgba(255,255,255,.14);
-      --text: #fff;
-      --muted: rgba(255,255,255,.70);
-      --accent: #d4af37;
-      --radius: 28px;
-
-      --glass: rgba(255,255,255,.06);
-      --grid: rgba(255,255,255,.05);
-      --glow: 0 0 18px var(--accent), 0 0 42px rgba(255,255,255,.12);
-
-      --p1x: 0px; --p1y: 0px;
-      --p2x: 0px; --p2y: 0px;
-      --p3x: 0px; --p3y: 0px;
-
-      --photo-url: none;
-      --photo-opacity: .38;
-      --photo-blur: 0px;
-      --photo-dim: .20;
-      --photo-fit: cover;
-      --photo-pos: 50% 50%;
-      --photo-mode: 0;
-
-      /* VIDEO BG */
-      --video-mode: 0;      /* 1 = on */
-      --video-opacity: .34; /* feel premium */
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --muted2: rgba(255,255,255,.55);
+      --gold1:#e7d7a6;
+      --gold2:#caa44d;
+      --shadow: 0 20px 70px rgba(0,0,0,.45);
+      --radius: 22px;
     }
 
-    @media (prefers-reduced-motion: reduce){
-      html{ --motion: 0; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x:hidden;
     }
 
-    body{ margin:0; color:var(--text); min-height:100vh; }
-
-    .theme-wrap{
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background:
-        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.07), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-    }
-    .bg-layer{ position:absolute; inset:0; pointer-events:none; }
-
-    /* ===== VIDEO LAYER ===== */
+    /* Background video */
     #bgVideo{
+      position: fixed;
+      inset: 0;
       width:100%;
       height:100%;
       object-fit:cover;
-      opacity: calc(var(--video-mode) * var(--video-opacity));
-      filter: saturate(1.05) contrast(1.02);
-      transform: translate3d(var(--p1x), var(--p1y), 0) scale(1.05);
-      transition: opacity .25s ease;
-      z-index: 1;
-      display:block;
+      z-index:-3;
+      background:#000;
+      filter: saturate(1.05) contrast(1.05);
     }
-    .video-dim{
-      z-index: 2;
-      background: radial-gradient(900px 520px at 20% 10%, rgba(0,0,0,.18), rgba(0,0,0,.60));
-      opacity: calc(var(--video-mode) * 1);
-      transition: opacity .25s ease;
-    }
-
-    /* photo layer */
-    .bg-photo{
-      opacity: calc(var(--photo-mode) * var(--photo-opacity));
-      background-image: var(--photo-url);
-      background-size: var(--photo-fit);
-      background-position: var(--photo-pos);
-      background-repeat: no-repeat;
-      filter: blur(var(--photo-blur)) saturate(1.06) contrast(1.04);
-      transform: translate3d(var(--p1x), var(--p1y), 0) scale(1.08);
-      transition: opacity .25s ease;
-      z-index: 3;
-    }
-    .bg-photoDim{
-      z-index: 4;
-      background: radial-gradient(900px 520px at 20% 10%, rgba(0,0,0,var(--photo-dim)), rgba(0,0,0,.55));
-      opacity: calc(var(--photo-mode) * 1);
-      transition: opacity .25s ease;
-    }
-
-    /* aurora */
-    .bg-aurora{
-      filter: blur(20px) saturate(1.12);
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:-2;
       background:
-        radial-gradient(900px 520px at 10% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 62%),
-        radial-gradient(720px 520px at 90% 15%, rgba(34,197,94,.14), transparent 64%),
-        radial-gradient(980px 620px at 50% 90%, rgba(251,113,133,.12), transparent 66%);
-      animation: auroraMove 16s ease-in-out infinite;
-      transform: translate3d(var(--p2x), var(--p2y), 0) scale(1.02);
-      z-index: 5;
+        radial-gradient(1200px 700px at 20% 10%, rgba(202,164,77,.18), transparent 55%),
+        radial-gradient(900px 600px at 85% 35%, rgba(231,215,166,.12), transparent 55%),
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.68));
     }
-    @keyframes auroraMove{
-      0%,100%{ filter: blur(20px) saturate(1.12); }
-      50%{ filter: blur(22px) saturate(1.18); }
-    }
-
-    .bg-grid{
-      background-image:
-        linear-gradient(to right, var(--grid) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-      background-size: 44px 44px;
-      transform: perspective(900px) rotateX(62deg) translateY(10%);
-      transform-origin: top;
-      animation: gridDrift 12s linear infinite;
-      z-index: 6;
-    }
-    @keyframes gridDrift{
-      0%{ background-position: 0 0, 0 0; }
-      100%{ background-position: 440px 0, 0 440px; }
+    .grain{
+      position:fixed; inset:0; z-index:-1; pointer-events:none;
+      opacity:.12;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+      background-size:220px 220px;
+      mix-blend-mode:overlay;
     }
 
-    .bg-blobs{
-      filter: blur(28px);
-      mix-blend-mode: screen;
-      transform: translate3d(var(--p3x), var(--p3y), 0);
-      z-index: 7;
+    /* Tap-to-play layer (untuk browser yang sekat autoplay) */
+    #tapToPlay{
+      position:fixed; inset:0; z-index:50;
+      display:none;
+      align-items:center; justify-content:center;
+      padding:22px;
+      background: rgba(0,0,0,.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .blob{
-      position:absolute;
-      width: 380px; height: 380px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 85%, white), transparent 60%);
-      animation: floaty 10s ease-in-out infinite;
-    }
-    .blob.b1{ top:-120px; left:-120px; transform: scale(1.05); animation-duration: 12s; }
-    .blob.b2{ bottom:-140px; right:-160px; transform: scale(1.15); animation-duration: 14s; }
-    .blob.b3{ top:35%; right:-180px; transform: scale(.9); animation-duration: 16s; }
-    @keyframes floaty{
-      0%,100%{ transform: translate(0,0) scale(1); }
-      50%{ transform: translate(18px, -22px) scale(1.06); }
-    }
-
-    .bg-shimmer{
-      mix-blend-mode: overlay;
-      background: linear-gradient(110deg,
-        transparent 0%,
-        rgba(255,255,255,.10) 30%,
-        rgba(255,255,255,.22) 45%,
-        rgba(255,255,255,.10) 60%,
-        transparent 100%);
-      animation: shimmer 4.5s linear infinite;
-      z-index: 8;
-    }
-    @keyframes shimmer{
-      0%{ transform: translateX(-120%); }
-      100%{ transform: translateX(120%); }
-    }
-
-    .bg-stars{
-      background:
-        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.65), transparent 55%),
-        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.55), transparent 55%),
-        radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,.55), transparent 55%),
-        radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,.55), transparent 55%),
-        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,.45), transparent 55%),
-        radial-gradient(2px 2px at 25% 35%, rgba(255,255,255,.40), transparent 60%),
-        radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.40), transparent 60%);
-      animation: starDrift 18s linear infinite;
-      z-index: 9;
-    }
-    @keyframes starDrift{
-      0%{ transform: translate3d(0,0,0); }
-      100%{ transform: translate3d(-3%,2%,0); }
-    }
-
-    .bg-islamic{
-      background-image:
-        radial-gradient(circle at 1px 1px, rgba(255,255,255,.45) 1px, transparent 1px),
-        linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08)),
-        linear-gradient(-45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08));
-      background-size: 32px 32px, 28px 28px, 28px 28px;
-      background-position: 0 0, 0 0, 14px 14px;
-      animation: patMove 22s linear infinite;
-      z-index: 10;
-    }
-    @keyframes patMove{
-      0%{ background-position: 0 0, 0 0, 14px 14px; }
-      100%{ background-position: 160px 0, 120px 0, 134px 14px; }
-    }
-
-    .bg-marble{
-      background:
-        radial-gradient(700px 500px at 20% 40%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(900px 600px at 80% 70%, rgba(255,255,255,.06), transparent 62%),
-        linear-gradient(135deg, rgba(255,255,255,.04), transparent 60%);
-      animation: marble 20s ease-in-out infinite;
-      z-index: 11;
-    }
-    @keyframes marble{
-      0%,100%{ transform: translate3d(0,0,0) scale(1); }
-      50%{ transform: translate3d(10px,-10px,0) scale(1.03); }
-    }
-
-    .glass{
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.55);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Watermark */
-    .wm-wrap{
-      position: fixed; inset: 0;
-      pointer-events: none;
-      z-index: 40;
-      opacity: .18;
-      mix-blend-mode: overlay;
-    }
-    .wm{
-      position: absolute; left: -20%; top: 30%;
-      width: 140%;
-      transform: rotate(-18deg);
-      display:flex; flex-direction:column; gap:18px;
-    }
-    .wm-row{
-      display:flex; gap:26px; white-space:nowrap;
-      font-weight:800; letter-spacing:.35em; text-transform:uppercase;
-      font-size:13px;
-      color: rgba(255,255,255,.9);
-      text-shadow: 0 0 10px rgba(0,0,0,.35);
-      animation: wmMove 18s linear infinite;
-    }
-    .wm-row:nth-child(2){ animation-duration: 22s; opacity:.9; }
-    .wm-row:nth-child(3){ animation-duration: 26s; opacity:.75; }
-    @keyframes wmMove{ from{ transform: translateX(-6%); } to{ transform: translateX(6%); } }
-
-    .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
-    .btn{
-      border-radius: 16px;
-      border: 1px solid var(--stroke);
-      padding: 12px 14px;
-      background: rgba(0,0,0,.22);
-    }
-    .btnPrimary{
-      background: var(--accent);
-      color: #0b0b0b;
-      border-color: rgba(255,255,255,.18);
-      font-weight: 800;
-      box-shadow: var(--glow);
-    }
-    .input{
-      width:100%;
-      border-radius: 16px;
-      border:1px solid var(--stroke);
-      padding: 12px 14px;
-      background: rgba(0,0,0,.25);
-      outline:none;
-    }
-    .qrWrap{
+    .tapCard{
+      width:min(560px,100%);
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
       border-radius: 20px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,.18);
-      padding: 14px;
-      display: inline-block;
+      padding:22px 18px;
+      box-shadow: var(--shadow);
+      text-align:center;
+    }
+    .tapTitle{
+      font-weight:700;
+      font-size:18px;
+      margin-bottom:6px;
+      letter-spacing:.2px;
+    }
+    .tapDesc{
+      font-size:13px;
+      color: var(--muted);
+      line-height:1.55;
+      margin-bottom:14px;
     }
 
-    .gate{
-      position: fixed; inset:0;
-      background:
-        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.08), transparent 55%),
-        linear-gradient(180deg, #070707, #000);
-      display:flex; align-items:center; justify-content:center;
-      z-index: 60;
-      padding: 24px;
+    /* Layout */
+    .wrap{
+      max-width: 980px;
+      margin:0 auto;
+      padding: 22px 16px 90px;
     }
-    .fadeUp{ animation: fadeUp .65s ease both; }
-    @keyframes fadeUp{ from{opacity:0; transform: translateY(14px)} to{opacity:1; transform:none} }
 
-    .sheetBack{
-      position: fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      z-index: 70;
-      display:none;
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
     }
-    .sheet{
-      position: fixed; left: 0; right: 0; bottom: 0;
-      z-index: 71;
-      transform: translateY(110%);
-      transition: .25s ease;
-      padding: 14px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      opacity:.95;
     }
-    .sheet.open{ transform: translateY(0); }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: linear-gradient(135deg, var(--gold1), var(--gold2));
+      box-shadow: 0 0 18px rgba(202,164,77,.45);
+    }
+    .brand b{font-weight:700}
+    .chip{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
 
-    #confettiCanvas{
-      position: fixed; inset:0;
+    /* Hero card */
+    .hero{
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(900px 380px at 20% 0%, rgba(231,215,166,.18), transparent 55%),
+                  radial-gradient(900px 380px at 85% 30%, rgba(202,164,77,.14), transparent 60%);
       pointer-events:none;
-      z-index: 80;
-      display:none;
+    }
+    .heroInner{
+      position:relative;
+      padding: 26px 18px 18px;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      padding: 7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--muted);
+    }
+    .badge .mini{
+      width:8px;height:8px;border-radius:999px;
+      background: linear-gradient(135deg, var(--gold1), var(--gold2));
+    }
+    .title{
+      margin: 14px 0 6px;
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      letter-spacing:.3px;
+      font-size: clamp(30px, 5.4vw, 56px);
+      line-height: 1.05;
+    }
+    .subtitle{
+      color: var(--muted);
+      line-height:1.6;
+      font-size: 14px;
+      max-width: 60ch;
+    }
+    .names{
+      margin-top: 18px;
+      display:grid;
+      gap:10px;
+    }
+    .names .pair{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:baseline;
+      justify-content:center;
+      text-align:center;
+      padding: 16px 14px;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.07);
+    }
+    .names .pair span{
+      font-family:"Playfair Display",serif;
+      font-size: clamp(22px, 4.6vw, 34px);
+      font-weight: 700;
+    }
+    .names .pair em{
+      font-style:normal;
+      color: var(--gold1);
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
-    /* =========================
-       FIX: Theme layers default OFF + Motion pause betul
-    ========================= */
-    .show-aurora, .show-grid, .show-stars, .show-islamic, .show-marble, .show-shimmer, .show-blobs{
-      opacity: 0 !important;
+    /* Buttons */
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:center;
+      margin-top: 16px;
+    }
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 700;
+      letter-spacing:.2px;
+      transition: transform .12s ease, opacity .12s ease, background .12s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      user-select:none;
+      text-decoration:none;
+      justify-content:center;
+    }
+    .btn:active{transform:scale(.98)}
+    .btnPrimary{
+      background: linear-gradient(135deg, var(--gold1), var(--gold2));
+      color:#161514;
+      box-shadow: 0 12px 28px rgba(202,164,77,.25);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.10);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .btnSmall{
+      padding: 10px 14px;
+      font-size: 13px;
     }
 
-    html[data-motion="0"] .bg-aurora,
-    html[data-motion="0"] .bg-grid,
-    html[data-motion="0"] .bg-stars,
-    html[data-motion="0"] .bg-islamic,
-    html[data-motion="0"] .bg-marble,
-    html[data-motion="0"] .bg-shimmer,
-    html[data-motion="0"] .blob,
-    html[data-motion="0"] .wm-row{
-      animation-play-state: paused !important;
+    /* Sections */
+    .grid{
+      display:grid;
+      gap: 14px;
+      margin-top: 14px;
     }
-    html[data-motion="1"] .bg-aurora,
-    html[data-motion="1"] .bg-grid,
-    html[data-motion="1"] .bg-stars,
-    html[data-motion="1"] .bg-islamic,
-    html[data-motion="1"] .bg-marble,
-    html[data-motion="1"] .bg-shimmer,
-    html[data-motion="1"] .blob,
-    html[data-motion="1"] .wm-row{
-      animation-play-state: running !important;
+    @media(min-width:860px){
+      .grid{grid-template-columns: 1.15fr .85fr}
     }
 
-    [data-mood="aurora"]  .show-aurora{opacity:.85 !important}
-    [data-mood="aurora"]  .show-grid{opacity:.10 !important}
-    [data-mood="aurora"]  .show-shimmer{opacity:.08 !important}
+    .section{
+      border-radius: var(--radius);
+      background: var(--card);
+      border:1px solid var(--stroke);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .section h2{
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing:.2px;
+    }
+    .muted{color: var(--muted); font-size: 13px; line-height:1.6}
+    .hr{
+      height:1px;
+      background: rgba(255,255,255,.12);
+      margin: 14px 0;
+    }
 
-    [data-mood="gold"]    .show-aurora{opacity:.35 !important}
-    [data-mood="gold"]    .show-shimmer{opacity:.22 !important}
-    [data-mood="gold"]    .show-grid{opacity:.12 !important}
-    [data-mood="gold"]    .show-marble{opacity:.08 !important}
+    /* Info list */
+    .info{
+      display:grid;
+      gap:10px;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+    }
+    .ico{
+      width:36px; height:36px;
+      border-radius: 12px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.14);
+      flex:0 0 36px;
+      font-size: 16px;
+    }
+    .row b{display:block; font-size: 13px; margin-bottom: 3px}
+    .row span{display:block; color: var(--muted); font-size: 13px; line-height:1.45}
 
-    [data-mood="galaxy"]  .show-stars{opacity:.34 !important}
-    [data-mood="galaxy"]  .show-aurora{opacity:.28 !important}
-    [data-mood="galaxy"]  .show-grid{opacity:.14 !important}
+    /* Countdown */
+    .count{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-top: 12px;
+    }
+    .pill{
+      padding: 12px 10px;
+      text-align:center;
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .pill b{
+      display:block;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing:.3px;
+    }
+    .pill small{
+      display:block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+      letter-spacing:.7px;
+      text-transform:uppercase;
+    }
 
-    [data-mood="bokeh"]   .show-blobs{opacity:.72 !important}
-    [data-mood="bokeh"]   .show-aurora{opacity:.22 !important}
+    /* RSVP */
+    .form{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .field{
+      display:grid;
+      gap:6px;
+    }
+    label{font-size:12px; color: var(--muted)}
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+      font-family: inherit;
+    }
+    textarea{min-height: 92px; resize:vertical}
 
-    [data-mood="islamic"] .show-islamic{opacity:.18 !important}
-    [data-mood="islamic"] .show-aurora{opacity:.25 !important}
-    [data-mood="islamic"] .show-grid{opacity:.06 !important}
+    /* Gallery */
+    .gallery{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top: 10px;
+    }
+    .ph{
+      aspect-ratio: 1/1;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      overflow:hidden;
+      position:relative;
+    }
+    .ph img{
+      width:100%; height:100%;
+      object-fit:cover;
+      display:block;
+      filter:saturate(1.05) contrast(1.05);
+    }
+    .ph::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.28));
+      pointer-events:none;
+    }
 
-    [data-mood="marble"]  .show-marble{opacity:.22 !important}
-    [data-mood="marble"]  .show-aurora{opacity:.18 !important}
-    [data-mood="marble"]  .show-grid{opacity:.06 !important}
-    [data-mood="marble"]  .show-shimmer{opacity:.06 !important}
+    /* Footer */
+    .footer{
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      text-align:center;
+      color: var(--muted2);
+      font-size: 12px;
+      line-height:1.6;
+    }
+    .footer b{color: var(--muted);}
 
-    /* Bila video ON, kurangkan overlay supaya video nampak */
-    [data-video="on"] .show-aurora{opacity:.18 !important}
-    [data-video="on"] .show-grid{opacity:.06 !important}
-    [data-video="on"] .show-stars{opacity:.10 !important}
-    [data-video="on"] .show-shimmer{opacity:.06 !important}
-    [data-video="on"] .show-islamic{opacity:.10 !important}
-    [data-video="on"] .show-marble{opacity:.10 !important}
-    [data-video="on"] .show-blobs{opacity:.18 !important}
+    /* Floating nav */
+    .dock{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14px;
+      width: min(980px, calc(100% - 24px));
+      z-index: 40;
+      display:flex;
+      justify-content:center;
+    }
+    .dockInner{
+      width:100%;
+      display:flex;
+      gap:10px;
+      padding: 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.40);
+      border:1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 20px 70px rgba(0,0,0,.45);
+      overflow:auto;
+    }
+    .dockInner a{
+      white-space:nowrap;
+      text-decoration:none;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border:1px solid transparent;
+      background: rgba(255,255,255,.06);
+      transition: .12s ease;
+    }
+    .dockInner a:hover{opacity:.95}
+    .dockInner a.active{
+      color:#171614;
+      background: linear-gradient(135deg, var(--gold1), var(--gold2));
+      border-color: rgba(0,0,0,.12);
+      font-weight: 800;
+    }
+
+    /* Motion */
+    @media (prefers-reduced-motion: no-preference){
+      .hero, .section{animation: fadeUp .55s ease both}
+      .section:nth-child(2){animation-delay:.06s}
+      .section:nth-child(3){animation-delay:.12s}
+      .section:nth-child(4){animation-delay:.18s}
+      @keyframes fadeUp{
+        from{opacity:0; transform: translateY(10px)}
+        to{opacity:1; transform: translateY(0)}
+      }
+    }
   </style>
 </head>
 
 <body>
-  <canvas id="confettiCanvas"></canvas>
+  <!-- Background Video -->
+  <video id="bgVideo" muted loop playsinline preload="auto">
+    <source src="assets/bg.mp4" type="video/mp4" />
+  </video>
 
-  <div class="theme-wrap" id="wrap" data-mood="aurora" data-video="off">
+  <div class="overlay"></div>
+  <div class="grain"></div>
 
-    <!-- VIDEO BG -->
-    <video id="bgVideo" class="bg-layer" autoplay muted loop playsinline preload="metadata">
-      <source src="./assets/bg1.mp4" type="video/mp4">
-    </video>
-    <div class="bg-layer video-dim"></div>
-
-    <!-- Photo layer (optional) -->
-    <div class="bg-layer bg-photo" id="photoLayer"></div>
-    <div class="bg-layer bg-photoDim"></div>
-
-    <!-- Background Layers -->
-    <div class="bg-layer bg-aurora show-aurora"></div>
-    <div class="bg-layer bg-grid show-grid"></div>
-    <div class="bg-layer bg-stars show-stars"></div>
-    <div class="bg-layer bg-islamic show-islamic"></div>
-    <div class="bg-layer bg-marble show-marble"></div>
-    <div class="bg-layer bg-shimmer show-shimmer"></div>
-    <div class="bg-layer bg-blobs show-blobs">
-      <div class="blob b1"></div>
-      <div class="blob b2"></div>
-      <div class="blob b3"></div>
+  <!-- Tap-to-play -->
+  <div id="tapToPlay">
+    <div class="tapCard">
+      <div class="tapTitle">Ketik untuk mula</div>
+      <div class="tapDesc">Sesetengah browser (Chrome/Android) perlu satu sentuhan untuk memainkan video latar.</div>
+      <button class="btn btnPrimary" id="tapBtn" type="button">Mulakan Video</button>
+      <div class="muted" style="margin-top:10px">Tip: Kalau masih tak jalan, refresh & ketik sekali lagi.</div>
     </div>
-
-    <div class="relative z-10 p-4 max-w-[560px] mx-auto">
-
-      <div class="wm-wrap" id="wmWrap">
-        <div class="wm" id="wm">
-          <div class="wm-row" id="wm1"></div>
-          <div class="wm-row" id="wm2"></div>
-          <div class="wm-row" id="wm3"></div>
-        </div>
-      </div>
-
-      <!-- INTRO GATE -->
-      <div id="gate" class="gate">
-        <div class="w-full max-w-md glass p-6 text-center space-y-4 fadeUp">
-          <div class="text-xs tracking-[.35em] uppercase opacity-70" id="gLabel">Walimatul Urus</div>
-          <div class="text-3xl font-extrabold" id="gTitle">Jemputan Digital</div>
-          <div class="text-white/70 text-sm" id="gDesc">Klik untuk buka jemputan.</div>
-
-          <div class="grid grid-cols-2 gap-2 pt-2">
-            <button id="btnEnter" class="btn btnPrimary">Buka</button>
-            <button id="btnMute" class="btn">Muzik: Off</button>
-          </div>
-
-          <div class="text-xs opacity-50">© R-E-M Digital Invitation</div>
-        </div>
-      </div>
-
-      <!-- MAIN CARD -->
-      <div class="glass p-6 text-center space-y-5 fadeUp">
-        <div class="flex items-center justify-between gap-2">
-          <div class="flex items-center gap-2">
-            <span id="chipPkg" class="chip text-xs px-3 py-2 rounded-full">PKG</span>
-            <span id="chipStyle" class="chip text-xs px-3 py-2 rounded-full">Style</span>
-            <span id="chipVer" class="chip text-xs px-3 py-2 rounded-full">v</span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button id="btnTheme" class="chip text-sm px-3 py-2 rounded-full">Tema ✨</button>
-            <select id="verPicker" class="chip text-sm px-3 py-2 rounded-full bg-transparent">
-              <option value="1">Versi 1</option>
-              <option value="2">Versi 2</option>
-              <option value="3">Versi 3</option>
-              <option value="4">Versi 4</option>
-              <option value="5">Versi 5</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <div class="text-xs tracking-[.35em] uppercase opacity-70" id="labelTop">Walimatul Urus</div>
-          <h1 id="outNames" class="text-4xl font-extrabold leading-tight">Adam & Hawa</h1>
-          <p id="outLine" class="text-white/70">Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik</p>
-        </div>
-
-        <div class="border-t border-white/10 pt-4 space-y-2 text-sm text-white/80">
-          <div>📅 <span id="outDate">Sabtu, 12 Oktober 2025</span></div>
-          <div>🕚 <span id="outTime">11.00 pagi – 4.00 petang</span></div>
-          <div>📍 <span id="outLoc">Dewan Seri Melur</span></div>
-        </div>
-
-        <div class="space-y-3 pt-2">
-          <input id="guest" class="input" placeholder="Nama tetamu" />
-          <div class="grid grid-cols-2 gap-3">
-            <button class="btn btnPrimary" onclick="rsvp('Hadir')" id="btnHadir">Hadir</button>
-            <button class="btn" onclick="rsvp('Tidak Hadir')" id="btnTidak">Tidak Hadir</button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <button class="btn" id="btnCopy">Copy Link</button>
-            <button class="btn hidden" id="btnMaps">Buka Maps</button>
-          </div>
-        </div>
-
-        <div class="pt-2">
-          <div class="qrWrap">
-            <div id="qrcode"></div>
-          </div>
-        </div>
-
-        <div class="text-xs opacity-60" id="footLine">Jemputan Digital • Mesra Telefon 📱</div>
-
-        <div class="pt-4 text-xs opacity-40 select-none text-center">
-          <button id="wmTap" type="button" class="underline decoration-white/20">
-            © R-E-M Digital Invitation
-          </button>
-          <a id="adminLink"
-             class="hidden ml-2 px-3 py-1 rounded-full bg-white/10 border border-white/10"
-             href="./admin.html">
-             Admin
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- THEME SHEET -->
-    <div id="sheetBack" class="sheetBack"></div>
-    <div id="sheet" class="sheet">
-      <div class="glass p-4 rounded-[24px] max-w-[560px] mx-auto space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="font-extrabold text-lg">Tema Premium</div>
-          <button id="btnCloseSheet" class="chip px-3 py-2 rounded-full">Tutup</button>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <button class="btn" data-m="aurora">Aurora Silk</button>
-          <button class="btn" data-m="gold">Gold Foil Luxe</button>
-          <button class="btn" data-m="galaxy">Starfield Galaxy</button>
-          <button class="btn" data-m="bokeh">Bokeh Romance</button>
-          <button class="btn" data-m="islamic">Islamic Emerald</button>
-          <button class="btn" data-m="marble">Royal Marble</button>
-        </div>
-
-        <!-- VIDEO MODE -->
-        <div class="border-t border-white/10 pt-3 space-y-2">
-          <div class="flex items-center justify-between gap-3">
-            <div class="text-sm text-white/70">Video Background (MP4/WebM)</div>
-            <button id="videoToggle" class="btn">Video: OFF</button>
-          </div>
-          <div class="text-xs text-white/50">
-            Default: <span class="mono">KadKahwin4/assets/bg1.mp4</span>
-            <br/>Atau guna link luar: tambah <span class="mono">?bg=URL</span>
-          </div>
-        </div>
-
-        <!-- PHOTO MODE -->
-        <div class="border-t border-white/10 pt-3 space-y-2">
-          <div class="flex items-center justify-between gap-3">
-            <div class="text-sm text-white/70">Tema Bergambar</div>
-            <button id="photoToggle" class="btn">Photo: OFF</button>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <select id="photoPick" class="chip text-sm px-3 py-3 rounded-2xl bg-transparent">
-              <option value="p1">Portrait • Template 1</option>
-              <option value="p2">Portrait • Template 2</option>
-              <option value="p3">Portrait • Template 3</option>
-              <option value="l1">Landscape • Template 1</option>
-              <option value="l2">Landscape • Template 2</option>
-              <option value="l3">Landscape • Template 3</option>
-            </select>
-            <select id="oriPick" class="chip text-sm px-3 py-3 rounded-2xl bg-transparent">
-              <option value="portrait">Portrait</option>
-              <option value="landscape">Landscape</option>
-            </select>
-          </div>
-
-          <div class="text-xs text-white/50">
-            Folder gambar: <span class="mono">KadKahwin4/assets/</span> (p1.jpg..l3.jpg)
-          </div>
-        </div>
-
-        <!-- CONTROLS -->
-        <div class="border-t border-white/10 pt-3 space-y-2">
-          <div class="flex items-center justify-between gap-3">
-            <div class="text-sm text-white/70">Warna accent</div>
-            <input id="accentPick" type="color" class="w-14 h-11 rounded-xl overflow-hidden border border-white/15 bg-white/5" value="#d4af37">
-          </div>
-
-          <div class="flex items-center justify-between gap-3">
-            <div class="text-sm text-white/70">Motion</div>
-            <button id="motionBtn" class="btn">Motion: ON</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-<script>
-/* =========================
-   CONFIG DEFAULT
-========================= */
-const CONFIG = {
-  WA_PHONE: "601111661303",
-  MAPS_URL: "",
-  EVENT: {
-    names: "Adam & Hawa",
-    date: "Sabtu, 12 Oktober 2025",
-    time: "11.00 pagi – 4.00 petang",
-    location: "Dewan Seri Melur"
-  },
-  MUSIC_URL: ""
-};
+  <div class="wrap" id="top">
+    <div class="topbar">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <b>Kad Kahwin Digital</b><br>
+          <span class="muted" style="font-size:12px">Jemputan Rasmi</span>
+        </div>
+      </div>
 
-/* =========================
-   Params
-========================= */
-const p = new URLSearchParams(location.search);
-const pkg = (p.get("pkg") || "pro").toLowerCase();
-let v = parseInt(p.get("v") || "1", 10);
+      <div class="chip" id="liveClock">⏳ <span>--:--</span></div>
+    </div>
 
-const allowByPkg = { basic:[1], vip:[1,2,3], pro:[1,2,3,4,5] };
-const allowed = allowByPkg[pkg] || allowByPkg.pro;
-if(!allowed.includes(v)) v = allowed[0];
+    <!-- HERO -->
+    <section class="hero" id="hero">
+      <div class="heroInner">
+        <div class="badge"><span class="mini"></span> Wedding Invitation</div>
 
-/* Override CONFIG from URL */
-(function(){
-  if (p.get("wa"))    CONFIG.WA_PHONE = (p.get("wa") || "").trim().replace(/[^\d]/g,"");
-  if (p.get("maps"))  CONFIG.MAPS_URL = (p.get("maps") || "").trim();
-  if (p.get("music")) CONFIG.MUSIC_URL = (p.get("music") || "").trim();
-  if (p.get("names")) CONFIG.EVENT.names = (p.get("names") || "").trim();
-  if (p.get("date"))  CONFIG.EVENT.date  = (p.get("date")  || "").trim();
-  if (p.get("time"))  CONFIG.EVENT.time  = (p.get("time")  || "").trim();
-  if (p.get("loc"))   CONFIG.EVENT.location = (p.get("loc") || "").trim();
-})();
+        <div class="title">Walimatul Urus</div>
+        <div class="subtitle">
+          Dengan penuh kesyukuran, kami menjemput <b>Dato’/Datin/Tuan/Puan/Encik/Cik</b> sekeluarga hadir memeriahkan majlis perkahwinan kami.
+        </div>
 
-/* =========================
-   Themes v1–v5
-========================= */
-const THEMES = {
-  1:{style:"Premium", accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000", card:"rgba(255,255,255,.06)"},
-  2:{style:"Modern",  accent:"#39ffcf", bg1:"#070a12", bg2:"#000", card:"rgba(57,255,207,.06)"},
-  3:{style:"Minimal", accent:"#ffffff", bg1:"#0a0a0a", bg2:"#000", card:"rgba(255,255,255,.06)"},
-  4:{style:"Islamic", accent:"#2ecc71", bg1:"#07120a", bg2:"#000", card:"rgba(46,204,113,.06)"},
-  5:{style:"Royal",   accent:"#a78bfa", bg1:"#0a0712", bg2:"#000", card:"rgba(167,139,250,.06)"},
-};
-function applyTheme(ver){
-  const t = THEMES[ver] || THEMES[1];
-  document.documentElement.style.setProperty("--bg1", t.bg1);
-  document.documentElement.style.setProperty("--bg2", t.bg2);
-  document.documentElement.style.setProperty("--card", t.card);
-  if(!localStorage.getItem("REM_ACCENT") && !p.get("a")){
-    document.documentElement.style.setProperty("--accent", t.accent);
-  }
-  chipStyle.textContent = t.style;
-  chipVer.textContent = "v"+ver;
-  verPicker.value = String(ver);
-}
+        <div class="names">
+          <div class="pair">
+            <span id="groomName">Adam</span>
+            <em>&amp;</em>
+            <span id="brideName">Hawa</span>
+          </div>
+        </div>
 
-/* =========================
-   Mood + Accent + Motion
-========================= */
-const MOODS = { aurora:1, gold:1, galaxy:1, bokeh:1, islamic:1, marble:1 };
+        <div class="actions">
+          <a class="btn btnPrimary" href="#rsvp">📩 RSVP Sekarang</a>
+          <a class="btn btnGhost" href="#lokasi">📍 Lihat Lokasi</a>
+          <button class="btn btnGhost" id="btnCalendar" type="button">🗓️ Add to Calendar</button>
+        </div>
 
-function setMood(m, skipUrl=false){
-  const wrap = document.getElementById("wrap");
-  const key = MOODS[m] ? m : "aurora";
-  wrap.setAttribute("data-mood", key);
-  localStorage.setItem("REM_MOOD", key);
-  if(!skipUrl){ p.set("m", key); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
-}
+        <div class="hr"></div>
 
-function setAccent(c, skipUrl=false){
-  document.documentElement.style.setProperty("--accent", c);
-  localStorage.setItem("REM_ACCENT", c);
-  if(!skipUrl){ p.set("a", c.replace("#","")); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
-}
+        <!-- COUNTDOWN -->
+        <div class="muted"><b>Countdown</b> ke hari majlis</div>
+        <div class="count" aria-label="Countdown">
+          <div class="pill"><b id="cdD">--</b><small>Hari</small></div>
+          <div class="pill"><b id="cdH">--</b><small>Jam</small></div>
+          <div class="pill"><b id="cdM">--</b><small>Minit</small></div>
+          <div class="pill"><b id="cdS">--</b><small>Saat</small></div>
+        </div>
+      </div>
+    </section>
 
-/* FIX Motion: guna attribute html[data-motion] */
-function setMotion(on){
-  document.documentElement.setAttribute("data-motion", on ? "1" : "0");
-  localStorage.setItem("REM_MOTION", on ? "1" : "0");
-  motionBtn.textContent = "Motion: " + (on ? "ON" : "OFF");
-}
+    <div class="grid">
+      <!-- MAKLUMAT MAJLIS -->
+      <section class="section" id="maklumat">
+        <h2>Maklumat Majlis</h2>
+        <div class="muted">Sila semak butiran di bawah. Anda boleh ubah semua teks ikut kehendak.</div>
 
-/* =========================
-   PHOTO
-========================= */
-const PHOTO = {
-  p1:"./assets/p1.jpg", p2:"./assets/p2.jpg", p3:"./assets/p3.jpg",
-  l1:"./assets/l1.jpg", l2:"./assets/l2.jpg", l3:"./assets/l3.jpg",
-};
+        <div class="info" style="margin-top:12px">
+          <div class="row">
+            <div class="ico">📅</div>
+            <div>
+              <b>Tarikh</b>
+              <span id="eventDateText">01/12/2025 (Isnin)</span>
+            </div>
+          </div>
 
-function setPhotoMode(on){
-  const videoOn = getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1";
-  if(on && videoOn) on = false;
+          <div class="row">
+            <div class="ico">⏰</div>
+            <div>
+              <b>Masa</b>
+              <span id="eventTimeText">9.00am – 2.00pm</span>
+            </div>
+          </div>
 
-  document.documentElement.style.setProperty("--photo-mode", on ? "1":"0");
-  localStorage.setItem("REM_PHOTO_ON", on ? "1":"0");
-  photoToggle.textContent = "Photo: " + (on ? "ON":"OFF");
+          <div class="row" id="lokasi">
+            <div class="ico">📍</div>
+            <div>
+              <b>Lokasi</b>
+              <span id="venueName">Dewan Seri Indah, Bandar Baru</span>
+              <span class="muted" id="venueAddr">Jalan Contoh 1, 43000 Kajang, Selangor</span>
+            </div>
+          </div>
+        </div>
 
-  p.set("photo", on ? "1":"0");
-  history.replaceState(null,"",location.pathname+"?"+p.toString());
+        <div class="actions" style="margin-top:12px; justify-content:flex-start">
+          <a class="btn btnPrimary btnSmall" id="btnMaps" target="_blank" rel="noopener">Buka Google Maps</a>
+          <a class="btn btnGhost btnSmall" href="#aturcara">Aturcara</a>
+          <a class="btn btnGhost btnSmall" href="#hadiah">Hadiah</a>
+        </div>
+      </section>
 
-  setWatermark(); rebuildQR();
-}
+      <!-- ATURCARA -->
+      <section class="section" id="aturcara">
+        <h2>Aturcara Majlis</h2>
+        <div class="muted">Contoh aturcara (boleh ubah / tambah).</div>
 
-function applyPhotoTemplate(key){
-  const url = PHOTO[key];
-  if(!url){ setPhotoMode(false); return; }
-  document.documentElement.style.setProperty("--photo-url", `url("${url}")`);
-  localStorage.setItem("REM_PHOTO_IMG", key);
-  p.set("img", key);
-  history.replaceState(null,"",location.pathname+"?"+p.toString());
-}
+        <div class="info" style="margin-top:12px">
+          <div class="row">
+            <div class="ico">🕌</div>
+            <div>
+              <b>Akad Nikah</b>
+              <span id="akadText">8.30am – 9.15am</span>
+            </div>
+          </div>
 
-function applyOrientation(ori){
-  if(ori==="portrait"){
-    document.documentElement.style.setProperty("--photo-pos","50% 25%");
-    document.documentElement.style.setProperty("--photo-fit","cover");
-  }else{
-    document.documentElement.style.setProperty("--photo-pos","50% 45%");
-    document.documentElement.style.setProperty("--photo-fit","cover");
-  }
-  localStorage.setItem("REM_PHOTO_ORI", ori);
-}
+          <div class="row">
+            <div class="ico">🍽️</div>
+            <div>
+              <b>Jamuan</b>
+              <span id="jamuanText">9.00am – 2.00pm</span>
+            </div>
+          </div>
 
-/* =========================
-   VIDEO FIX: detect fail + support ?bg=URL
-========================= */
-function setVideoMode(on){
-  const wrapEl = document.getElementById("wrap");
-  document.documentElement.style.setProperty("--video-mode", on ? "1":"0");
-  localStorage.setItem("REM_VIDEO_ON", on ? "1":"0");
-  videoToggle.textContent = "Video: " + (on ? "ON":"OFF");
+          <div class="row">
+            <div class="ico">📸</div>
+            <div>
+              <b>Sesi Bergambar</b>
+              <span id="photoText">11.30am – 12.30pm</span>
+            </div>
+          </div>
+        </div>
 
-  if(wrapEl) wrapEl.setAttribute("data-video", on ? "on" : "off");
+        <div class="hr"></div>
+        <div class="muted">
+          <b>Dress code (optional):</b> Sopan & kemas. <br/>
+          <b>Nota:</b> Kehadiran anda sangat kami hargai.
+        </div>
+      </section>
+    </div>
 
-  const vid = document.getElementById("bgVideo");
-  if(vid){
-    if(on){
-      // bila video ON, photo OFF
-      document.documentElement.style.setProperty("--photo-mode","0");
-      localStorage.setItem("REM_PHOTO_ON","0");
-      photoToggle.textContent = "Photo: OFF";
+    <!-- GALERI -->
+    <section class="section" id="galeri" style="margin-top:14px">
+      <h2>Galeri</h2>
+      <div class="muted">Letak gambar anda dalam folder <b>assets</b> (contoh: <i>p1.jpg, p2.jpg, p3.jpg</i>) kemudian tukar nama file di bawah.</div>
 
-      // support URL video luar melalui ?bg=URL
-      const urlBG = (p.get("bg") || "").trim();
-      if(urlBG){
-        vid.innerHTML = "";
-        const s = document.createElement("source");
-        s.src = urlBG;
-        s.type = urlBG.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4";
-        vid.appendChild(s);
-        vid.load();
-      }
+      <div class="gallery">
+        <div class="ph"><img src="assets/p1.jpg" alt="Galeri 1" onerror="this.style.display='none'"></div>
+        <div class="ph"><img src="assets/p2.jpg" alt="Galeri 2" onerror="this.style.display='none'"></div>
+        <div class="ph"><img src="assets/p3.jpg" alt="Galeri 3" onerror="this.style.display='none'"></div>
+      </div>
 
-      const turnOff = (msg)=>{
-        document.documentElement.style.setProperty("--video-mode","0");
-        localStorage.setItem("REM_VIDEO_ON","0");
-        videoToggle.textContent = "Video: OFF";
-        if(wrapEl) wrapEl.setAttribute("data-video","off");
-        alert(msg);
-      };
+      <div class="actions" style="margin-top:12px; justify-content:flex-start">
+        <button class="btn btnGhost btnSmall" id="btnShare" type="button">📤 Share Link</button>
+        <a class="btn btnGhost btnSmall" href="#rsvp">📩 RSVP</a>
+      </div>
+    </section>
 
-      vid.onerror = ()=> turnOff("Fail video tak jumpa / tak boleh load. Semak assets/bg1.mp4 atau guna ?bg=URL");
-      vid.onstalled = ()=> turnOff("Video tersekat (stalled). Video dimatikan.");
-      vid.onabort = ()=> turnOff("Video dibatalkan. Video dimatikan.");
+    <!-- RSVP -->
+    <section class="section" id="rsvp" style="margin-top:14px">
+      <h2>RSVP Kehadiran</h2>
+      <div class="muted">Isi ringkas, kemudian sistem akan buka WhatsApp untuk hantar mesej RSVP.</div>
 
-      const tryPlay = () => vid.play().catch(()=>{
-        turnOff("Video tak boleh dimainkan (autoplay/format). Video dimatikan.");
-      });
+      <div class="form">
+        <div class="field">
+          <label>Nama</label>
+          <input id="fNama" placeholder="Contoh: Ahmad bin Ali" autocomplete="name">
+        </div>
 
-      vid.oncanplay = ()=> tryPlay();
-      tryPlay();
-    }else{
-      vid.pause();
+        <div class="field">
+          <label>Bilangan hadir</label>
+          <select id="fBil">
+            <option value="1">1 orang</option>
+            <option value="2">2 orang</option>
+            <option value="3">3 orang</option>
+            <option value="4">4 orang</option>
+            <option value="5">5 orang</option>
+            <option value="6">6 orang</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="Hadir">✅ Hadir</option>
+            <option value="Tidak dapat hadir">❌ Tidak dapat hadir</option>
+            <option value="Masih belum pasti">⏳ Masih belum pasti</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Ucapan (optional)</label>
+          <textarea id="fUcapan" placeholder="Tulis ucapan ringkas..."></textarea>
+        </div>
+
+        <div class="actions" style="justify-content:flex-start">
+          <button class="btn btnPrimary" id="btnRSVP" type="button">Hantar RSVP WhatsApp</button>
+          <button class="btn btnGhost" id="btnCopy" type="button">Copy Text RSVP</button>
+        </div>
+
+        <div class="muted" style="margin-top:6px">
+          * WhatsApp akan guna nombor tuan rumah yang anda set di bawah (dalam script).
+        </div>
+      </div>
+    </section>
+
+    <!-- HADIAH -->
+    <section class="section" id="hadiah" style="margin-top:14px">
+      <h2>Hadiah & Sumbangan</h2>
+      <div class="muted">Jika anda ingin memberi hadiah, berikut adalah pilihan (boleh padam jika tak mahu).</div>
+
+      <div class="info" style="margin-top:12px">
+        <div class="row">
+          <div class="ico">🎁</div>
+          <div>
+            <b>Hadiah</b>
+            <span>Doa & kehadiran anda sudah memadai. Terima kasih.</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="ico">💳</div>
+          <div>
+            <b>Online Transfer (optional)</b>
+            <span id="bankText">Maybank • 1234 5678 9012 • AHMAD ALI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="hubungi" style="margin-top:14px">
+      <h2>Hubungi</h2>
+      <div class="muted">Jika perlu bantuan arah / pertanyaan, hubungi wakil berikut.</div>
+
+      <div class="actions" style="justify-content:flex-start; margin-top:12px">
+        <a class="btn btnGhost" id="btnWA1" target="_blank" rel="noopener">WhatsApp (Wakil 1)</a>
+        <a class="btn btnGhost" id="btnWA2" target="_blank" rel="noopener">WhatsApp (Wakil 2)</a>
+      </div>
+    </section>
+
+    <div class="footer">
+      <b>Nota:</b> Jangan guna/ jual template ini tanpa kebenaran pemilik. <br/>
+      © <span id="yr"></span> Kad Kahwin Digital • Versi Premium
+    </div>
+  </div>
+
+  <!-- Floating Dock -->
+  <div class="dock" aria-label="Menu">
+    <div class="dockInner" id="dock">
+      <a href="#hero" class="active">Utama</a>
+      <a href="#maklumat">Maklumat</a>
+      <a href="#aturcara">Aturcara</a>
+      <a href="#galeri">Galeri</a>
+      <a href="#rsvp">RSVP</a>
+      <a href="#hadiah">Hadiah</a>
+      <a href="#hubungi">Hubungi</a>
+    </div>
+  </div>
+
+  <script>
+    // =========================
+    // 1) SETTING WAJIB UBAH
+    // =========================
+    const CONFIG = {
+      groom: "Adam",
+      bride: "Hawa",
+
+      // Tarikh & masa majlis (untuk countdown + calendar)
+      // Format: YYYY-MM-DDTHH:MM:SS+08:00  (Malaysia +08:00)
+      startISO: "2025-12-01T09:00:00+08:00",
+      endISO:   "2025-12-01T14:00:00+08:00",
+
+      dateText: "01/12/2025 (Isnin)",
+      timeText: "9.00am – 2.00pm",
+
+      venueName: "Dewan Seri Indah, Bandar Baru",
+      venueAddr: "Jalan Contoh 1, 43000 Kajang, Selangor",
+
+      // Link Google Maps (PASTE LINK ANDA)
+      mapsUrl: "https://maps.google.com/?q=Dewan%20Seri%20Indah%20Bandar%20Baru",
+
+      // Nombor WhatsApp untuk RSVP (format negara tanpa +, contoh MY: 60123456789)
+      rsvpWaNumber: "60123456789",
+
+      // Wakil untuk dihubungi
+      contact1: { name: "Wakil 1", number: "60123456789" },
+      contact2: { name: "Wakil 2", number: "60111112222" },
+
+      bankText: "Maybank • 1234 5678 9012 • AHMAD ALI"
+    };
+
+    // =========================
+    // 2) APPLY TEXT
+    // =========================
+    const $ = (s)=>document.querySelector(s);
+
+    $("#groomName").textContent = CONFIG.groom;
+    $("#brideName").textContent = CONFIG.bride;
+
+    $("#eventDateText").textContent = CONFIG.dateText;
+    $("#eventTimeText").textContent = CONFIG.timeText;
+
+    $("#venueName").textContent = CONFIG.venueName;
+    $("#venueAddr").textContent = CONFIG.venueAddr;
+
+    $("#btnMaps").href = CONFIG.mapsUrl;
+
+    $("#bankText").textContent = CONFIG.bankText;
+
+    // WhatsApp contact buttons
+    const waLink = (num, text="") => "https://wa.me/" + num.replace(/\D/g,"") + (text ? ("?text=" + encodeURIComponent(text)) : "");
+    $("#btnWA1").href = waLink(CONFIG.contact1.number, "Assalamualaikum, saya ingin bertanya mengenai majlis.");
+    $("#btnWA1").textContent = "WhatsApp (" + CONFIG.contact1.name + ")";
+    $("#btnWA2").href = waLink(CONFIG.contact2.number, "Assalamualaikum, saya ingin bertanya mengenai majlis.");
+    $("#btnWA2").textContent = "WhatsApp (" + CONFIG.contact2.name + ")";
+
+    // Year
+    $("#yr").textContent = new Date().getFullYear();
+
+    // Live clock
+    function tickClock(){
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mm = String(d.getMinutes()).padStart(2,"0");
+      $("#liveClock span").textContent = hh + ":" + mm;
     }
-  }
+    tickClock(); setInterval(tickClock, 1000 * 10);
 
-  p.set("video", on ? "1":"0");
-  history.replaceState(null,"",location.pathname+"?"+p.toString());
-  setWatermark(); rebuildQR();
-}
+    // =========================
+    // 3) COUNTDOWN
+    // =========================
+    const startDate = new Date(CONFIG.startISO);
+    function countdown(){
+      const now = new Date();
+      let diff = startDate - now;
+      if (diff < 0) diff = 0;
 
-/* =========================
-   BM/EN
-========================= */
-const isEN = (navigator.language||"").toLowerCase().startsWith("en");
-const T = {
-  labelTop: isEN ? "Wedding Invitation" : "Walimatul Urus",
-  line: isEN ? "With gratitude, we invite you to attend" : "Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik",
-  hadir: isEN ? "Attend" : "Hadir",
-  tidak: isEN ? "Not attending" : "Tidak Hadir",
-  copy: isEN ? "Copy Link" : "Copy Link",
-  maps: isEN ? "Open Maps" : "Buka Maps",
-  foot: isEN ? "Digital Invitation • Mobile-friendly" : "Jemputan Digital • Mesra Telefon 📱",
-  gateDesc: isEN ? "Tap to open the invitation." : "Klik untuk buka jemputan.",
-  musicOn: isEN ? "Music: On" : "Muzik: On",
-  musicOff: isEN ? "Music: Off" : "Muzik: Off",
-  open: isEN ? "Open" : "Buka",
-};
+      const s = Math.floor(diff/1000);
+      const d = Math.floor(s/86400);
+      const h = Math.floor((s%86400)/3600);
+      const m = Math.floor((s%3600)/60);
+      const ss = s%60;
 
-/* Render text */
-chipPkg.textContent = (pkg||"pro").toUpperCase();
-labelTop.textContent = T.labelTop;
-outLine.textContent = T.line;
-btnHadir.textContent = T.hadir;
-btnTidak.textContent = T.tidak;
-btnCopy.textContent = T.copy;
-btnMaps.textContent = T.maps;
-footLine.textContent = T.foot;
+      $("#cdD").textContent = d;
+      $("#cdH").textContent = String(h).padStart(2,"0");
+      $("#cdM").textContent = String(m).padStart(2,"0");
+      $("#cdS").textContent = String(ss).padStart(2,"0");
+    }
+    countdown(); setInterval(countdown, 1000);
 
-outNames.textContent = CONFIG.EVENT.names;
-outDate.textContent = CONFIG.EVENT.date;
-outTime.textContent = CONFIG.EVENT.time;
-outLoc.textContent  = CONFIG.EVENT.location;
+    // =========================
+    // 4) ADD TO CALENDAR (ICS)
+    // =========================
+    function toICSDate(dt){
+      // Convert to UTC format yyyymmddThhmmssZ
+      const d = new Date(dt);
+      const y = d.getUTCFullYear();
+      const mo = String(d.getUTCMonth()+1).padStart(2,"0");
+      const da = String(d.getUTCDate()).padStart(2,"0");
+      const hh = String(d.getUTCHours()).padStart(2,"0");
+      const mm = String(d.getUTCMinutes()).padStart(2,"0");
+      const ss = String(d.getUTCSeconds()).padStart(2,"0");
+      return `${y}${mo}${da}T${hh}${mm}${ss}Z`;
+    }
+    $("#btnCalendar").addEventListener("click", ()=>{
+      const title = `Walimatul Urus ${CONFIG.groom} & ${CONFIG.bride}`;
+      const desc  = `Jemputan majlis perkahwinan. Lokasi: ${CONFIG.venueName}`;
+      const loc   = `${CONFIG.venueName}, ${CONFIG.venueAddr}`;
+      const dtS   = toICSDate(CONFIG.startISO);
+      const dtE   = toICSDate(CONFIG.endISO);
 
-gLabel.textContent = T.labelTop;
-gDesc.textContent = T.gateDesc;
-btnEnter.textContent = T.open;
-btnMute.textContent = T.musicOff;
+      const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//KadKahwin//MY//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${Date.now()}@kadkahwin
+DTSTAMP:${toICSDate(new Date())}
+DTSTART:${dtS}
+DTEND:${dtE}
+SUMMARY:${title}
+DESCRIPTION:${desc}
+LOCATION:${loc}
+END:VEVENT
+END:VCALENDAR`;
 
-/* Name preset */
-const presetName = (p.get("name")||"").trim();
-if(presetName) guest.value = presetName;
+      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "jemputan.ics";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
 
-/* Watermark */
-function setWatermark(){
-  const pkgName = (pkg||"pro").toUpperCase();
-  const styleName = (THEMES[v]?.style || "PREMIUM").toUpperCase();
-  const moodName = (wrap.getAttribute("data-mood") || "AURORA").toUpperCase();
-  const photoOn = (getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1");
-  const videoOn = (getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1");
-  const tag = `R-E-M • ${pkgName} • V${v} • ${styleName} • ${moodName}${photoOn?" • PHOTO":""}${videoOn?" • VIDEO":""}`;
-  const makeRow = ()=> Array.from({length:8}).map(()=>tag).join("   •   ");
-  wm1.textContent = makeRow(); wm2.textContent = makeRow(); wm3.textContent = makeRow();
-  if((pkg||"").toLowerCase()==="basic") wmWrap.style.opacity = ".26";
-}
+    // =========================
+    // 5) RSVP -> WhatsApp
+    // =========================
+    function buildRsvpText(){
+      const nama = ($("#fNama").value || "—").trim();
+      const bil  = $("#fBil").value;
+      const st   = $("#fStatus").value;
+      const ucp  = ($("#fUcapan").value || "").trim();
 
-/* version lock */
-function refreshPickerOptions(){
-  [...verPicker.options].forEach(opt=>{
-    const n = parseInt(opt.value,10);
-    opt.disabled = !allowed.includes(n);
-    opt.textContent = "Versi " + n + (opt.disabled ? " (Lock)" : "");
-  });
-}
+      let msg =
+`Assalamualaikum.
+RSVP Majlis Walimatul Urus ${CONFIG.groom} & ${CONFIG.bride}
 
-/* QR */
-function rebuildQR(){
-  const el = document.getElementById("qrcode");
-  el.innerHTML = "";
-  new QRCode(el,{
-    text: window.location.href,
-    width: 210, height:210,
-    colorDark:"#ffffff",
-    colorLight:"transparent"
-  });
-}
-rebuildQR();
+Nama: ${nama}
+Bilangan hadir: ${bil}
+Status: ${st}
+Tarikh: ${CONFIG.dateText}
+Masa: ${CONFIG.timeText}
+Lokasi: ${CONFIG.venueName}
 
-/* Copy */
-btnCopy.addEventListener("click", async ()=>{
-  try{
-    await navigator.clipboard.writeText(window.location.href);
-    btnCopy.textContent = "Copied!";
-    setTimeout(()=>btnCopy.textContent=T.copy,1100);
-  }catch(e){ alert(window.location.href); }
-});
+`;
+      if (ucp) msg += `Ucapan: ${ucp}\n`;
+      msg += `\nTerima kasih.`;
+      return msg;
+    }
 
-/* maps */
-if(CONFIG.MAPS_URL){
-  btnMaps.classList.remove("hidden");
-  btnMaps.addEventListener("click", ()=>window.open(CONFIG.MAPS_URL,"_blank"));
-}
+    $("#btnRSVP").addEventListener("click", ()=>{
+      const text = buildRsvpText();
+      window.open(waLink(CONFIG.rsvpWaNumber, text), "_blank");
+    });
 
-/* RSVP */
-function rsvp(status){
-  const guestName = (guest.value||"").trim();
-  const msg =
-`RSVP ${status}
-Nama: ${guestName || "-"}
-Majlis: ${CONFIG.EVENT.names}
-Tarikh: ${CONFIG.EVENT.date}
-Lokasi: ${CONFIG.EVENT.location}`;
-  const url = "https://wa.me/" + CONFIG.WA_PHONE + "?text=" + encodeURIComponent(msg);
-  const w = window.open(url,"_blank");
-  if(!w) window.location.href = url;
-}
-window.rsvp = rsvp;
+    $("#btnCopy").addEventListener("click", async ()=>{
+      const text = buildRsvpText();
+      try{
+        await navigator.clipboard.writeText(text);
+        alert("Text RSVP sudah di-copy.");
+      }catch(e){
+        alert(text);
+      }
+    });
 
-/* Music */
-let audio=null, musicOn=false;
-function setupAudio(){
-  if(!CONFIG.MUSIC_URL) return;
-  audio = new Audio(CONFIG.MUSIC_URL);
-  audio.loop=true; audio.volume=0.7;
-}
-setupAudio();
-btnMute.addEventListener("click", ()=>{
-  musicOn = !musicOn;
-  btnMute.textContent = musicOn ? T.musicOn : T.musicOff;
-});
+    // =========================
+    // 6) SHARE LINK
+    // =========================
+    $("#btnShare").addEventListener("click", async ()=>{
+      const url = location.href;
+      const title = document.title;
+      try{
+        if (navigator.share){
+          await navigator.share({ title, url });
+        } else {
+          await navigator.clipboard.writeText(url);
+          alert("Link sudah di-copy: " + url);
+        }
+      }catch(e){}
+    });
 
-/* Gate open */
-btnEnter.addEventListener("click", ()=>{
-  gate.style.display="none";
-  if(musicOn && audio) audio.play().catch(()=>{});
+    // =========================
+    // 7) DOCK ACTIVE LINK
+    // =========================
+    const dockLinks = Array.from(document.querySelectorAll("#dock a"));
+    const sections = dockLinks.map(a => document.querySelector(a.getAttribute("href")));
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          dockLinks.forEach(a=>a.classList.remove("active"));
+          const idx = sections.indexOf(en.target);
+          if(idx>=0) dockLinks[idx].classList.add("active");
+        }
+      });
+    }, { threshold: 0.35 });
+    sections.forEach(s=> s && io.observe(s));
 
-  // Android autoplay helper bila video ON
-  const vid = document.getElementById("bgVideo");
-  if(vid && getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1"){
-    vid.play().catch(()=>{});
-  }
-});
+    // =========================
+    // 8) VIDEO AUTOPLAY FIX
+    // =========================
+    const v = document.getElementById("bgVideo");
+    const tapLayer = document.getElementById("tapToPlay");
+    const tapBtn = document.getElementById("tapBtn");
 
-/* version change */
-verPicker.addEventListener("change", ()=>{
-  const next=parseInt(verPicker.value,10);
-  if(!allowed.includes(next)) return;
-  v=next;
-  p.set("v",String(v)); p.set("pkg",pkg);
-  history.replaceState(null,"",location.pathname+"?"+p.toString());
-  applyTheme(v);
-  refreshPickerOptions();
-  rebuildQR();
-  setWatermark();
-});
+    async function tryPlay(){
+      try{
+        v.muted = true;
+        await v.play();
+        tapLayer.style.display = "none";
+        return true;
+      }catch(e){
+        tapLayer.style.display = "flex";
+        return false;
+      }
+    }
 
-/* hidden admin 7 taps */
-(function(){
-  const wm=document.getElementById("wmTap");
-  const admin=document.getElementById("adminLink");
-  if(!wm||!admin) return;
-  let taps=0, tmr=null;
-  wm.addEventListener("click", ()=>{
-    taps++; clearTimeout(tmr);
-    tmr=setTimeout(()=>taps=0,1500);
-    if(taps>=7){ admin.classList.remove("hidden"); taps=0; }
-  });
-})();
+    window.addEventListener("load", ()=>{ tryPlay(); });
+    tapBtn.addEventListener("click", async ()=>{
+      const ok = await tryPlay();
+      if(!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
+    });
 
-/* sheet */
-const sheetBack=document.getElementById("sheetBack");
-const sheet=document.getElementById("sheet");
-function openSheet(){ sheetBack.style.display="block"; setTimeout(()=>sheet.classList.add("open"),10); }
-function closeSheet(){ sheet.classList.remove("open"); setTimeout(()=>sheetBack.style.display="none",220); }
-btnTheme.addEventListener("click", openSheet);
-btnCloseSheet.addEventListener("click", closeSheet);
-sheetBack.addEventListener("click", closeSheet);
-
-document.querySelectorAll("[data-m]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    setMood(btn.getAttribute("data-m"));
-    setWatermark(); rebuildQR();
-    closeSheet();
-  });
-});
-
-accentPick.addEventListener("input", ()=>{
-  setAccent(accentPick.value);
-  setWatermark();
-});
-
-motionBtn.addEventListener("click", ()=>{
-  const cur = document.documentElement.getAttribute("data-motion") || "1";
-  setMotion(cur !== "1");
-});
-
-/* VIDEO toggle */
-videoToggle.addEventListener("click", ()=>{
-  const cur = getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1";
-  setVideoMode(!cur);
-});
-
-/* photo controls */
-photoToggle.addEventListener("click", ()=>{
-  const cur = getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1";
-  setPhotoMode(!cur);
-});
-photoPick.addEventListener("change", ()=>{
-  applyPhotoTemplate(photoPick.value);
-  setWatermark(); rebuildQR();
-});
-oriPick.addEventListener("change", ()=>applyOrientation(oriPick.value));
-
-/* parallax */
-function clamp(n,a,b){ return Math.max(a,Math.min(b,n)); }
-let touchX=0,touchY=0;
-addEventListener("pointermove",(e)=>{
-  const w=innerWidth||1,h=innerHeight||1;
-  touchX=((e.clientX/w)-0.5)*2;
-  touchY=((e.clientY/h)-0.5)*2;
-},{passive:true});
-function parallaxTick(){
-  if((document.documentElement.getAttribute("data-motion")||"1")!=="1"){
-    requestAnimationFrame(parallaxTick); return;
-  }
-  const y=scrollY||0;
-  const s=clamp(y/600,0,1);
-  const px=touchX*10, py=touchY*10;
-  document.documentElement.style.setProperty("--p1x",(px*0.25)+"px");
-  document.documentElement.style.setProperty("--p1y",((-s*6)+(py*0.25))+"px");
-  document.documentElement.style.setProperty("--p2x",(px*0.45)+"px");
-  document.documentElement.style.setProperty("--p2y",((-s*10)+(py*0.45))+"px");
-  document.documentElement.style.setProperty("--p3x",(px*0.70)+"px");
-  document.documentElement.style.setProperty("--p3y",((-s*14)+(py*0.70))+"px");
-  requestAnimationFrame(parallaxTick);
-}
-requestAnimationFrame(parallaxTick);
-
-/* BOOT */
-(function boot(){
-  applyTheme(v);
-  refreshPickerOptions();
-
-  // motion
-  const m = localStorage.getItem("REM_MOTION");
-  setMotion(m===null ? true : m==="1");
-
-  // mood
-  const urlMood=(p.get("m")||"").toLowerCase();
-  const savedMood=localStorage.getItem("REM_MOOD");
-  if(urlMood) setMood(urlMood,true);
-  else if(savedMood) setMood(savedMood,true);
-  else setMood("aurora",true);
-
-  // accent
-  const urlA=(p.get("a")||"").trim();
-  const savedA=localStorage.getItem("REM_ACCENT");
-  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)) setAccent("#"+urlA,true);
-  else if(savedA) setAccent(savedA,true);
-  accentPick.value = (getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || accentPick.value);
-
-  // orientation
-  const savedOri=localStorage.getItem("REM_PHOTO_ORI") || "portrait";
-  applyOrientation(savedOri); oriPick.value=savedOri;
-
-  // video
-  const urlVideo = (p.get("video")||"").trim();
-  const savedVideo = localStorage.getItem("REM_VIDEO_ON");
-  const videoOn = (urlVideo==="1") ? true : (savedVideo==="1");
-  setVideoMode(videoOn);
-
-  // photo only if video off
-  const urlPhoto=(p.get("photo")||"").trim();
-  const savedPhoto=localStorage.getItem("REM_PHOTO_ON");
-  const photoOn = (!videoOn) && ((urlPhoto==="1") ? true : (savedPhoto==="1"));
-  setPhotoMode(photoOn);
-
-  // photo template
-  const urlImg=(p.get("img")||"").trim();
-  const savedImg=localStorage.getItem("REM_PHOTO_IMG");
-  const imgKey = urlImg || savedImg || "p1";
-  photoPick.value = PHOTO[imgKey] ? imgKey : "p1";
-  applyPhotoTemplate(photoPick.value);
-
-  rebuildQR();
-  setWatermark();
-})();
-</script>
+    document.addEventListener("visibilitychange", async ()=>{
+      if(document.hidden){
+        try{ v.pause(); }catch(e){}
+      } else {
+        try{ await v.play(); }catch(e){}
+      }
+    });
+  </script>
 </body>
 </html>
