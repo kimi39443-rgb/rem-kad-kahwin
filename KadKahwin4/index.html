@@ -7,274 +7,124 @@
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{min-height:100vh;overflow-x:hidden;background:#000;color:#fff}
+    body{height:100vh;overflow:hidden;background:#000;color:#fff}
 
-    /* VIDEO BACKGROUND */
     #bgVideo{
-      position:fixed; inset:0;
-      width:100%; height:100%;
-      object-fit:cover;
-      z-index:-2;
-      background:#000;
+      position:fixed;inset:0;width:100%;height:100%;
+      object-fit:cover;z-index:-2;background:#000
     }
-    .overlay{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.55);
-      z-index:-1;
-      pointer-events:none;
-    }
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:-1}
 
-    /* TAP TO PLAY LAYER (muncul hanya jika autoplay disekat) */
+    .content{
+      height:100%;
+      display:flex;align-items:center;justify-content:center;
+      text-align:center;padding:20px
+    }
+    .card{
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      padding:30px 22px;border-radius:18px;
+      max-width:420px;width:100%;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 20px 60px rgba(0,0,0,.35)
+    }
+    .badge{
+      display:inline-block;padding:6px 12px;border-radius:999px;
+      background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);
+      font-size:12px;letter-spacing:1px;text-transform:uppercase;
+      opacity:.95;margin-bottom:14px
+    }
+    h1{font-size:30px;line-height:1.15;margin-bottom:10px}
+    p{opacity:.9;margin-bottom:20px;line-height:1.45}
+
+    .btn{
+      padding:12px 22px;border-radius:30px;border:none;
+      background:#fff;color:#000;font-weight:800;cursor:pointer;
+      transition:transform .12s ease,opacity .12s ease
+    }
+    .btn:active{transform:scale(.98)}
+    .btn:hover{opacity:.95}
+
     #tapToPlay{
-      position:fixed; inset:0;
-      background:rgba(0,0,0,.78);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:9999;
-      padding:22px;
+      position:fixed;inset:0;background:rgba(0,0,0,.75);
+      display:flex;align-items:center;justify-content:center;
+      z-index:10;padding:22px
     }
     .tapCard{
       width:min(520px,100%);
       background:rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
-      border-radius:18px;
-      padding:22px 18px;
-      text-align:center;
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      border-radius:18px;padding:22px 18px;text-align:center;
+      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+      box-shadow:0 20px 60px rgba(0,0,0,.45)
     }
     .tapTitle{font-size:18px;font-weight:800;margin-bottom:8px}
-    .tapDesc{font-size:13px;opacity:.85;line-height:1.55;margin-bottom:14px}
+    .tapDesc{font-size:13px;opacity:.85;line-height:1.5;margin-bottom:14px}
     .tapBtn{
-      padding:12px 18px;
-      border-radius:999px;
+      padding:12px 18px;border-radius:999px;
       border:1px solid rgba(255,255,255,.18);
       background:rgba(255,255,255,.14);
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease;
+      color:#fff;font-weight:800;cursor:pointer;
+      transition:transform .12s ease,opacity .12s ease
     }
     .tapBtn:active{transform:scale(.98)}
     .tapBtn:hover{opacity:.95}
-
-    /* LANDING */
-    #landing{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      text-align:center;
-    }
-    .card{
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.12);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
-      padding:30px 22px;
-      border-radius:18px;
-      width:min(420px,100%);
-      box-shadow:0 20px 60px rgba(0,0,0,.35);
-    }
-    .badge{
-      display:inline-block;
-      padding:6px 12px;
-      border-radius:999px;
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.16);
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      margin-bottom:14px;
-      opacity:.95;
-    }
-    h1{font-size:30px;line-height:1.15;margin-bottom:10px}
-    p{opacity:.92;line-height:1.55;margin-bottom:18px}
-    .btn{
-      padding:12px 22px;
-      border-radius:30px;
-      border:none;
-      background:#fff;
-      color:#000;
-      font-weight:900;
-      cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease;
-    }
-    .btn:active{transform:scale(.98)}
-    .btn:hover{opacity:.95}
-    .mini{
-      margin-top:14px;
-      font-size:12px;
-      opacity:.75;
-      line-height:1.5;
-    }
-
-    /* JEMPUTAN (page kedua dalam file sama) */
-    #invitePage{
-      display:none;
-      min-height:100vh;
-      padding:22px 16px 40px;
-    }
-    .topbar{
-      display:flex;
-      gap:10px;
-      justify-content:space-between;
-      align-items:center;
-      margin:10px auto 18px;
-      width:min(980px,100%);
-    }
-    .ghost{
-      padding:10px 14px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(255,255,255,.10);
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-    }
-    .shell{
-      width:min(980px,100%);
-      margin:0 auto;
-      background:rgba(0,0,0,.28);
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:18px;
-      padding:18px;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-    .sectionTitle{
-      font-size:18px;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-    .muted{opacity:.85;line-height:1.6}
-
-    /* smooth */
-    .fadeIn{animation:fade .22s ease}
-    @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
   </style>
 </head>
 
 <body>
-
-  <!-- VIDEO BACKGROUND -->
-  <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+  <video id="bgVideo" muted loop playsinline preload="auto">
     <source src="assets/bg.mp4" type="video/mp4" />
     Browser anda tidak menyokong video.
   </video>
+
   <div class="overlay"></div>
 
-  <!-- TAP TO PLAY (muncul jika autoplay disekat) -->
   <div id="tapToPlay">
     <div class="tapCard">
       <div class="tapTitle">Ketik untuk mula</div>
-      <div class="tapDesc">Sesetengah browser (terutama Android) perlu 1 sentuhan untuk mulakan video.</div>
+      <div class="tapDesc">Untuk Chrome/Android, video perlu dimulakan selepas satu sentuhan.</div>
       <button class="tapBtn" id="tapBtn">Mulakan</button>
     </div>
   </div>
 
-  <!-- LANDING -->
-  <section id="landing" class="fadeIn">
+  <div class="content">
     <div class="card">
       <div class="badge">Wedding Invitation</div>
       <h1>Walimatul Urus</h1>
       <p>Dengan penuh kesyukuran kami menjemput anda hadir</p>
-      <button class="btn" id="btnEnter">Lihat Jemputan</button>
-      <div class="mini">Nota: Video mungkin “mute” ikut polisi browser. Itu normal ✅</div>
+      <button class="btn" onclick="location.href='invite.html'">Lihat Jemputan</button>
     </div>
-  </section>
-
-  <!-- JEMPUTAN (DALAM PAGE SAMA) -->
-  <section id="invitePage" class="fadeIn">
-    <div class="topbar">
-      <button class="ghost" id="btnBack">← Kembali</button>
-      <button class="ghost" id="btnScrollTop">↑ Atas</button>
-    </div>
-
-    <div class="shell">
-      <div class="sectionTitle">Jemputan</div>
-      <p class="muted">
-        ✅ Ini tempat untuk letak kandungan jemputan penuh anda (yang lama).<br>
-        Kalau anda ada kod jemputan lama, salin kandungan **dalam &lt;body&gt;** dan tampal di bawah dalam ruang <b>#inviteContent</b>.
-      </p>
-
-      <div id="inviteContent" style="margin-top:14px">
-        <!-- ===============================
-          TAMPAL KOD JEMPUTAN LAMA ANDA DI SINI
-          (bahagian dalam BODY sahaja, bukan <html><head>..)
-        =============================== -->
-        <div class="card" style="max-width:520px;margin:18px auto 0;">
-          <h1 style="font-size:22px;margin-bottom:6px;">Contoh Section</h1>
-          <p style="margin-bottom:14px;">Tampal kandungan jemputan lama anda di sini.</p>
-          <button class="btn" onclick="alert('Nanti tukar ikut fungsi jemputan')">RSVP / Lokasi</button>
-        </div>
-      </div>
-    </div>
-  </section>
+  </div>
 
   <script>
     const v = document.getElementById("bgVideo");
     const tapLayer = document.getElementById("tapToPlay");
     const tapBtn = document.getElementById("tapBtn");
 
-    const landing = document.getElementById("landing");
-    const invitePage = document.getElementById("invitePage");
-    const btnEnter = document.getElementById("btnEnter");
-    const btnBack = document.getElementById("btnBack");
-    const btnScrollTop = document.getElementById("btnScrollTop");
-
-    async function tryPlay() {
-      try {
+    async function tryPlay(){
+      try{
         v.muted = true;
-        v.playsInline = true;
         await v.play();
         tapLayer.style.display = "none";
         return true;
-      } catch (e) {
-        tapLayer.style.display = "flex";
+      }catch(e){
         return false;
       }
     }
 
-    window.addEventListener("load", async () => {
-      await tryPlay();
-    });
+    window.addEventListener("load", () => { tryPlay(); });
 
-    // kalau autoplay block, bagi user sentuh
     tapBtn.addEventListener("click", async () => {
       const ok = await tryPlay();
-      if (!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
+      if(!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
     });
 
-    // masuk jemputan (gabung dalam 1 page)
-    btnEnter.addEventListener("click", () => {
-      landing.style.display = "none";
-      invitePage.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      // cuba play lagi (lepas interaction biasanya confirm jalan)
-      tryPlay();
-    });
-
-    // kembali
-    btnBack.addEventListener("click", () => {
-      invitePage.style.display = "none";
-      landing.style.display = "flex";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    btnScrollTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    // jimat bateri bila tab hidden
     document.addEventListener("visibilitychange", async () => {
-      if (document.hidden) { try { v.pause(); } catch(e) {} }
-      else { try { await v.play(); } catch(e) {} }
+      if (document.hidden) { try { v.pause(); } catch(e){} }
+      else { try { await v.play(); } catch(e){} }
     });
   </script>
-
 </body>
 </html>
