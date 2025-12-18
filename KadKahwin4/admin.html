@@ -8,73 +8,46 @@
   <style>
     :root{ color-scheme: dark; }
     body{ background:#050505; }
-
     .glass{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
+    .btn{ padding:.85rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); }
+    .btn:hover{ background:rgba(255,255,255,.10); }
+    .btnPrimary{ background:rgba(255,255,255,.92); color:#111; border-color:rgba(255,255,255,.0); font-weight:800; }
+    .btnPrimary:hover{ background:#fff; }
+    .btnDanger{ background:rgba(239,68,68,.16); border-color:rgba(239,68,68,.35); }
+    .btnDanger:hover{ background:rgba(239,68,68,.22); }
+    .field{ width:100%; padding:.9rem 1rem; border-radius:1rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); outline:none; }
+    .label{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; opacity:.6; margin-bottom:.35rem; }
     .hr{ border-top:1px solid rgba(255,255,255,.10); }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-    /* Mobile-first button */
-    .btn{
-      padding:.72rem .9rem;
-      border-radius:1rem;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      font-size:14px;
-      line-height:1.1;
-    }
-    .btn:hover{ background:rgba(255,255,255,.10); }
-    .btnPrimary{
-      background:rgba(255,255,255,.92);
-      color:#111;
-      border-color:rgba(255,255,255,.0);
-      font-weight:800;
-    }
-    .btnPrimary:hover{ background:#fff; }
-
-    .field{
-      width:100%;
-      padding:.85rem .95rem;
-      border-radius:1rem;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      outline:none;
-      font-size:14px;
-    }
-    .label{
-      font-size:11px;
-      letter-spacing:.22em;
-      text-transform:uppercase;
-      opacity:.6;
-      margin-bottom:.35rem;
-    }
-
-    /* make long text behave in mobile */
-    .break{
-      word-break: break-word;
-      overflow-wrap:anywhere;
-    }
+    .pill{ font-size:12px; padding:.35rem .7rem; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); }
   </style>
 </head>
 
-<body class="min-h-screen p-2 sm:p-4">
-  <div class="mx-auto w-full max-w-[980px] space-y-3 sm:space-y-4 px-1 sm:px-0">
+<body class="min-h-screen p-4">
+  <div class="max-w-[980px] mx-auto space-y-4">
 
-    <!-- Header (mobile stack) -->
-    <div class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-      <div>
-        <div class="text-lg sm:text-xl font-semibold">Admin Panel</div>
-        <div class="text-white/60 text-sm">Edit info pelanggan → jana 5 link versi → copy.</div>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-        <button id="btnChangePass" class="btn w-full sm:w-auto">Tukar Password</button>
-        <button id="btnLogout" class="btn w-full sm:w-auto">Logout</button>
+    <!-- Header -->
+    <div class="glass rounded-3xl p-5 space-y-3">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="text-xl font-semibold">Admin Panel</div>
+          <div class="text-white/60 text-sm">Edit info pelanggan → jana link versi → copy.</div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span class="pill">Admin Pass: <span class="mono">default 123456</span></span>
+            <span class="pill">VIP Pass: <span class="mono">default vip123456</span></span>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2 w-[180px] sm:w-auto">
+          <button id="btnChangeAdminPass" class="btn">Tukar Admin</button>
+          <button id="btnChangeVipPass" class="btn">Tukar VIP</button>
+          <button id="btnLogout" class="btn">Logout</button>
+        </div>
       </div>
     </div>
 
     <!-- Login card -->
-    <div id="loginCard" class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 space-y-3 hidden">
-      <div class="text-base sm:text-lg font-semibold">Masukkan password admin</div>
+    <div id="loginCard" class="glass rounded-3xl p-5 space-y-3 hidden">
+      <div class="text-lg font-semibold">Masukkan password admin</div>
       <input id="passInput" type="password" class="field" placeholder="Password" />
       <button id="btnLogin" class="btnPrimary w-full">Masuk</button>
       <div id="loginMsg" class="text-sm text-red-300"></div>
@@ -84,19 +57,19 @@
     </div>
 
     <!-- App -->
-    <div id="app" class="glass rounded-2xl sm:rounded-3xl p-3 sm:p-5 hidden">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+    <div id="app" class="glass rounded-3xl p-5 hidden">
+      <div class="grid md:grid-cols-2 gap-4">
 
         <!-- Left: Customer list -->
         <div class="space-y-3">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div class="flex items-center justify-between gap-2">
             <div>
               <div class="label">Pelanggan</div>
-              <div class="text-base sm:text-lg font-semibold">Senarai</div>
+              <div class="text-lg font-semibold">Senarai</div>
             </div>
-            <div class="flex gap-2 w-full sm:w-auto">
+            <div class="flex gap-2">
               <button id="btnNew" class="btn w-full sm:w-auto">+ Baru</button>
-              <button id="btnDelete" class="btn w-full sm:w-auto">Padam</button>
+              <button id="btnDelete" class="btn btnDanger w-full sm:w-auto">Padam</button>
             </div>
           </div>
 
@@ -105,15 +78,13 @@
           <div class="hr"></div>
 
           <div class="label">Backup</div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <button id="btnExport" class="btn w-full">Export JSON</button>
-
-            <label class="btn cursor-pointer w-full text-center">
+          <div class="flex flex-col sm:flex-row flex-wrap gap-2">
+            <button id="btnExport" class="btn w-full sm:w-auto">Export JSON</button>
+            <label class="btn cursor-pointer w-full sm:w-auto text-center">
               Import JSON
               <input id="importFile" type="file" accept="application/json" class="hidden">
             </label>
-
-            <button id="btnResetAll" class="btn w-full">Reset Semua</button>
+            <button id="btnResetAll" class="btn btnDanger w-full sm:w-auto">Reset Semua</button>
           </div>
 
           <div class="text-xs text-white/45">
@@ -125,7 +96,7 @@
         <div class="space-y-3">
           <div>
             <div class="label">Maklumat Majlis</div>
-            <div class="text-base sm:text-lg font-semibold">Edit</div>
+            <div class="text-lg font-semibold">Edit</div>
           </div>
 
           <div>
@@ -134,24 +105,30 @@
             <div class="text-xs text-white/45 mt-1">Biarkan auto. Kalau link jadi pelik, paste URL folder KadKahwin4 anda.</div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-            <div><div>
-  <div class="label">Pakej</div>
-  <select id="tier" class="field">
-    <option value="normal">Normal (Versi 1–3)</option>
-    <option value="vip">VIP / Family (Versi 1–5)</option>
-  </select>
-</div>
+          <!-- VIP Tier -->
+          <div>
+            <div class="label">Pakej</div>
+            <select id="tier" class="field">
+              <option value="normal">Normal (Versi 1–3)</option>
+              <option value="vip">VIP / Family (Versi 1–5)</option>
+            </select>
+            <div class="text-xs text-white/45 mt-1">
+              Normal akan lock Versi 4–5. VIP perlu VIP password (sekali) untuk unlock.
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
               <div class="label">Nama Pengantin</div>
               <input id="names" class="field" placeholder="Adam & Hawa" />
             </div>
             <div>
               <div class="label">WhatsApp (60...)</div>
-              <input id="wa" class="field mono" placeholder="601111661303" />
+              <input id="wa" class="field mono" placeholder="60123456789" />
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <div class="label">Tarikh</div>
               <input id="date" class="field" placeholder="Sabtu, 12 Oktober 2025" />
@@ -167,7 +144,7 @@
             <input id="location" class="field" placeholder="Dewan Seri Melur" />
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <div class="label">Google Maps URL (optional)</div>
               <input id="maps" class="field mono" placeholder="https://maps.google.com/..." />
@@ -178,7 +155,6 @@
             </div>
           </div>
 
-          <!-- Action buttons (mobile stacked) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <button id="btnSave" class="btnPrimary w-full">Simpan</button>
             <button id="btnOpenInvite" class="btn w-full">Preview</button>
@@ -188,8 +164,14 @@
 
           <!-- Links -->
           <div>
-            <div class="label">Jana 5 Link Versi</div>
-            <div id="links" class="space-y-2"></div>
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="label">Jana Link Versi</div>
+                <div class="text-sm text-white/60">Normal: 1–3 • VIP: 1–5</div>
+              </div>
+              <button id="btnVipUnlock" class="btn hidden">Unlock VIP</button>
+            </div>
+            <div id="links" class="space-y-2 mt-2"></div>
           </div>
 
         </div>
@@ -206,15 +188,22 @@
 /* =========================
    STORAGE KEYS
 ========================= */
-const LS_PASS = "REM_ADMIN_PASS_V1";
-const LS_OK   = "REM_ADMIN_OK_V1";
-const LS_CUSTOMERS = "REM_CUSTOMERS_V1";
+const LS_ADMIN_PASS = "REM_ADMIN_PASS_V1";
+const LS_ADMIN_OK   = "REM_ADMIN_OK_V1";
+
+const LS_VIP_PASS   = "REM_VIP_PASS_V1";
+const LS_VIP_OK     = "REM_VIP_OK_V1";
+
+const LS_CUSTOMERS  = "REM_CUSTOMERS_V1";
 
 /* =========================
    DEFAULT PASSWORD (sekali)
 ========================= */
-if(!localStorage.getItem(LS_PASS)){
-  localStorage.setItem(LS_PASS, "123456");
+if(!localStorage.getItem(LS_ADMIN_PASS)){
+  localStorage.setItem(LS_ADMIN_PASS, "123456");
+}
+if(!localStorage.getItem(LS_VIP_PASS)){
+  localStorage.setItem(LS_VIP_PASS, "vip123456");
 }
 
 /* =========================
@@ -222,9 +211,7 @@ if(!localStorage.getItem(LS_PASS)){
 ========================= */
 const $ = (id)=>document.getElementById(id);
 
-function toast(msg){
-  alert(msg);
-}
+function toast(msg){ alert(msg); }
 
 function getBaseUrlAuto(){
   const url = new URL(location.href);
@@ -248,6 +235,7 @@ function uid(){
 function currentForm(){
   return {
     baseUrl: ($("baseUrl").value || "").trim(),
+    tier: ($("tier").value || "normal").trim(),
     names: ($("names").value || "").trim(),
     wa: ($("wa").value || "").trim().replace(/\s+/g,""),
     date: ($("date").value || "").trim(),
@@ -260,6 +248,7 @@ function currentForm(){
 
 function fillForm(c){
   $("baseUrl").value = c.baseUrl || getBaseUrlAuto();
+  $("tier").value = c.tier || "normal";
   $("names").value = c.names || "";
   $("wa").value = c.wa || "";
   $("date").value = c.date || "";
@@ -313,44 +302,117 @@ async function copyText(text){
   }
 }
 
-/* MOBILE-FRIENDLY LINK CARDS */
+/* =========================
+   VIP UNLOCK
+========================= */
+function isVipUnlocked(){
+  return localStorage.getItem(LS_VIP_OK) === "1";
+}
+function vipUnlock(){
+  const p = prompt("VIP Password:");
+  if(p !== localStorage.getItem(LS_VIP_PASS)){
+    toast("❌ VIP password salah");
+    return false;
+  }
+  localStorage.setItem(LS_VIP_OK, "1");
+  toast("✅ VIP unlocked");
+  renderLinks(currentForm());
+  return true;
+}
+
+/* =========================
+   LINKS
+========================= */
 function renderLinks(data){
   const wrap = $("links");
   wrap.innerHTML = "";
 
-  for(let v=1; v<=5; v++){
-    const url = buildInviteUrl(v, data);
+  const tier = data.tier || "normal";
+  const wantVip = (tier === "vip");
 
-    const card = document.createElement("div");
-    card.className = "glass rounded-2xl p-3";
-
-    card.innerHTML = `
-      <div class="flex items-start justify-between gap-2">
-        <div class="min-w-0">
-          <div class="text-sm font-semibold">Versi ${v}</div>
-          <div class="text-xs text-white/55 mono break mt-1">${url}</div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <button class="btn w-full" data-copy="${url}">Copy</button>
-        <button class="btn w-full" data-open="${url}">Buka</button>
-      </div>
-    `;
-
-    wrap.appendChild(card);
+  // Button unlock VIP hanya muncul bila tier vip dan belum unlock
+  if(wantVip && !isVipUnlocked()){
+    $("btnVipUnlock").classList.remove("hidden");
+  } else {
+    $("btnVipUnlock").classList.add("hidden");
   }
 
-  wrap.querySelectorAll("button[data-copy]").forEach(btn=>{
-    btn.onclick = ()=>copyText(btn.getAttribute("data-copy"));
-  });
-  wrap.querySelectorAll("button[data-open]").forEach(btn=>{
-    btn.onclick = ()=>window.open(btn.getAttribute("data-open"), "_blank");
-  });
+  const maxV = (wantVip ? 5 : 3);
+  const locked = (wantVip && !isVipUnlocked());
+
+  for(let v=1; v<=5; v++){
+    // Jika Normal: versi 4-5 locked terus
+    if(!wantVip && v >= 4){
+      const card = document.createElement("div");
+      card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2 opacity-60";
+      card.innerHTML = `
+        <div class="min-w-0">
+          <div class="text-sm font-semibold">Versi ${v} (VIP)</div>
+          <div class="text-xs text-white/55">Locked — tukar pakej ke VIP untuk unlock</div>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button class="btn" disabled>Copy</button>
+          <button class="btn" disabled>Buka</button>
+        </div>
+      `;
+      wrap.appendChild(card);
+      continue;
+    }
+
+    // Jika VIP tapi belum unlock, versi 4-5 tetap locked sampai unlock
+    if(wantVip && locked && v >= 4){
+      const card = document.createElement("div");
+      card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
+      card.innerHTML = `
+        <div class="min-w-0">
+          <div class="text-sm font-semibold">Versi ${v} (VIP)</div>
+          <div class="text-xs text-white/55">Perlu VIP password untuk jana link</div>
+        </div>
+        <div class="flex gap-2 shrink-0">
+          <button class="btn" id="u${v}">Unlock</button>
+        </div>
+      `;
+      wrap.appendChild(card);
+      card.querySelector(`#u${v}`).onclick = vipUnlock;
+      continue;
+    }
+
+    // Normal 1-3 atau VIP yang sudah unlock
+    if(v <= maxV){
+      const url = buildInviteUrl(v, data);
+      const card = document.createElement("div");
+      card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
+
+      const left = document.createElement("div");
+      left.className = "min-w-0";
+      left.innerHTML = `<div class="text-sm font-semibold">Versi ${v}</div>
+                        <div class="text-xs text-white/55 mono truncate">${url}</div>`;
+
+      const right = document.createElement("div");
+      right.className = "flex gap-2 shrink-0";
+
+      const btnCopy = document.createElement("button");
+      btnCopy.className = "btn";
+      btnCopy.textContent = "Copy";
+      btnCopy.onclick = ()=>copyText(url);
+
+      const btnOpen = document.createElement("button");
+      btnOpen.className = "btn";
+      btnOpen.textContent = "Buka";
+      btnOpen.onclick = ()=>window.open(url, "_blank");
+
+      right.appendChild(btnCopy);
+      right.appendChild(btnOpen);
+
+      card.appendChild(left);
+      card.appendChild(right);
+      wrap.appendChild(card);
+    }
+  }
 }
 
 /* =========================
-   LOGIN
+   LOGIN (ADMIN)
 ========================= */
 function showLogin(){
   $("loginCard").classList.remove("hidden");
@@ -362,18 +424,18 @@ function showApp(){
 }
 
 function doLogin(pass){
-  const real = localStorage.getItem(LS_PASS);
+  const real = localStorage.getItem(LS_ADMIN_PASS);
   if(pass !== real){
     $("loginMsg").textContent = "Password salah.";
     return false;
   }
-  localStorage.setItem(LS_OK, "1");
+  localStorage.setItem(LS_ADMIN_OK, "1");
   $("loginMsg").textContent = "";
   return true;
 }
 
 function requireLogin(){
-  if(localStorage.getItem(LS_OK) === "1"){
+  if(localStorage.getItem(LS_ADMIN_OK) === "1"){
     return true;
   }
   showLogin();
@@ -393,6 +455,7 @@ function refresh(){
       id: uid(),
       label: "Default",
       baseUrl: getBaseUrlAuto(),
+      tier: "normal",
       names: "Adam & Hawa",
       wa: "601111661303",
       date: "Sabtu, 12 Oktober 2025",
@@ -423,6 +486,7 @@ function saveCurrent(){
   const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
   const label = (data.names || "Pelanggan").slice(0,32);
   const saved = { ...data, id: CURRENT_ID, label };
+
   if(idx>=0) LIST[idx] = saved;
   else LIST.unshift(saved);
 
@@ -480,7 +544,8 @@ function resetAll(){
   const ok = confirm("Reset semua data pelanggan + logout? (tidak boleh undo)");
   if(!ok) return;
   localStorage.removeItem(LS_CUSTOMERS);
-  localStorage.removeItem(LS_OK);
+  localStorage.removeItem(LS_ADMIN_OK);
+  localStorage.removeItem(LS_VIP_OK);
   toast("✅ Reset siap");
   location.href = "./index.html";
 }
@@ -489,20 +554,35 @@ function resetAll(){
    PASSWORD ACTIONS
 ========================= */
 function changeAdminPassword(){
-  const oldP = prompt("Password lama:");
-  if(oldP !== localStorage.getItem(LS_PASS)){
-    return toast("Password lama salah");
+  const oldP = prompt("Admin password lama:");
+  if(oldP !== localStorage.getItem(LS_ADMIN_PASS)){
+    return toast("Admin password lama salah");
   }
-  const newP = prompt("Password baru (min 6):");
+  const newP = prompt("Admin password baru (min 6):");
   if(!newP || newP.length < 6){
-    return toast("Password baru terlalu pendek");
+    return toast("Admin password baru terlalu pendek");
   }
-  localStorage.setItem(LS_PASS, newP);
-  toast("✅ Password berjaya ditukar");
+  localStorage.setItem(LS_ADMIN_PASS, newP);
+  toast("✅ Admin password ditukar");
+}
+
+function changeVipPassword(){
+  const oldP = prompt("VIP password lama:");
+  if(oldP !== localStorage.getItem(LS_VIP_PASS)){
+    return toast("VIP password lama salah");
+  }
+  const newP = prompt("VIP password baru (min 6):");
+  if(!newP || newP.length < 6){
+    return toast("VIP password baru terlalu pendek");
+  }
+  localStorage.setItem(LS_VIP_PASS, newP);
+  localStorage.removeItem(LS_VIP_OK); // reset unlock supaya minta lagi
+  toast("✅ VIP password ditukar (VIP lock reset)");
+  renderLinks(currentForm());
 }
 
 function logout(){
-  localStorage.removeItem(LS_OK);
+  localStorage.removeItem(LS_ADMIN_OK);
   toast("Logout");
   location.href = "./index.html";
 }
@@ -519,7 +599,10 @@ $("btnLogin").onclick = ()=>{
 };
 
 $("btnLogout").onclick = logout;
-$("btnChangePass").onclick = changeAdminPassword;
+$("btnChangeAdminPass").onclick = changeAdminPassword;
+$("btnChangeVipPass").onclick = changeVipPassword;
+
+$("btnVipUnlock").onclick = vipUnlock;
 
 $("customerSelect").onchange = ()=>{
   CURRENT_ID = $("customerSelect").value;
@@ -545,21 +628,5 @@ $("importFile").onchange = async (e)=>{
 
 $("btnResetAll").onclick = resetAll;
 
-["baseUrl","names","wa","date","time","location","maps","music"].forEach(id=>{
-  $(id).addEventListener("input", ()=>renderLinks(currentForm()));
-});
-
-/* =========================
-   BOOT
-========================= */
-$("baseUrl").value = getBaseUrlAuto();
-
-if(requireLogin()){
-  showApp();
-  refresh();
-} else {
-  // login UI already shown
-}
-</script>
-</body>
-</html>
+// live update links bila edit
+["baseUrl","tier","names","wa","date","time"
