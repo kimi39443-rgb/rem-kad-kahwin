@@ -1,105 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Jemputan | Walimatul Urus</title>
-
-  <!-- Font (optional, selamat kalau tak load pun) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jemputan Rasmi</title>
 
   <style>
     :root{
-      --bg:#07070a;
+      --bg:#0b0b0f;
       --card: rgba(255,255,255,.10);
-      --card2: rgba(255,255,255,.07);
-      --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.72);
-      --muted2: rgba(255,255,255,.55);
-      --gold1:#e7d7a6;
-      --gold2:#caa44d;
-      --shadow: 0 20px 70px rgba(0,0,0,.45);
-      --radius: 22px;
+      --card2: rgba(255,255,255,.08);
+      --bd: rgba(255,255,255,.14);
+      --txt:#fff;
+      --mut: rgba(255,255,255,.78);
+      --mut2: rgba(255,255,255,.62);
+      --btn:#ffffff;
+      --btnTxt:#111;
+      --chip: rgba(255,255,255,.12);
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --r: 22px;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{box-sizing:border-box;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
     body{
       margin:0;
-      font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      color:var(--txt);
+      background:var(--bg);
+      min-height:100vh;
       overflow-x:hidden;
     }
 
-    /* Background video */
+    /* VIDEO BG */
     #bgVideo{
-      position: fixed;
-      inset: 0;
+      position:fixed;
+      inset:0;
       width:100%;
       height:100%;
       object-fit:cover;
       z-index:-3;
       background:#000;
-      filter: saturate(1.05) contrast(1.05);
     }
     .overlay{
       position:fixed;
       inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.60));
       z-index:-2;
-      background:
-        radial-gradient(1200px 700px at 20% 10%, rgba(202,164,77,.18), transparent 55%),
-        radial-gradient(900px 600px at 85% 35%, rgba(231,215,166,.12), transparent 55%),
-        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.68));
     }
     .grain{
-      position:fixed; inset:0; z-index:-1; pointer-events:none;
-      opacity:.12;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
-      background-size:220px 220px;
-      mix-blend-mode:overlay;
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:-1;
+      opacity:.10;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
     }
 
-    /* Tap-to-play layer (untuk browser yang sekat autoplay) */
+    /* TAP TO PLAY (autoplay fix) */
     #tapToPlay{
-      position:fixed; inset:0; z-index:50;
-      display:none;
-      align-items:center; justify-content:center;
-      padding:22px;
+      position:fixed;
+      inset:0;
       background: rgba(0,0,0,.72);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:50;
+      padding:20px;
     }
+    #tapToPlay.hide{display:none}
     .tapCard{
-      width:min(560px,100%);
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
+      width:min(520px,100%);
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.16);
       border-radius: 20px;
-      padding:22px 18px;
       box-shadow: var(--shadow);
+      padding:18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       text-align:center;
     }
-    .tapTitle{
-      font-weight:700;
-      font-size:18px;
-      margin-bottom:6px;
-      letter-spacing:.2px;
+    .tapTitle{font-weight:800;font-size:18px;margin-bottom:6px}
+    .tapDesc{font-size:13px;line-height:1.55;color:var(--mut);margin-bottom:12px}
+    .tapBtn{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.14);
+      color:#fff;
+      padding:12px 18px;
+      border-radius:999px;
+      font-weight:800;
+      cursor:pointer;
     }
-    .tapDesc{
-      font-size:13px;
-      color: var(--muted);
-      line-height:1.55;
-      margin-bottom:14px;
-    }
+    .tapBtn:active{transform:scale(.98)}
 
-    /* Layout */
+    /* LAYOUT */
     .wrap{
-      max-width: 980px;
+      width:min(980px,100%);
       margin:0 auto;
-      padding: 22px 16px 90px;
+      padding:18px;
+      padding-bottom:28px;
     }
 
     .topbar{
@@ -107,869 +104,519 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 10px;
+      margin-top:6px;
+      margin-bottom:14px;
     }
     .brand{
       display:flex;
-      align-items:center;
-      gap:10px;
-      opacity:.95;
+      flex-direction:column;
+      gap:4px;
     }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: linear-gradient(135deg, var(--gold1), var(--gold2));
-      box-shadow: 0 0 18px rgba(202,164,77,.45);
-    }
-    .brand b{font-weight:700}
-    .chip{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: var(--muted);
-      padding: 8px 12px;
-      border-radius:999px;
-      font-size:12px;
+    .brand b{font-size:18px;letter-spacing:.2px}
+    .brand span{font-size:13px;color:var(--mut2)}
+    .pill{
       display:flex;
       align-items:center;
-      gap:8px;
+      gap:10px;
+      background: var(--card2);
+      border:1px solid var(--bd);
+      padding:10px 12px;
+      border-radius:999px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      color:var(--mut);
+      font-size:13px;
     }
 
-    /* Hero card */
     .hero{
-      border-radius: var(--radius);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
-      border:1px solid rgba(255,255,255,.14);
+      background: var(--card);
+      border:1px solid var(--bd);
+      border-radius: var(--r);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding:18px;
       overflow:hidden;
       position:relative;
     }
     .hero::before{
       content:"";
-      position:absolute; inset:-2px;
-      background: radial-gradient(900px 380px at 20% 0%, rgba(231,215,166,.18), transparent 55%),
-                  radial-gradient(900px 380px at 85% 30%, rgba(202,164,77,.14), transparent 60%);
+      position:absolute;
+      inset:-40px;
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,.12), transparent 60%),
+                  radial-gradient(circle at 100% 50%, rgba(255,255,255,.08), transparent 55%);
       pointer-events:none;
     }
-    .heroInner{
-      position:relative;
-      padding: 26px 18px 18px;
-    }
-    .badge{
+    .heroInner{position:relative}
+
+    .chip{
       display:inline-flex;
       align-items:center;
       gap:8px;
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      padding: 7px 12px;
+      padding:8px 12px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      color: var(--muted);
-    }
-    .badge .mini{
-      width:8px;height:8px;border-radius:999px;
-      background: linear-gradient(135deg, var(--gold1), var(--gold2));
+      background: var(--chip);
+      border:1px solid rgba(255,255,255,.16);
+      text-transform:uppercase;
+      letter-spacing:1px;
+      font-size:12px;
+      color:var(--mut);
+      margin-bottom:10px;
     }
     .title{
-      margin: 14px 0 6px;
-      font-family: "Playfair Display", serif;
-      font-weight: 700;
-      letter-spacing:.3px;
-      font-size: clamp(30px, 5.4vw, 56px);
-      line-height: 1.05;
+      font-size:38px;
+      line-height:1.1;
+      margin:0 0 10px;
+      letter-spacing:.2px;
+      font-weight:900;
     }
-    .subtitle{
-      color: var(--muted);
-      line-height:1.6;
-      font-size: 14px;
-      max-width: 60ch;
+    .msg{
+      margin:0 0 12px;
+      color:var(--mut);
+      line-height:1.55;
+      font-size:14.5px;
     }
-    .names{
-      margin-top: 18px;
-      display:grid;
-      gap:10px;
-    }
-    .names .pair{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:baseline;
-      justify-content:center;
-      text-align:center;
-      padding: 16px 14px;
+    .coupleBox{
+      margin-top:10px;
+      padding:14px 14px;
       border-radius: 18px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.07);
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
+      text-align:center;
     }
-    .names .pair span{
-      font-family:"Playfair Display",serif;
-      font-size: clamp(22px, 4.6vw, 34px);
-      font-weight: 700;
-    }
-    .names .pair em{
-      font-style:normal;
-      color: var(--gold1);
-      font-weight: 700;
-      letter-spacing: 1px;
+    .couple{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:.2px;
+      margin:0;
     }
 
-    /* Buttons */
     .actions{
       display:flex;
-      flex-wrap:wrap;
       gap:10px;
-      justify-content:center;
-      margin-top: 16px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      align-items:center;
     }
     .btn{
       border:none;
-      cursor:pointer;
+      background: var(--btn);
+      color: var(--btnTxt);
+      padding:12px 16px;
       border-radius: 999px;
-      padding: 12px 16px;
-      font-weight: 700;
-      letter-spacing:.2px;
-      transition: transform .12s ease, opacity .12s ease, background .12s ease;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      user-select:none;
-      text-decoration:none;
-      justify-content:center;
+      font-weight:900;
+      cursor:pointer;
     }
     .btn:active{transform:scale(.98)}
-    .btnPrimary{
-      background: linear-gradient(135deg, var(--gold1), var(--gold2));
-      color:#161514;
-      box-shadow: 0 12px 28px rgba(202,164,77,.25);
+    .btn.secondary{
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.16);
+      color:#fff;
     }
-    .btnGhost{
-      background: rgba(255,255,255,.10);
-      color: var(--text);
-      border:1px solid rgba(255,255,255,.14);
-    }
-    .btnSmall{
-      padding: 10px 14px;
-      font-size: 13px;
-    }
+    .btn.small{padding:10px 14px;font-weight:800}
 
-    /* Sections */
-    .grid{
-      display:grid;
-      gap: 14px;
-      margin-top: 14px;
-    }
-    @media(min-width:860px){
-      .grid{grid-template-columns: 1.15fr .85fr}
-    }
-
-    .section{
-      border-radius: var(--radius);
-      background: var(--card);
-      border:1px solid var(--stroke);
-      box-shadow: var(--shadow);
-      padding: 18px;
-    }
-    .section h2{
-      margin: 0 0 10px;
-      font-size: 16px;
-      letter-spacing:.2px;
-    }
-    .muted{color: var(--muted); font-size: 13px; line-height:1.6}
-    .hr{
+    .split{
+      margin-top:14px;
       height:1px;
       background: rgba(255,255,255,.12);
-      margin: 14px 0;
     }
 
-    /* Info list */
-    .info{
+    /* countdown */
+    .cdTitle{
+      margin:14px 0 10px;
+      color:var(--mut);
+      font-weight:800;
+    }
+    .countdown{
       display:grid;
+      grid-template-columns:repeat(4,1fr);
       gap:10px;
     }
-    .row{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      padding: 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-    }
-    .ico{
-      width:36px; height:36px;
-      border-radius: 12px;
-      display:grid; place-items:center;
-      background: rgba(255,255,255,.10);
+    @media(max-width:560px){.countdown{grid-template-columns:repeat(2,1fr)}}
+    .cdBox{
+      background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
-      flex:0 0 36px;
-      font-size: 16px;
-    }
-    .row b{display:block; font-size: 13px; margin-bottom: 3px}
-    .row span{display:block; color: var(--muted); font-size: 13px; line-height:1.45}
-
-    /* Countdown */
-    .count{
-      display:grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap:10px;
-      margin-top: 12px;
-    }
-    .pill{
-      padding: 12px 10px;
+      border-radius:18px;
+      padding:12px;
       text-align:center;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
     }
-    .pill b{
-      display:block;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing:.3px;
-    }
-    .pill small{
-      display:block;
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 4px;
-      letter-spacing:.7px;
-      text-transform:uppercase;
-    }
+    .cdNum{font-size:28px;font-weight:900}
+    .cdLbl{font-size:12px;color:var(--mut2);letter-spacing:1px;text-transform:uppercase}
 
-    /* RSVP */
-    .form{
-      display:grid;
-      gap:10px;
-      margin-top: 10px;
-    }
-    .field{
-      display:grid;
-      gap:6px;
-    }
-    label{font-size:12px; color: var(--muted)}
-    input, select, textarea{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 14px;
+    /* tabs */
+    .tabsWrap{
+      margin-top:16px;
+      background: rgba(255,255,255,.08);
       border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-      font-family: inherit;
-    }
-    textarea{min-height: 92px; resize:vertical}
-
-    /* Gallery */
-    .gallery{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
-      margin-top: 10px;
-    }
-    .ph{
-      aspect-ratio: 1/1;
-      border-radius: 16px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--r);
       overflow:hidden;
-      position:relative;
+      box-shadow: 0 12px 40px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
-    .ph img{
-      width:100%; height:100%;
-      object-fit:cover;
-      display:block;
-      filter:saturate(1.05) contrast(1.05);
-    }
-    .ph::after{
-      content:"";
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, transparent, rgba(0,0,0,.28));
-      pointer-events:none;
-    }
-
-    /* Footer */
-    .footer{
-      margin-top: 14px;
-      padding: 18px;
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.12);
-      text-align:center;
-      color: var(--muted2);
-      font-size: 12px;
-      line-height:1.6;
-    }
-    .footer b{color: var(--muted);}
-
-    /* Floating nav */
-    .dock{
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 14px;
-      width: min(980px, calc(100% - 24px));
-      z-index: 40;
+    .tabs{
       display:flex;
-      justify-content:center;
-    }
-    .dockInner{
-      width:100%;
-      display:flex;
-      gap:10px;
-      padding: 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.40);
-      border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 20px 70px rgba(0,0,0,.45);
+      gap:8px;
+      padding:10px;
+      border-bottom:1px solid rgba(255,255,255,.12);
       overflow:auto;
+      -webkit-overflow-scrolling:touch;
     }
-    .dockInner a{
+    .tab{
+      flex:0 0 auto;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.16);
+      color:var(--mut);
+      font-weight:800;
+      cursor:pointer;
       white-space:nowrap;
-      text-decoration:none;
-      color: var(--muted);
-      font-size: 12px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border:1px solid transparent;
-      background: rgba(255,255,255,.06);
-      transition: .12s ease;
     }
-    .dockInner a:hover{opacity:.95}
-    .dockInner a.active{
-      color:#171614;
-      background: linear-gradient(135deg, var(--gold1), var(--gold2));
-      border-color: rgba(0,0,0,.12);
-      font-weight: 800;
+    .tab.active{
+      background: rgba(255,255,255,.92);
+      color:#111;
+      border-color: rgba(255,255,255,.92);
+    }
+    .pane{
+      display:none;
+      padding:14px;
+    }
+    .pane.active{display:block}
+
+    .infoGrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .infoItem{
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      padding:12px;
+    }
+    .infoItem b{display:block;font-size:12px;color:var(--mut2);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .infoItem span{display:block;font-size:14.5px;color:var(--txt);line-height:1.45}
+
+    .note{
+      margin-top:10px;
+      font-size:12.5px;
+      color:var(--mut2);
+      line-height:1.6;
+      padding:12px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.22);
+      background: rgba(0,0,0,.12);
     }
 
-    /* Motion */
-    @media (prefers-reduced-motion: no-preference){
-      .hero, .section{animation: fadeUp .55s ease both}
-      .section:nth-child(2){animation-delay:.06s}
-      .section:nth-child(3){animation-delay:.12s}
-      .section:nth-child(4){animation-delay:.18s}
-      @keyframes fadeUp{
-        from{opacity:0; transform: translateY(10px)}
-        to{opacity:1; transform: translateY(0)}
-      }
-    }
+    /* tiny */
+    .mut{color:var(--mut2)}
   </style>
 </head>
 
 <body>
-  <!-- Background Video -->
+
+  <!-- VIDEO BG -->
   <video id="bgVideo" muted loop playsinline preload="auto">
     <source src="assets/bg.mp4" type="video/mp4" />
   </video>
-
   <div class="overlay"></div>
   <div class="grain"></div>
 
-  <!-- Tap-to-play -->
+  <!-- Tap to play layer -->
   <div id="tapToPlay">
     <div class="tapCard">
       <div class="tapTitle">Ketik untuk mula</div>
-      <div class="tapDesc">Sesetengah browser (Chrome/Android) perlu satu sentuhan untuk memainkan video latar.</div>
-      <button class="btn btnPrimary" id="tapBtn" type="button">Mulakan Video</button>
-      <div class="muted" style="margin-top:10px">Tip: Kalau masih tak jalan, refresh & ketik sekali lagi.</div>
+      <div class="tapDesc">Untuk sesetengah browser (Chrome/Android), video perlu dimulakan selepas satu sentuhan.</div>
+      <button class="tapBtn" id="tapBtn">Mulakan</button>
+      <div class="mut" style="margin-top:10px;font-size:12px">Jika masih tak jalan, refresh dan tekan sekali lagi.</div>
     </div>
   </div>
 
-  <div class="wrap" id="top">
+  <div class="wrap">
+
     <div class="topbar">
       <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <b>Kad Kahwin Digital</b><br>
-          <span class="muted" style="font-size:12px">Jemputan Rasmi</span>
-        </div>
+        <b>Kad Kahwin Digital</b>
+        <span id="subtitleTop">Jemputan Rasmi</span>
       </div>
-
-      <div class="chip" id="liveClock">⏳ <span>--:--</span></div>
+      <div class="pill" title="Countdown ringkas">
+        ⏳ <span id="miniCountdown">--:--</span>
+      </div>
     </div>
 
-    <!-- HERO -->
-    <section class="hero" id="hero">
+    <section class="hero">
       <div class="heroInner">
-        <div class="badge"><span class="mini"></span> Wedding Invitation</div>
+        <div class="chip">WEDDING INVITATION</div>
 
-        <div class="title">Walimatul Urus</div>
-        <div class="subtitle">
-          Dengan penuh kesyukuran, kami menjemput <b>Dato’/Datin/Tuan/Puan/Encik/Cik</b> sekeluarga hadir memeriahkan majlis perkahwinan kami.
-        </div>
+        <h1 class="title" id="invTitle">Walimatul Urus</h1>
+        <p class="msg" id="invMsg">
+          Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.
+        </p>
 
-        <div class="names">
-          <div class="pair">
-            <span id="groomName">Adam</span>
-            <em>&amp;</em>
-            <span id="brideName">Hawa</span>
+        <div class="coupleBox">
+          <h2 class="couple" id="invCouple">Adam &amp; Hawa</h2>
+          <div class="mut" style="margin-top:6px;font-size:13px">
+            <span id="invDate">01/12/2025</span> • <span id="invTime">9.00am – 2.00pm</span>
           </div>
         </div>
 
         <div class="actions">
-          <a class="btn btnPrimary" href="#rsvp">📩 RSVP Sekarang</a>
-          <a class="btn btnGhost" href="#lokasi">📍 Lihat Lokasi</a>
-          <button class="btn btnGhost" id="btnCalendar" type="button">🗓️ Add to Calendar</button>
+          <a class="btn" id="invRsvp" href="#" target="_blank" rel="noopener">✉️ RSVP Sekarang</a>
+          <a class="btn secondary" id="invMaps" href="#" target="_blank" rel="noopener">📍 Lihat Lokasi</a>
+          <button class="btn secondary small" id="btnCopy">📋 Salin Maklumat</button>
         </div>
 
-        <div class="hr"></div>
+        <div class="split"></div>
 
-        <!-- COUNTDOWN -->
-        <div class="muted"><b>Countdown</b> ke hari majlis</div>
-        <div class="count" aria-label="Countdown">
-          <div class="pill"><b id="cdD">--</b><small>Hari</small></div>
-          <div class="pill"><b id="cdH">--</b><small>Jam</small></div>
-          <div class="pill"><b id="cdM">--</b><small>Minit</small></div>
-          <div class="pill"><b id="cdS">--</b><small>Saat</small></div>
-        </div>
-      </div>
-    </section>
-
-    <div class="grid">
-      <!-- MAKLUMAT MAJLIS -->
-      <section class="section" id="maklumat">
-        <h2>Maklumat Majlis</h2>
-        <div class="muted">Sila semak butiran di bawah. Anda boleh ubah semua teks ikut kehendak.</div>
-
-        <div class="info" style="margin-top:12px">
-          <div class="row">
-            <div class="ico">📅</div>
-            <div>
-              <b>Tarikh</b>
-              <span id="eventDateText">01/12/2025 (Isnin)</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="ico">⏰</div>
-            <div>
-              <b>Masa</b>
-              <span id="eventTimeText">9.00am – 2.00pm</span>
-            </div>
-          </div>
-
-          <div class="row" id="lokasi">
-            <div class="ico">📍</div>
-            <div>
-              <b>Lokasi</b>
-              <span id="venueName">Dewan Seri Indah, Bandar Baru</span>
-              <span class="muted" id="venueAddr">Jalan Contoh 1, 43000 Kajang, Selangor</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="actions" style="margin-top:12px; justify-content:flex-start">
-          <a class="btn btnPrimary btnSmall" id="btnMaps" target="_blank" rel="noopener">Buka Google Maps</a>
-          <a class="btn btnGhost btnSmall" href="#aturcara">Aturcara</a>
-          <a class="btn btnGhost btnSmall" href="#hadiah">Hadiah</a>
-        </div>
-      </section>
-
-      <!-- ATURCARA -->
-      <section class="section" id="aturcara">
-        <h2>Aturcara Majlis</h2>
-        <div class="muted">Contoh aturcara (boleh ubah / tambah).</div>
-
-        <div class="info" style="margin-top:12px">
-          <div class="row">
-            <div class="ico">🕌</div>
-            <div>
-              <b>Akad Nikah</b>
-              <span id="akadText">8.30am – 9.15am</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="ico">🍽️</div>
-            <div>
-              <b>Jamuan</b>
-              <span id="jamuanText">9.00am – 2.00pm</span>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="ico">📸</div>
-            <div>
-              <b>Sesi Bergambar</b>
-              <span id="photoText">11.30am – 12.30pm</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-        <div class="muted">
-          <b>Dress code (optional):</b> Sopan & kemas. <br/>
-          <b>Nota:</b> Kehadiran anda sangat kami hargai.
-        </div>
-      </section>
-    </div>
-
-    <!-- GALERI -->
-    <section class="section" id="galeri" style="margin-top:14px">
-      <h2>Galeri</h2>
-      <div class="muted">Letak gambar anda dalam folder <b>assets</b> (contoh: <i>p1.jpg, p2.jpg, p3.jpg</i>) kemudian tukar nama file di bawah.</div>
-
-      <div class="gallery">
-        <div class="ph"><img src="assets/p1.jpg" alt="Galeri 1" onerror="this.style.display='none'"></div>
-        <div class="ph"><img src="assets/p2.jpg" alt="Galeri 2" onerror="this.style.display='none'"></div>
-        <div class="ph"><img src="assets/p3.jpg" alt="Galeri 3" onerror="this.style.display='none'"></div>
-      </div>
-
-      <div class="actions" style="margin-top:12px; justify-content:flex-start">
-        <button class="btn btnGhost btnSmall" id="btnShare" type="button">📤 Share Link</button>
-        <a class="btn btnGhost btnSmall" href="#rsvp">📩 RSVP</a>
-      </div>
-    </section>
-
-    <!-- RSVP -->
-    <section class="section" id="rsvp" style="margin-top:14px">
-      <h2>RSVP Kehadiran</h2>
-      <div class="muted">Isi ringkas, kemudian sistem akan buka WhatsApp untuk hantar mesej RSVP.</div>
-
-      <div class="form">
-        <div class="field">
-          <label>Nama</label>
-          <input id="fNama" placeholder="Contoh: Ahmad bin Ali" autocomplete="name">
-        </div>
-
-        <div class="field">
-          <label>Bilangan hadir</label>
-          <select id="fBil">
-            <option value="1">1 orang</option>
-            <option value="2">2 orang</option>
-            <option value="3">3 orang</option>
-            <option value="4">4 orang</option>
-            <option value="5">5 orang</option>
-            <option value="6">6 orang</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Status</label>
-          <select id="fStatus">
-            <option value="Hadir">✅ Hadir</option>
-            <option value="Tidak dapat hadir">❌ Tidak dapat hadir</option>
-            <option value="Masih belum pasti">⏳ Masih belum pasti</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Ucapan (optional)</label>
-          <textarea id="fUcapan" placeholder="Tulis ucapan ringkas..."></textarea>
-        </div>
-
-        <div class="actions" style="justify-content:flex-start">
-          <button class="btn btnPrimary" id="btnRSVP" type="button">Hantar RSVP WhatsApp</button>
-          <button class="btn btnGhost" id="btnCopy" type="button">Copy Text RSVP</button>
-        </div>
-
-        <div class="muted" style="margin-top:6px">
-          * WhatsApp akan guna nombor tuan rumah yang anda set di bawah (dalam script).
+        <div class="cdTitle">Countdown ke hari majlis</div>
+        <div class="countdown" aria-label="Countdown">
+          <div class="cdBox"><div class="cdNum" id="cdDays">0</div><div class="cdLbl">Hari</div></div>
+          <div class="cdBox"><div class="cdNum" id="cdHours">00</div><div class="cdLbl">Jam</div></div>
+          <div class="cdBox"><div class="cdNum" id="cdMins">00</div><div class="cdLbl">Minit</div></div>
+          <div class="cdBox"><div class="cdNum" id="cdSecs">00</div><div class="cdLbl">Saat</div></div>
         </div>
       </div>
     </section>
 
-    <!-- HADIAH -->
-    <section class="section" id="hadiah" style="margin-top:14px">
-      <h2>Hadiah & Sumbangan</h2>
-      <div class="muted">Jika anda ingin memberi hadiah, berikut adalah pilihan (boleh padam jika tak mahu).</div>
+    <section class="tabsWrap">
+      <div class="tabs">
+        <button class="tab active" data-pane="p-info">Maklumat</button>
+        <button class="tab" data-pane="p-lokasi">Lokasi</button>
+        <button class="tab" data-pane="p-rsvp">RSVP</button>
+        <button class="tab" data-pane="p-notis">Notis</button>
+      </div>
 
-      <div class="info" style="margin-top:12px">
-        <div class="row">
-          <div class="ico">🎁</div>
-          <div>
-            <b>Hadiah</b>
-            <span>Doa & kehadiran anda sudah memadai. Terima kasih.</span>
+      <div class="pane active" id="p-info">
+        <div class="infoGrid">
+          <div class="infoItem">
+            <b>Tarikh</b>
+            <span id="infoDate">01/12/2025</span>
+          </div>
+          <div class="infoItem">
+            <b>Masa</b>
+            <span id="infoTime">9.00am – 2.00pm</span>
+          </div>
+          <div class="infoItem">
+            <b>Tempat</b>
+            <span id="invVenue">Dewan Serbaguna</span>
+          </div>
+          <div class="infoItem">
+            <b>Alamat</b>
+            <span id="invAddr">Alamat ringkas majlis di sini</span>
           </div>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="ico">💳</div>
-          <div>
-            <b>Online Transfer (optional)</b>
-            <span id="bankText">Maybank • 1234 5678 9012 • AHMAD ALI</span>
+      <div class="pane" id="p-lokasi">
+        <div class="infoItem">
+          <b>Google Maps</b>
+          <span>Klik butang di bawah untuk buka lokasi.</span>
+          <div style="margin-top:10px">
+            <a class="btn secondary" id="mapsBtn2" href="#" target="_blank" rel="noopener">📍 Buka Maps</a>
           </div>
+        </div>
+      </div>
+
+      <div class="pane" id="p-rsvp">
+        <div class="infoItem">
+          <b>RSVP</b>
+          <span>Klik untuk WhatsApp RSVP (anda boleh ubah teks di Admin Panel).</span>
+          <div style="margin-top:10px">
+            <a class="btn" id="rsvpBtn2" href="#" target="_blank" rel="noopener">✉️ RSVP WhatsApp</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane" id="p-notis">
+        <div class="note" id="legalNote">
+          Notis: Template ini untuk kegunaan pelanggan berlesen sahaja. Dilarang menjual semula, menyalin, atau mengedar tanpa kebenaran pemilik.
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="section" id="hubungi" style="margin-top:14px">
-      <h2>Hubungi</h2>
-      <div class="muted">Jika perlu bantuan arah / pertanyaan, hubungi wakil berikut.</div>
-
-      <div class="actions" style="justify-content:flex-start; margin-top:12px">
-        <a class="btn btnGhost" id="btnWA1" target="_blank" rel="noopener">WhatsApp (Wakil 1)</a>
-        <a class="btn btnGhost" id="btnWA2" target="_blank" rel="noopener">WhatsApp (Wakil 2)</a>
-      </div>
-    </section>
-
-    <div class="footer">
-      <b>Nota:</b> Jangan guna/ jual template ini tanpa kebenaran pemilik. <br/>
-      © <span id="yr"></span> Kad Kahwin Digital • Versi Premium
-    </div>
   </div>
 
-  <!-- Floating Dock -->
-  <div class="dock" aria-label="Menu">
-    <div class="dockInner" id="dock">
-      <a href="#hero" class="active">Utama</a>
-      <a href="#maklumat">Maklumat</a>
-      <a href="#aturcara">Aturcara</a>
-      <a href="#galeri">Galeri</a>
-      <a href="#rsvp">RSVP</a>
-      <a href="#hadiah">Hadiah</a>
-      <a href="#hubungi">Hubungi</a>
-    </div>
-  </div>
+<script>
+  /***********************
+   * 1) DATA (Admin Panel)
+   ***********************/
+  const KEY = "KADKAHWIN_DATA_V1";
+  const DEFAULT_DATA = {
+    title:"Walimatul Urus",
+    couple:"Adam & Hawa",
+    date:"01/12/2025",
+    time:"9.00am – 2.00pm",
+    venue:"Dewan Serbaguna",
+    address:"Alamat ringkas majlis di sini",
+    maps:"https://maps.google.com/",
+    rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
+    message:"Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik sekeluarga hadir memeriahkan majlis perkahwinan kami.",
+    // optional (kalau nak)
+    eventISO: "" // contoh: "2025-12-01T09:00:00+08:00"
+  };
 
-  <script>
-    // =========================
-    // 1) SETTING WAJIB UBAH
-    // =========================
-    const CONFIG = {
-      groom: "Adam",
-      bride: "Hawa",
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      return raw ? { ...DEFAULT_DATA, ...JSON.parse(raw) } : DEFAULT_DATA;
+    }catch(e){ return DEFAULT_DATA; }
+  }
 
-      // Tarikh & masa majlis (untuk countdown + calendar)
-      // Format: YYYY-MM-DDTHH:MM:SS+08:00  (Malaysia +08:00)
-      startISO: "2025-12-01T09:00:00+08:00",
-      endISO:   "2025-12-01T14:00:00+08:00",
+  const d = loadData();
 
-      dateText: "01/12/2025 (Isnin)",
-      timeText: "9.00am – 2.00pm",
+  function setText(id, txt){
+    const el = document.getElementById(id);
+    if(el) el.textContent = txt || "";
+  }
 
-      venueName: "Dewan Seri Indah, Bandar Baru",
-      venueAddr: "Jalan Contoh 1, 43000 Kajang, Selangor",
+  // fill UI
+  setText("invTitle", d.title);
+  setText("invMsg", d.message);
+  setText("invCouple", d.couple);
 
-      // Link Google Maps (PASTE LINK ANDA)
-      mapsUrl: "https://maps.google.com/?q=Dewan%20Seri%20Indah%20Bandar%20Baru",
+  setText("invDate", d.date);
+  setText("invTime", d.time);
 
-      // Nombor WhatsApp untuk RSVP (format negara tanpa +, contoh MY: 60123456789)
-      rsvpWaNumber: "60123456789",
+  setText("infoDate", d.date);
+  setText("infoTime", d.time);
 
-      // Wakil untuk dihubungi
-      contact1: { name: "Wakil 1", number: "60123456789" },
-      contact2: { name: "Wakil 2", number: "60111112222" },
+  setText("invVenue", d.venue);
+  setText("invAddr", d.address);
 
-      bankText: "Maybank • 1234 5678 9012 • AHMAD ALI"
-    };
+  // links
+  const mapsA = document.getElementById("invMaps");
+  const mapsB = document.getElementById("mapsBtn2");
+  if(d.maps){
+    if(mapsA) mapsA.href = d.maps;
+    if(mapsB) mapsB.href = d.maps;
+  }
 
-    // =========================
-    // 2) APPLY TEXT
-    // =========================
-    const $ = (s)=>document.querySelector(s);
+  const rsvpA = document.getElementById("invRsvp");
+  const rsvpB = document.getElementById("rsvpBtn2");
+  if(d.rsvp){
+    if(rsvpA) rsvpA.href = d.rsvp;
+    if(rsvpB) rsvpB.href = d.rsvp;
+  }
 
-    $("#groomName").textContent = CONFIG.groom;
-    $("#brideName").textContent = CONFIG.bride;
+  // copy info button
+  const btnCopy = document.getElementById("btnCopy");
+  btnCopy?.addEventListener("click", async ()=>{
+    const text =
+`${d.title}
+${d.couple}
 
-    $("#eventDateText").textContent = CONFIG.dateText;
-    $("#eventTimeText").textContent = CONFIG.timeText;
+Tarikh: ${d.date}
+Masa: ${d.time}
+Tempat: ${d.venue}
+Alamat: ${d.address}
 
-    $("#venueName").textContent = CONFIG.venueName;
-    $("#venueAddr").textContent = CONFIG.venueAddr;
-
-    $("#btnMaps").href = CONFIG.mapsUrl;
-
-    $("#bankText").textContent = CONFIG.bankText;
-
-    // WhatsApp contact buttons
-    const waLink = (num, text="") => "https://wa.me/" + num.replace(/\D/g,"") + (text ? ("?text=" + encodeURIComponent(text)) : "");
-    $("#btnWA1").href = waLink(CONFIG.contact1.number, "Assalamualaikum, saya ingin bertanya mengenai majlis.");
-    $("#btnWA1").textContent = "WhatsApp (" + CONFIG.contact1.name + ")";
-    $("#btnWA2").href = waLink(CONFIG.contact2.number, "Assalamualaikum, saya ingin bertanya mengenai majlis.");
-    $("#btnWA2").textContent = "WhatsApp (" + CONFIG.contact2.name + ")";
-
-    // Year
-    $("#yr").textContent = new Date().getFullYear();
-
-    // Live clock
-    function tickClock(){
-      const d = new Date();
-      const hh = String(d.getHours()).padStart(2,"0");
-      const mm = String(d.getMinutes()).padStart(2,"0");
-      $("#liveClock span").textContent = hh + ":" + mm;
+Maps: ${d.maps}
+RSVP: ${d.rsvp}`;
+    try{
+      await navigator.clipboard.writeText(text);
+      alert("Maklumat disalin ✅");
+    }catch(e){
+      alert(text); // fallback
     }
-    tickClock(); setInterval(tickClock, 1000 * 10);
+  });
 
-    // =========================
-    // 3) COUNTDOWN
-    // =========================
-    const startDate = new Date(CONFIG.startISO);
-    function countdown(){
-      const now = new Date();
-      let diff = startDate - now;
-      if (diff < 0) diff = 0;
+  /***********************
+   * 2) VIDEO AUTOPLAY FIX
+   ***********************/
+  const v = document.getElementById("bgVideo");
+  const tapLayer = document.getElementById("tapToPlay");
+  const tapBtn = document.getElementById("tapBtn");
 
-      const s = Math.floor(diff/1000);
-      const d = Math.floor(s/86400);
-      const h = Math.floor((s%86400)/3600);
-      const m = Math.floor((s%3600)/60);
-      const ss = s%60;
-
-      $("#cdD").textContent = d;
-      $("#cdH").textContent = String(h).padStart(2,"0");
-      $("#cdM").textContent = String(m).padStart(2,"0");
-      $("#cdS").textContent = String(ss).padStart(2,"0");
+  async function tryPlay(){
+    try{
+      v.muted = true;
+      v.playsInline = true;
+      await v.play();
+      tapLayer.classList.add("hide");
+      return true;
+    }catch(e){
+      return false;
     }
-    countdown(); setInterval(countdown, 1000);
+  }
+  window.addEventListener("load", ()=>{ tryPlay(); });
 
-    // =========================
-    // 4) ADD TO CALENDAR (ICS)
-    // =========================
-    function toICSDate(dt){
-      // Convert to UTC format yyyymmddThhmmssZ
-      const d = new Date(dt);
-      const y = d.getUTCFullYear();
-      const mo = String(d.getUTCMonth()+1).padStart(2,"0");
-      const da = String(d.getUTCDate()).padStart(2,"0");
-      const hh = String(d.getUTCHours()).padStart(2,"0");
-      const mm = String(d.getUTCMinutes()).padStart(2,"0");
-      const ss = String(d.getUTCSeconds()).padStart(2,"0");
-      return `${y}${mo}${da}T${hh}${mm}${ss}Z`;
+  tapBtn?.addEventListener("click", async ()=>{
+    const ok = await tryPlay();
+    if(!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
+  });
+
+  document.addEventListener("visibilitychange", async ()=>{
+    if(document.hidden){
+      try{ v.pause(); }catch(e){}
+    }else{
+      try{ await v.play(); }catch(e){}
     }
-    $("#btnCalendar").addEventListener("click", ()=>{
-      const title = `Walimatul Urus ${CONFIG.groom} & ${CONFIG.bride}`;
-      const desc  = `Jemputan majlis perkahwinan. Lokasi: ${CONFIG.venueName}`;
-      const loc   = `${CONFIG.venueName}, ${CONFIG.venueAddr}`;
-      const dtS   = toICSDate(CONFIG.startISO);
-      const dtE   = toICSDate(CONFIG.endISO);
+  });
 
-      const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//KadKahwin//MY//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:${Date.now()}@kadkahwin
-DTSTAMP:${toICSDate(new Date())}
-DTSTART:${dtS}
-DTEND:${dtE}
-SUMMARY:${title}
-DESCRIPTION:${desc}
-LOCATION:${loc}
-END:VEVENT
-END:VCALENDAR`;
-
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "jemputan.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+  /***********************
+   * 3) TABS
+   ***********************/
+  document.querySelectorAll(".tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      const pane = document.getElementById(btn.dataset.pane);
+      pane?.classList.add("active");
     });
+  });
 
-    // =========================
-    // 5) RSVP -> WhatsApp
-    // =========================
-    function buildRsvpText(){
-      const nama = ($("#fNama").value || "—").trim();
-      const bil  = $("#fBil").value;
-      const st   = $("#fStatus").value;
-      const ucp  = ($("#fUcapan").value || "").trim();
+  /***********************
+   * 4) COUNTDOWN
+   * - Paling tepat kalau isi d.eventISO di admin (contoh 2025-12-01T09:00:00+08:00)
+   * - Kalau kosong, countdown akan kekal 0
+   ***********************/
+  function pad2(n){ return String(n).padStart(2,"0"); }
 
-      let msg =
-`Assalamualaikum.
-RSVP Majlis Walimatul Urus ${CONFIG.groom} & ${CONFIG.bride}
+  function parseEvent(){
+    if(d.eventISO && typeof d.eventISO === "string" && d.eventISO.trim()){
+      const t = new Date(d.eventISO);
+      if(!isNaN(t.getTime())) return t;
+    }
+    return null;
+  }
 
-Nama: ${nama}
-Bilangan hadir: ${bil}
-Status: ${st}
-Tarikh: ${CONFIG.dateText}
-Masa: ${CONFIG.timeText}
-Lokasi: ${CONFIG.venueName}
+  const eventTime = parseEvent();
 
-`;
-      if (ucp) msg += `Ucapan: ${ucp}\n`;
-      msg += `\nTerima kasih.`;
-      return msg;
+  function tick(){
+    if(!eventTime){
+      // no ISO time set
+      setText("miniCountdown","tiada");
+      setText("cdDays","0");
+      setText("cdHours","00");
+      setText("cdMins","00");
+      setText("cdSecs","00");
+      return;
     }
 
-    $("#btnRSVP").addEventListener("click", ()=>{
-      const text = buildRsvpText();
-      window.open(waLink(CONFIG.rsvpWaNumber, text), "_blank");
-    });
+    const now = new Date();
+    let diff = eventTime.getTime() - now.getTime();
+    if(diff < 0) diff = 0;
 
-    $("#btnCopy").addEventListener("click", async ()=>{
-      const text = buildRsvpText();
-      try{
-        await navigator.clipboard.writeText(text);
-        alert("Text RSVP sudah di-copy.");
-      }catch(e){
-        alert(text);
-      }
-    });
+    const s = Math.floor(diff/1000);
+    const days = Math.floor(s/86400);
+    const hrs  = Math.floor((s%86400)/3600);
+    const mins = Math.floor((s%3600)/60);
+    const secs = s%60;
 
-    // =========================
-    // 6) SHARE LINK
-    // =========================
-    $("#btnShare").addEventListener("click", async ()=>{
-      const url = location.href;
-      const title = document.title;
-      try{
-        if (navigator.share){
-          await navigator.share({ title, url });
-        } else {
-          await navigator.clipboard.writeText(url);
-          alert("Link sudah di-copy: " + url);
-        }
-      }catch(e){}
-    });
+    setText("cdDays", String(days));
+    setText("cdHours", pad2(hrs));
+    setText("cdMins", pad2(mins));
+    setText("cdSecs", pad2(secs));
 
-    // =========================
-    // 7) DOCK ACTIVE LINK
-    // =========================
-    const dockLinks = Array.from(document.querySelectorAll("#dock a"));
-    const sections = dockLinks.map(a => document.querySelector(a.getAttribute("href")));
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(en=>{
-        if(en.isIntersecting){
-          dockLinks.forEach(a=>a.classList.remove("active"));
-          const idx = sections.indexOf(en.target);
-          if(idx>=0) dockLinks[idx].classList.add("active");
-        }
-      });
-    }, { threshold: 0.35 });
-    sections.forEach(s=> s && io.observe(s));
+    // mini
+    setText("miniCountdown", `${pad2(hrs)}:${pad2(mins)}:${pad2(secs)}`);
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
 
-    // =========================
-    // 8) VIDEO AUTOPLAY FIX
-    // =========================
-    const v = document.getElementById("bgVideo");
-    const tapLayer = document.getElementById("tapToPlay");
-    const tapBtn = document.getElementById("tapBtn");
-
-    async function tryPlay(){
-      try{
-        v.muted = true;
-        await v.play();
-        tapLayer.style.display = "none";
-        return true;
-      }catch(e){
-        tapLayer.style.display = "flex";
-        return false;
-      }
-    }
-
-    window.addEventListener("load", ()=>{ tryPlay(); });
-    tapBtn.addEventListener("click", async ()=>{
-      const ok = await tryPlay();
-      if(!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
-    });
-
-    document.addEventListener("visibilitychange", async ()=>{
-      if(document.hidden){
-        try{ v.pause(); }catch(e){}
-      } else {
-        try{ await v.play(); }catch(e){}
-      }
-    });
-  </script>
 </body>
 </html>
