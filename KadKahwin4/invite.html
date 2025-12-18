@@ -20,7 +20,6 @@
 
       --glass: rgba(255,255,255,.06);
       --grid: rgba(255,255,255,.05);
-      --motion: 1;
       --glow: 0 0 18px var(--accent), 0 0 42px rgba(255,255,255,.12);
 
       --p1x: 0px; --p1y: 0px;
@@ -35,14 +34,13 @@
       --photo-pos: 50% 50%;
       --photo-mode: 0;
 
-      --auto-time: 1;
-
       /* VIDEO BG */
       --video-mode: 0;      /* 1 = on */
       --video-opacity: .34; /* feel premium */
     }
+
     @media (prefers-reduced-motion: reduce){
-      :root{ --motion: 0; }
+      html{ --motion: 0; }
     }
 
     body{ margin:0; color:var(--text); min-height:100vh; }
@@ -97,14 +95,12 @@
 
     /* aurora */
     .bg-aurora{
-      opacity:.85;
       filter: blur(20px) saturate(1.12);
       background:
         radial-gradient(900px 520px at 10% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 62%),
         radial-gradient(720px 520px at 90% 15%, rgba(34,197,94,.14), transparent 64%),
         radial-gradient(980px 620px at 50% 90%, rgba(251,113,133,.12), transparent 66%);
       animation: auroraMove 16s ease-in-out infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       transform: translate3d(var(--p2x), var(--p2y), 0) scale(1.02);
       z-index: 5;
     }
@@ -118,11 +114,9 @@
         linear-gradient(to right, var(--grid) 1px, transparent 1px),
         linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
       background-size: 44px 44px;
-      opacity: .18;
       transform: perspective(900px) rotateX(62deg) translateY(10%);
       transform-origin: top;
       animation: gridDrift 12s linear infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       z-index: 6;
     }
     @keyframes gridDrift{
@@ -132,7 +126,6 @@
 
     .bg-blobs{
       filter: blur(28px);
-      opacity: .72;
       mix-blend-mode: screen;
       transform: translate3d(var(--p3x), var(--p3y), 0);
       z-index: 7;
@@ -143,18 +136,16 @@
       border-radius: 999px;
       background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 85%, white), transparent 60%);
       animation: floaty 10s ease-in-out infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
     }
     .blob.b1{ top:-120px; left:-120px; transform: scale(1.05); animation-duration: 12s; }
-    .blob.b2{ bottom:-140px; right:-160px; transform: scale(1.15); animation-duration: 14s; opacity:.8; }
-    .blob.b3{ top:35%; right:-180px; transform: scale(.9); animation-duration: 16s; opacity:.55; }
+    .blob.b2{ bottom:-140px; right:-160px; transform: scale(1.15); animation-duration: 14s; }
+    .blob.b3{ top:35%; right:-180px; transform: scale(.9); animation-duration: 16s; }
     @keyframes floaty{
       0%,100%{ transform: translate(0,0) scale(1); }
       50%{ transform: translate(18px, -22px) scale(1.06); }
     }
 
     .bg-shimmer{
-      opacity:.20;
       mix-blend-mode: overlay;
       background: linear-gradient(110deg,
         transparent 0%,
@@ -163,7 +154,6 @@
         rgba(255,255,255,.10) 60%,
         transparent 100%);
       animation: shimmer 4.5s linear infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       z-index: 8;
     }
     @keyframes shimmer{
@@ -172,7 +162,6 @@
     }
 
     .bg-stars{
-      opacity:.32;
       background:
         radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.65), transparent 55%),
         radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.55), transparent 55%),
@@ -182,7 +171,6 @@
         radial-gradient(2px 2px at 25% 35%, rgba(255,255,255,.40), transparent 60%),
         radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.40), transparent 60%);
       animation: starDrift 18s linear infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       z-index: 9;
     }
     @keyframes starDrift{
@@ -191,7 +179,6 @@
     }
 
     .bg-islamic{
-      opacity:.16;
       background-image:
         radial-gradient(circle at 1px 1px, rgba(255,255,255,.45) 1px, transparent 1px),
         linear-gradient(45deg, rgba(255,255,255,.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.08) 75%, rgba(255,255,255,.08)),
@@ -199,7 +186,6 @@
       background-size: 32px 32px, 28px 28px, 28px 28px;
       background-position: 0 0, 0 0, 14px 14px;
       animation: patMove 22s linear infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       z-index: 10;
     }
     @keyframes patMove{
@@ -208,62 +194,17 @@
     }
 
     .bg-marble{
-      opacity:.22;
       background:
         radial-gradient(700px 500px at 20% 40%, rgba(255,255,255,.08), transparent 60%),
         radial-gradient(900px 600px at 80% 70%, rgba(255,255,255,.06), transparent 62%),
         linear-gradient(135deg, rgba(255,255,255,.04), transparent 60%);
       animation: marble 20s ease-in-out infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
       z-index: 11;
     }
     @keyframes marble{
       0%,100%{ transform: translate3d(0,0,0) scale(1); }
       50%{ transform: translate3d(10px,-10px,0) scale(1.03); }
     }
-
-    [data-mood="aurora"]  .show-aurora{opacity:.85}
-    [data-mood="aurora"]  .show-stars{opacity:0}
-    [data-mood="aurora"]  .show-grid{opacity:.10}
-    [data-mood="aurora"]  .show-shimmer{opacity:.08}
-    [data-mood="aurora"]  .show-islamic{opacity:0}
-    [data-mood="aurora"]  .show-marble{opacity:0}
-
-    [data-mood="gold"]    .show-aurora{opacity:.35}
-    [data-mood="gold"]    .show-shimmer{opacity:.22}
-    [data-mood="gold"]    .show-grid{opacity:.12}
-    [data-mood="gold"]    .show-stars{opacity:0}
-    [data-mood="gold"]    .show-islamic{opacity:0}
-    [data-mood="gold"]    .show-marble{opacity:.08}
-
-    [data-mood="galaxy"]  .show-stars{opacity:.34}
-    [data-mood="galaxy"]  .show-aurora{opacity:.28}
-    [data-mood="galaxy"]  .show-grid{opacity:.14}
-    [data-mood="galaxy"]  .show-shimmer{opacity:0}
-    [data-mood="galaxy"]  .show-islamic{opacity:0}
-    [data-mood="galaxy"]  .show-marble{opacity:0}
-
-    [data-mood="bokeh"]   .show-blobs{opacity:.72}
-    [data-mood="bokeh"]   .show-aurora{opacity:.22}
-    [data-mood="bokeh"]   .show-grid{opacity:0}
-    [data-mood="bokeh"]   .show-shimmer{opacity:0}
-    [data-mood="bokeh"]   .show-stars{opacity:0}
-    [data-mood="bokeh"]   .show-islamic{opacity:0}
-    [data-mood="bokeh"]   .show-marble{opacity:0}
-
-    [data-mood="islamic"] .show-islamic{opacity:.18}
-    [data-mood="islamic"] .show-aurora{opacity:.25}
-    [data-mood="islamic"] .show-grid{opacity:.06}
-    [data-mood="islamic"] .show-shimmer{opacity:0}
-    [data-mood="islamic"] .show-stars{opacity:0}
-    [data-mood="islamic"] .show-marble{opacity:0}
-
-    [data-mood="marble"]  .show-marble{opacity:.22}
-    [data-mood="marble"]  .show-aurora{opacity:.18}
-    [data-mood="marble"]  .show-grid{opacity:.06}
-    [data-mood="marble"]  .show-shimmer{opacity:.06}
-    [data-mood="marble"]  .show-stars{opacity:0}
-    [data-mood="marble"]  .show-islamic{opacity:0}
 
     .glass{
       background:var(--card);
@@ -276,6 +217,7 @@
       overflow: hidden;
     }
 
+    /* Watermark */
     .wm-wrap{
       position: fixed; inset: 0;
       pointer-events: none;
@@ -296,7 +238,6 @@
       color: rgba(255,255,255,.9);
       text-shadow: 0 0 10px rgba(0,0,0,.35);
       animation: wmMove 18s linear infinite;
-      animation-play-state: var(--motion)==1 ? running : paused;
     }
     .wm-row:nth-child(2){ animation-duration: 22s; opacity:.9; }
     .wm-row:nth-child(3){ animation-duration: 26s; opacity:.75; }
@@ -365,15 +306,77 @@
       z-index: 80;
       display:none;
     }
+
+    /* =========================
+       FIX: Theme layers default OFF + Motion pause betul
+    ========================= */
+    .show-aurora, .show-grid, .show-stars, .show-islamic, .show-marble, .show-shimmer, .show-blobs{
+      opacity: 0 !important;
+    }
+
+    html[data-motion="0"] .bg-aurora,
+    html[data-motion="0"] .bg-grid,
+    html[data-motion="0"] .bg-stars,
+    html[data-motion="0"] .bg-islamic,
+    html[data-motion="0"] .bg-marble,
+    html[data-motion="0"] .bg-shimmer,
+    html[data-motion="0"] .blob,
+    html[data-motion="0"] .wm-row{
+      animation-play-state: paused !important;
+    }
+    html[data-motion="1"] .bg-aurora,
+    html[data-motion="1"] .bg-grid,
+    html[data-motion="1"] .bg-stars,
+    html[data-motion="1"] .bg-islamic,
+    html[data-motion="1"] .bg-marble,
+    html[data-motion="1"] .bg-shimmer,
+    html[data-motion="1"] .blob,
+    html[data-motion="1"] .wm-row{
+      animation-play-state: running !important;
+    }
+
+    [data-mood="aurora"]  .show-aurora{opacity:.85 !important}
+    [data-mood="aurora"]  .show-grid{opacity:.10 !important}
+    [data-mood="aurora"]  .show-shimmer{opacity:.08 !important}
+
+    [data-mood="gold"]    .show-aurora{opacity:.35 !important}
+    [data-mood="gold"]    .show-shimmer{opacity:.22 !important}
+    [data-mood="gold"]    .show-grid{opacity:.12 !important}
+    [data-mood="gold"]    .show-marble{opacity:.08 !important}
+
+    [data-mood="galaxy"]  .show-stars{opacity:.34 !important}
+    [data-mood="galaxy"]  .show-aurora{opacity:.28 !important}
+    [data-mood="galaxy"]  .show-grid{opacity:.14 !important}
+
+    [data-mood="bokeh"]   .show-blobs{opacity:.72 !important}
+    [data-mood="bokeh"]   .show-aurora{opacity:.22 !important}
+
+    [data-mood="islamic"] .show-islamic{opacity:.18 !important}
+    [data-mood="islamic"] .show-aurora{opacity:.25 !important}
+    [data-mood="islamic"] .show-grid{opacity:.06 !important}
+
+    [data-mood="marble"]  .show-marble{opacity:.22 !important}
+    [data-mood="marble"]  .show-aurora{opacity:.18 !important}
+    [data-mood="marble"]  .show-grid{opacity:.06 !important}
+    [data-mood="marble"]  .show-shimmer{opacity:.06 !important}
+
+    /* Bila video ON, kurangkan overlay supaya video nampak */
+    [data-video="on"] .show-aurora{opacity:.18 !important}
+    [data-video="on"] .show-grid{opacity:.06 !important}
+    [data-video="on"] .show-stars{opacity:.10 !important}
+    [data-video="on"] .show-shimmer{opacity:.06 !important}
+    [data-video="on"] .show-islamic{opacity:.10 !important}
+    [data-video="on"] .show-marble{opacity:.10 !important}
+    [data-video="on"] .show-blobs{opacity:.18 !important}
   </style>
 </head>
 
 <body>
   <canvas id="confettiCanvas"></canvas>
 
-  <div class="theme-wrap" id="wrap" data-mood="aurora">
+  <div class="theme-wrap" id="wrap" data-mood="aurora" data-video="off">
 
-    <!-- VIDEO BG (upload to KadKahwin4/assets/bg1.mp4) -->
+    <!-- VIDEO BG -->
     <video id="bgVideo" class="bg-layer" autoplay muted loop playsinline preload="metadata">
       <source src="./assets/bg1.mp4" type="video/mp4">
     </video>
@@ -514,7 +517,8 @@
             <button id="videoToggle" class="btn">Video: OFF</button>
           </div>
           <div class="text-xs text-white/50">
-            Fail: <span class="mono">KadKahwin4/assets/bg1.mp4</span> (auto loop).
+            Default: <span class="mono">KadKahwin4/assets/bg1.mp4</span>
+            <br/>Atau guna link luar: tambah <span class="mono">?bg=URL</span>
           </div>
         </div>
 
@@ -556,11 +560,6 @@
             <div class="text-sm text-white/70">Motion</div>
             <button id="motionBtn" class="btn">Motion: ON</button>
           </div>
-
-          <div class="flex items-center justify-between gap-3">
-            <div class="text-sm text-white/70">Auto tema ikut masa</div>
-            <button id="autoTimeBtn" class="btn">Auto: ON</button>
-          </div>
         </div>
       </div>
     </div>
@@ -599,7 +598,6 @@ if(!allowed.includes(v)) v = allowed[0];
   if (p.get("wa"))    CONFIG.WA_PHONE = (p.get("wa") || "").trim().replace(/[^\d]/g,"");
   if (p.get("maps"))  CONFIG.MAPS_URL = (p.get("maps") || "").trim();
   if (p.get("music")) CONFIG.MUSIC_URL = (p.get("music") || "").trim();
-
   if (p.get("names")) CONFIG.EVENT.names = (p.get("names") || "").trim();
   if (p.get("date"))  CONFIG.EVENT.date  = (p.get("date")  || "").trim();
   if (p.get("time"))  CONFIG.EVENT.time  = (p.get("time")  || "").trim();
@@ -621,7 +619,6 @@ function applyTheme(ver){
   document.documentElement.style.setProperty("--bg1", t.bg1);
   document.documentElement.style.setProperty("--bg2", t.bg2);
   document.documentElement.style.setProperty("--card", t.card);
-  // accent akan ikut saved/user; kalau tak ada, fall back
   if(!localStorage.getItem("REM_ACCENT") && !p.get("a")){
     document.documentElement.style.setProperty("--accent", t.accent);
   }
@@ -631,9 +628,10 @@ function applyTheme(ver){
 }
 
 /* =========================
-   Mood + Accent + Motion + AutoTime
+   Mood + Accent + Motion
 ========================= */
 const MOODS = { aurora:1, gold:1, galaxy:1, bokeh:1, islamic:1, marble:1 };
+
 function setMood(m, skipUrl=false){
   const wrap = document.getElementById("wrap");
   const key = MOODS[m] ? m : "aurora";
@@ -641,55 +639,42 @@ function setMood(m, skipUrl=false){
   localStorage.setItem("REM_MOOD", key);
   if(!skipUrl){ p.set("m", key); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
 }
+
 function setAccent(c, skipUrl=false){
   document.documentElement.style.setProperty("--accent", c);
   localStorage.setItem("REM_ACCENT", c);
   if(!skipUrl){ p.set("a", c.replace("#","")); history.replaceState(null,"",location.pathname+"?"+p.toString()); }
 }
+
+/* FIX Motion: guna attribute html[data-motion] */
 function setMotion(on){
-  document.documentElement.style.setProperty("--motion", on ? "1" : "0");
+  document.documentElement.setAttribute("data-motion", on ? "1" : "0");
   localStorage.setItem("REM_MOTION", on ? "1" : "0");
   motionBtn.textContent = "Motion: " + (on ? "ON" : "OFF");
 }
-function setAutoTime(on){
-  document.documentElement.style.setProperty("--auto-time", on ? "1" : "0");
-  localStorage.setItem("REM_AUTOTIME", on ? "1" : "0");
-  autoTimeBtn.textContent = "Auto: " + (on ? "ON" : "OFF");
-}
-function moodByTime(){
-  if(v===4) return "islamic";
-  const h = new Date().getHours();
-  if(h>=5 && h<=11) return "bokeh";
-  if(h>=12 && h<=16) return "gold";
-  if(h>=17 && h<=19) return "aurora";
-  return "galaxy";
-}
-function maybeApplyAutoTime(){
-  const auto = getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1";
-  const urlMood = (p.get("m")||"").toLowerCase();
-  if(urlMood || !auto) return;
-  setMood(moodByTime(), true);
-}
 
 /* =========================
-   PHOTO templates
+   PHOTO
 ========================= */
 const PHOTO = {
   p1:"./assets/p1.jpg", p2:"./assets/p2.jpg", p3:"./assets/p3.jpg",
   l1:"./assets/l1.jpg", l2:"./assets/l2.jpg", l3:"./assets/l3.jpg",
 };
+
 function setPhotoMode(on){
-  // kalau video ON, photo auto OFF
-  if(on && getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1"){
-    on = false;
-  }
+  const videoOn = getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1";
+  if(on && videoOn) on = false;
+
   document.documentElement.style.setProperty("--photo-mode", on ? "1":"0");
   localStorage.setItem("REM_PHOTO_ON", on ? "1":"0");
   photoToggle.textContent = "Photo: " + (on ? "ON":"OFF");
+
   p.set("photo", on ? "1":"0");
   history.replaceState(null,"",location.pathname+"?"+p.toString());
+
   setWatermark(); rebuildQR();
 }
+
 function applyPhotoTemplate(key){
   const url = PHOTO[key];
   if(!url){ setPhotoMode(false); return; }
@@ -698,6 +683,7 @@ function applyPhotoTemplate(key){
   p.set("img", key);
   history.replaceState(null,"",location.pathname+"?"+p.toString());
 }
+
 function applyOrientation(ori){
   if(ori==="portrait"){
     document.documentElement.style.setProperty("--photo-pos","50% 25%");
@@ -710,24 +696,58 @@ function applyOrientation(ori){
 }
 
 /* =========================
-   VIDEO toggle (bg1.mp4)
+   VIDEO FIX: detect fail + support ?bg=URL
 ========================= */
 function setVideoMode(on){
+  const wrapEl = document.getElementById("wrap");
   document.documentElement.style.setProperty("--video-mode", on ? "1":"0");
   localStorage.setItem("REM_VIDEO_ON", on ? "1":"0");
   videoToggle.textContent = "Video: " + (on ? "ON":"OFF");
+
+  if(wrapEl) wrapEl.setAttribute("data-video", on ? "on" : "off");
+
   const vid = document.getElementById("bgVideo");
   if(vid){
     if(on){
       // bila video ON, photo OFF
       document.documentElement.style.setProperty("--photo-mode","0");
       localStorage.setItem("REM_PHOTO_ON","0");
-      if(typeof photoToggle !== "undefined") photoToggle.textContent = "Photo: OFF";
-      vid.play().catch(()=>{});
+      photoToggle.textContent = "Photo: OFF";
+
+      // support URL video luar melalui ?bg=URL
+      const urlBG = (p.get("bg") || "").trim();
+      if(urlBG){
+        vid.innerHTML = "";
+        const s = document.createElement("source");
+        s.src = urlBG;
+        s.type = urlBG.toLowerCase().includes(".webm") ? "video/webm" : "video/mp4";
+        vid.appendChild(s);
+        vid.load();
+      }
+
+      const turnOff = (msg)=>{
+        document.documentElement.style.setProperty("--video-mode","0");
+        localStorage.setItem("REM_VIDEO_ON","0");
+        videoToggle.textContent = "Video: OFF";
+        if(wrapEl) wrapEl.setAttribute("data-video","off");
+        alert(msg);
+      };
+
+      vid.onerror = ()=> turnOff("Fail video tak jumpa / tak boleh load. Semak assets/bg1.mp4 atau guna ?bg=URL");
+      vid.onstalled = ()=> turnOff("Video tersekat (stalled). Video dimatikan.");
+      vid.onabort = ()=> turnOff("Video dibatalkan. Video dimatikan.");
+
+      const tryPlay = () => vid.play().catch(()=>{
+        turnOff("Video tak boleh dimainkan (autoplay/format). Video dimatikan.");
+      });
+
+      vid.oncanplay = ()=> tryPlay();
+      tryPlay();
     }else{
       vid.pause();
     }
   }
+
   p.set("video", on ? "1":"0");
   history.replaceState(null,"",location.pathname+"?"+p.toString());
   setWatermark(); rebuildQR();
@@ -751,7 +771,7 @@ const T = {
   open: isEN ? "Open" : "Buka",
 };
 
-/* Render */
+/* Render text */
 chipPkg.textContent = (pkg||"pro").toUpperCase();
 labelTop.textContent = T.labelTop;
 outLine.textContent = T.line;
@@ -760,24 +780,26 @@ btnTidak.textContent = T.tidak;
 btnCopy.textContent = T.copy;
 btnMaps.textContent = T.maps;
 footLine.textContent = T.foot;
+
 outNames.textContent = CONFIG.EVENT.names;
 outDate.textContent = CONFIG.EVENT.date;
 outTime.textContent = CONFIG.EVENT.time;
 outLoc.textContent  = CONFIG.EVENT.location;
+
 gLabel.textContent = T.labelTop;
 gDesc.textContent = T.gateDesc;
 btnEnter.textContent = T.open;
 btnMute.textContent = T.musicOff;
 
-/* name preset */
+/* Name preset */
 const presetName = (p.get("name")||"").trim();
 if(presetName) guest.value = presetName;
 
-/* watermark */
+/* Watermark */
 function setWatermark(){
   const pkgName = (pkg||"pro").toUpperCase();
   const styleName = (THEMES[v]?.style || "PREMIUM").toUpperCase();
-  const moodName = (document.getElementById("wrap").getAttribute("data-mood") || "AURORA").toUpperCase();
+  const moodName = (wrap.getAttribute("data-mood") || "AURORA").toUpperCase();
   const photoOn = (getComputedStyle(document.documentElement).getPropertyValue("--photo-mode").trim()==="1");
   const videoOn = (getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1");
   const tag = `R-E-M • ${pkgName} • V${v} • ${styleName} • ${moodName}${photoOn?" • PHOTO":""}${videoOn?" • VIDEO":""}`;
@@ -786,7 +808,7 @@ function setWatermark(){
   if((pkg||"").toLowerCase()==="basic") wmWrap.style.opacity = ".26";
 }
 
-/* picker lock */
+/* version lock */
 function refreshPickerOptions(){
   [...verPicker.options].forEach(opt=>{
     const n = parseInt(opt.value,10);
@@ -806,6 +828,7 @@ function rebuildQR(){
     colorLight:"transparent"
   });
 }
+rebuildQR();
 
 /* Copy */
 btnCopy.addEventListener("click", async ()=>{
@@ -837,7 +860,7 @@ Lokasi: ${CONFIG.EVENT.location}`;
 }
 window.rsvp = rsvp;
 
-/* music */
+/* Music */
 let audio=null, musicOn=false;
 function setupAudio(){
   if(!CONFIG.MUSIC_URL) return;
@@ -850,49 +873,12 @@ btnMute.addEventListener("click", ()=>{
   btnMute.textContent = musicOn ? T.musicOn : T.musicOff;
 });
 
-/* confetti */
-const confettiCanvas = document.getElementById("confettiCanvas");
-const cctx = confettiCanvas.getContext("2d");
-let confettiParticles=[], confettiRaf=null;
-function resizeConfetti(){ confettiCanvas.width=innerWidth; confettiCanvas.height=innerHeight; }
-addEventListener("resize", resizeConfetti);
-function confettiBurst(){
-  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim()!=="1") return;
-  resizeConfetti();
-  confettiCanvas.style.display="block";
-  const colors=[getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#d4af37","#fff","#22c55e","#60a5fa","#fb7185","#a78bfa"];
-  confettiParticles=[];
-  for(let i=0;i<120;i++){
-    const x=confettiCanvas.width*(0.2+Math.random()*0.6);
-    const y=confettiCanvas.height*(0.25+Math.random()*0.2);
-    const sp=2+Math.random()*5;
-    const ang=(-Math.PI/2)+(Math.random()*1.2-0.6);
-    confettiParticles.push({x,y,vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,g:0.10+Math.random()*0.12,w:6+Math.random()*8,h:4+Math.random()*7,rot:Math.random()*Math.PI,vr:(Math.random()*0.25-0.12),color:colors[Math.floor(Math.random()*colors.length)],life:0,max:140+Math.random()*70});
-  }
-  const loop=()=>{
-    cctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-    confettiParticles.forEach(p=>{
-      p.life++; p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
-      const a=Math.max(0,1-p.life/p.max);
-      cctx.globalAlpha=a;
-      cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.rot);
-      cctx.fillStyle=p.color; cctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      cctx.restore();
-    });
-    cctx.globalAlpha=1;
-    confettiParticles=confettiParticles.filter(p=>p.life<p.max && p.y<confettiCanvas.height+40);
-    if(confettiParticles.length) confettiRaf=requestAnimationFrame(loop);
-    else{ confettiCanvas.style.display="none"; cancelAnimationFrame(confettiRaf); confettiRaf=null; }
-  };
-  if(!confettiRaf) loop();
-}
-
-/* gate open */
+/* Gate open */
 btnEnter.addEventListener("click", ()=>{
   gate.style.display="none";
-  confettiBurst();
   if(musicOn && audio) audio.play().catch(()=>{});
-  // video autoplay fallback (Android safe)
+
+  // Android autoplay helper bila video ON
   const vid = document.getElementById("bgVideo");
   if(vid && getComputedStyle(document.documentElement).getPropertyValue("--video-mode").trim()==="1"){
     vid.play().catch(()=>{});
@@ -907,7 +893,6 @@ verPicker.addEventListener("change", ()=>{
   p.set("v",String(v)); p.set("pkg",pkg);
   history.replaceState(null,"",location.pathname+"?"+p.toString());
   applyTheme(v);
-  maybeApplyAutoTime();
   refreshPickerOptions();
   rebuildQR();
   setWatermark();
@@ -934,28 +919,23 @@ function closeSheet(){ sheet.classList.remove("open"); setTimeout(()=>sheetBack.
 btnTheme.addEventListener("click", openSheet);
 btnCloseSheet.addEventListener("click", closeSheet);
 sheetBack.addEventListener("click", closeSheet);
+
 document.querySelectorAll("[data-m]").forEach(btn=>{
   btn.addEventListener("click", ()=>{
-    setAutoTime(false);
     setMood(btn.getAttribute("data-m"));
     setWatermark(); rebuildQR();
     closeSheet();
   });
 });
+
 accentPick.addEventListener("input", ()=>{
-  setAutoTime(false);
   setAccent(accentPick.value);
   setWatermark();
 });
+
 motionBtn.addEventListener("click", ()=>{
-  const cur=getComputedStyle(document.documentElement).getPropertyValue("--motion").trim();
-  setMotion(cur!=="1");
-});
-autoTimeBtn.addEventListener("click", ()=>{
-  const cur=getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()==="1";
-  setAutoTime(!cur);
-  maybeApplyAutoTime();
-  setWatermark();
+  const cur = document.documentElement.getAttribute("data-motion") || "1";
+  setMotion(cur !== "1");
 });
 
 /* VIDEO toggle */
@@ -984,7 +964,7 @@ addEventListener("pointermove",(e)=>{
   touchY=((e.clientY/h)-0.5)*2;
 },{passive:true});
 function parallaxTick(){
-  if(getComputedStyle(document.documentElement).getPropertyValue("--motion").trim()!=="1"){
+  if((document.documentElement.getAttribute("data-motion")||"1")!=="1"){
     requestAnimationFrame(parallaxTick); return;
   }
   const y=scrollY||0;
@@ -1009,30 +989,25 @@ requestAnimationFrame(parallaxTick);
   const m = localStorage.getItem("REM_MOTION");
   setMotion(m===null ? true : m==="1");
 
-  // auto-time
-  const at = localStorage.getItem("REM_AUTOTIME");
-  setAutoTime(at===null ? true : at==="1");
-
   // mood
   const urlMood=(p.get("m")||"").toLowerCase();
   const savedMood=localStorage.getItem("REM_MOOD");
-  const byV=(v===4)?"islamic":(v===1?"gold":(v===2?"galaxy":(v===5?"aurora":"bokeh")));
-  if(urlMood){ setAutoTime(false); setMood(urlMood,true); }
-  else if(savedMood && getComputedStyle(document.documentElement).getPropertyValue("--auto-time").trim()!=="1"){ setMood(savedMood,true); }
-  else{ maybeApplyAutoTime(); if(!wrap.getAttribute("data-mood")) setMood(byV,true); }
+  if(urlMood) setMood(urlMood,true);
+  else if(savedMood) setMood(savedMood,true);
+  else setMood("aurora",true);
 
   // accent
   const urlA=(p.get("a")||"").trim();
   const savedA=localStorage.getItem("REM_ACCENT");
-  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)){ setAutoTime(false); setAccent("#"+urlA,true); }
-  else if(savedA){ setAccent(savedA,true); }
+  if(urlA && /^[0-9a-fA-F]{6}$/.test(urlA)) setAccent("#"+urlA,true);
+  else if(savedA) setAccent(savedA,true);
   accentPick.value = (getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || accentPick.value);
 
   // orientation
   const savedOri=localStorage.getItem("REM_PHOTO_ORI") || "portrait";
   applyOrientation(savedOri); oriPick.value=savedOri;
 
-  // video (URL -> storage)
+  // video
   const urlVideo = (p.get("video")||"").trim();
   const savedVideo = localStorage.getItem("REM_VIDEO_ON");
   const videoOn = (urlVideo==="1") ? true : (savedVideo==="1");
@@ -1053,12 +1028,6 @@ requestAnimationFrame(parallaxTick);
 
   rebuildQR();
   setWatermark();
-
-  // try autoplay video
-  const vid=document.getElementById("bgVideo");
-  if(vid && videoOn){
-    vid.play().catch(()=>{});
-  }
 })();
 </script>
 </body>
