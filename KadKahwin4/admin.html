@@ -624,4 +624,10 @@ $("btnResetAll").onclick = resetAll;
 
 $("importFile").onchange = async (e)=>{
   const file = e.target.files[0];
-  await importJ
+  if(!file) return;
+  await importJson(file);
+  e.target.value = "";
+};
+</script>
+</body>
+</html>
