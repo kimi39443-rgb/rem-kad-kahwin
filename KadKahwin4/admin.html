@@ -40,9 +40,7 @@
       font-weight:700; font-size:12px;
     }
     .dot{width:10px;height:10px;border-radius:50%;background:var(--ok); box-shadow:0 0 0 4px rgba(41,208,127,.12)}
-    .sub{
-      margin-top:8px; color:var(--muted); font-size:13px; line-height:1.35
-    }
+    .sub{margin-top:8px; color:var(--muted); font-size:13px; line-height:1.35}
     .hint{
       margin-top:10px; padding:10px 12px; border-radius:16px;
       border:1px solid rgba(41,208,127,.22);
@@ -75,12 +73,12 @@
     textarea{min-height:90px; resize:vertical}
     input::placeholder, textarea::placeholder{color:rgba(167,176,187,.65)}
     .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-    .three{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
-    @media(max-width:520px){ .two, .three{grid-template-columns:1fr;} }
+    @media(max-width:520px){ .two{grid-template-columns:1fr;} }
 
-    .btnrow{
-      display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px
-    }
+    .btnrow{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+    .btnrow3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:12px}
+    @media(max-width:520px){ .btnrow3{grid-template-columns:1fr;} }
+
     .btn{
       border:0; border-radius:18px;
       padding:12px 14px;
@@ -97,14 +95,7 @@
     .btn.primary{background: linear-gradient(135deg, #ffeaa3, #ffd06f); color:#1a1a1a;}
     .btn.secondary{background: linear-gradient(135deg, #b7c6ff, #8fb3ff); color:#0b0f14;}
     .btn.small{padding:10px 12px; font-size:14px; border-radius:16px; background:var(--btn2);}
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.18);
-      font-size:12px; color:var(--muted);
-    }
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+
     .out{
       margin-top:10px;
       padding:12px;
@@ -123,9 +114,17 @@
       padding:10px 12px; border-radius:16px; margin-top:10px;
       font-size:13px;
     }
-    .footer{margin-top:14px; color:rgba(167,176,187,.8); font-size:12px; line-height:1.5}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
     a{color:var(--accent); text-decoration:none}
     a:hover{text-decoration:underline}
+    .toggleRow{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      font-size:12px; color:rgba(238,243,247,.78);
+    }
   </style>
 </head>
 <body>
@@ -139,7 +138,7 @@
         </div>
         <div class="status"><span class="dot"></span> STATUS: OK</div>
       </div>
-      <div class="hint">✅ Data admin disimpan dalam telefon (localStorage). Untuk pindah device: guna Export/Import (optional).</div>
+      <div class="hint">✅ Data disimpan dalam telefon (localStorage). Kalau field degil tak boleh padam, guna butang <b>🧹 Padam Expired</b>.</div>
     </div>
 
     <div class="grid">
@@ -164,9 +163,19 @@
         <label>Kod VIP (jika VIP ON)</label>
         <input id="vipCode" placeholder="Contoh: VIP123" />
 
+        <label>Expired Lock (untuk pembeli)</label>
+        <div class="toggleRow">
+          <select id="expOn" style="max-width:180px">
+            <option value="0">OFF</option>
+            <option value="1">ON</option>
+          </select>
+          <span class="chip">OFF = tak akan tamat (tiada lock)</span>
+          <span class="chip">ON = ikut tarikh & masa</span>
+        </div>
+
         <div class="two">
           <div>
-            <label>Expired (optional) — format <b>DD/MM/YYYY</b></label>
+            <label>Tarikh Expired — format <b>DD/MM/YYYY</b></label>
             <input id="expDate" placeholder="31/12/2025" inputmode="numeric" />
           </div>
           <div>
@@ -176,7 +185,7 @@
         </div>
 
         <div class="warn">
-          Tip: Isi tarikh sahaja → sistem auto set masa <b>11:59 PM</b> ikut waktu telefon.
+          Tip: Kalau Expired ON tapi masa kosong → sistem auto set <b>11:59 PM</b>.
         </div>
 
         <div class="btnrow">
@@ -184,21 +193,19 @@
           <button class="btn small" id="openInvite">🔎 Buka invite.html</button>
         </div>
 
-        <div class="btnrow">
+        <div class="btnrow3">
+          <button class="btn" id="clearExp">🧹 Padam Expired</button>
           <button class="btn primary" id="save">💾 Simpan</button>
           <button class="btn secondary" id="gen">⚡ Generate</button>
         </div>
 
         <div class="msg" id="msg"></div>
         <div class="out mono" id="out" style="display:none"></div>
-
-        <div class="footer">
-          Nota: Jangan guna page ini untuk jual semula tanpa kebenaran pemilik template.
-        </div>
+        <div class="out mono" id="debug" style="display:none"></div>
       </div>
 
       <div class="card">
-        <h2>Maklumat Kad (Contoh)</h2>
+        <h2>Maklumat Kad</h2>
 
         <label>Nama Pengantin</label>
         <div class="two">
@@ -223,7 +230,7 @@
         <label>Lokasi</label>
         <textarea id="venue" placeholder="Dewan / alamat penuh"></textarea>
 
-        <label>Link Video (mp4 / direct URL) — optional</label>
+        <label>Link Video (mp4 direct URL) — optional</label>
         <input id="videoSrc" placeholder="https://.../video.mp4" />
 
         <div class="btnrow">
@@ -232,7 +239,7 @@
         </div>
 
         <div class="out mono" id="io" style="display:none"></div>
-        <div class="msg">Export akan keluarkan JSON. Copy dan simpan. Import tampal balik JSON untuk pindah phone.</div>
+        <div class="msg">Export untuk pindah device: Copy JSON → simpan → Import di phone lain.</div>
       </div>
     </div>
   </div>
@@ -240,17 +247,16 @@
 <script>
 (() => {
   const $ = (id) => document.getElementById(id);
-
-  const KEY = "KK4_ADMIN_STABLE_v1";
+  const KEY = "KK4_ADMIN_STABLE_v2";
 
   const fields = {
     baseUrl: $("baseUrl"),
     videoOn: $("videoOn"),
     vipOn: $("vipOn"),
     vipCode: $("vipCode"),
+    expOn: $("expOn"),
     expDate: $("expDate"),
     expTime: $("expTime"),
-
     groom: $("groom"),
     bride: $("bride"),
     title: $("title"),
@@ -262,6 +268,7 @@
 
   const msg = $("msg");
   const out = $("out");
+  const debug = $("debug");
   const io = $("io");
 
   function setMsg(t, good=true){
@@ -270,8 +277,7 @@
   }
 
   function normalizeBaseUrl(u){
-    u = (u || "").trim();
-    return u;
+    return (u || "").trim();
   }
 
   function parseDDMMYYYY(dateStr){
@@ -283,7 +289,6 @@
     if(mm < 1 || mm > 12) return { error: "Bulan mesti 1-12" };
     if(dd < 1 || dd > 31) return { error: "Hari mesti 1-31" };
     const d = new Date(yyyy, mm-1, dd);
-    // Validate real date (contoh 31/02 invalid)
     if(d.getFullYear() !== yyyy || d.getMonth() !== (mm-1) || d.getDate() !== dd){
       return { error: "Tarikh tidak sah" };
     }
@@ -293,9 +298,8 @@
   function parse12hTime(timeStr){
     const s = (timeStr || "").trim();
     if(!s) return null;
-    // Accept: "11:59 PM", "11 PM", "9:05am", "9am"
     const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp][Mm])$/);
-    if(!m) return { error: "Masa mesti format 12 jam: contoh 11:59 PM" };
+    if(!m) return { error: "Masa mesti 12 jam: contoh 11:59 PM" };
     let hh = parseInt(m[1],10);
     let min = m[2] ? parseInt(m[2],10) : 0;
     const ap = m[3].toUpperCase();
@@ -306,9 +310,10 @@
     return { hh24: hh, min };
   }
 
-  function buildExpiryMs(expDateStr, expTimeStr){
+  function buildExpiryMs(expEnabled, expDateStr, expTimeStr){
+    if(!expEnabled) return { ms: null };
     const d = parseDDMMYYYY(expDateStr);
-    if(!d) return { ms: null };
+    if(!d) return { error: "Expired ON: Tarikh wajib isi" };
     if(d.error) return { error: d.error };
 
     const t = parse12hTime(expTimeStr);
@@ -316,8 +321,45 @@
 
     const hh = t ? t.hh24 : 23;
     const min = t ? t.min : 59;
-    const exp = new Date(d.yyyy, d.mm-1, d.dd, hh, min, 0, 0);
-    return { ms: exp.getTime() };
+    const exp = new Date(d.yyyy, d.mm-1, d.dd, hh, min, 0, 0); // ikut waktu telefon
+    return { ms: exp.getTime(), iso: exp.toISOString() };
+  }
+
+  function readForm(){
+    return {
+      baseUrl: normalizeBaseUrl(fields.baseUrl.value),
+      videoOn: fields.videoOn.value === "1",
+      vipOn: fields.vipOn.value === "1",
+      vipCode: (fields.vipCode.value || "").trim(),
+      expOn: fields.expOn.value === "1",
+      expDate: (fields.expDate.value || "").trim(),
+      expTime: (fields.expTime.value || "").trim(),
+      groom: (fields.groom.value || "").trim(),
+      bride: (fields.bride.value || "").trim(),
+      title: (fields.title.value || "").trim(),
+      eventDate: (fields.eventDate.value || "").trim(),
+      eventTime: (fields.eventTime.value || "").trim(),
+      venue: (fields.venue.value || "").trim(),
+      videoSrc: (fields.videoSrc.value || "").trim(),
+      v: 2
+    };
+  }
+
+  function writeForm(d){
+    fields.baseUrl.value = d.baseUrl || "";
+    fields.videoOn.value = d.videoOn ? "1" : "0";
+    fields.vipOn.value = d.vipOn ? "1" : "0";
+    fields.vipCode.value = d.vipCode || "VIP123";
+    fields.expOn.value = d.expOn ? "1" : "0";
+    fields.expDate.value = d.expDate || "";
+    fields.expTime.value = d.expTime || "";
+    fields.groom.value = d.groom || "";
+    fields.bride.value = d.bride || "";
+    fields.title.value = d.title || "";
+    fields.eventDate.value = d.eventDate || "";
+    fields.eventTime.value = d.eventTime || "";
+    fields.venue.value = d.venue || "";
+    fields.videoSrc.value = d.videoSrc || "";
   }
 
   function save(){
@@ -329,50 +371,7 @@
   function load(){
     const raw = localStorage.getItem(KEY);
     if(!raw) return;
-    try{
-      const data = JSON.parse(raw);
-      writeForm(data);
-      setMsg("✅ Data dimuatkan.");
-    }catch(e){}
-  }
-
-  function readForm(){
-    return {
-      baseUrl: normalizeBaseUrl(fields.baseUrl.value),
-      videoOn: fields.videoOn.value === "1",
-      vipOn: fields.vipOn.value === "1",
-      vipCode: (fields.vipCode.value || "").trim(),
-
-      expDate: (fields.expDate.value || "").trim(),
-      expTime: (fields.expTime.value || "").trim(),
-
-      groom: (fields.groom.value || "").trim(),
-      bride: (fields.bride.value || "").trim(),
-      title: (fields.title.value || "").trim(),
-      eventDate: (fields.eventDate.value || "").trim(),
-      eventTime: (fields.eventTime.value || "").trim(),
-      venue: (fields.venue.value || "").trim(),
-      videoSrc: (fields.videoSrc.value || "").trim(),
-      v: 1
-    };
-  }
-
-  function writeForm(d){
-    fields.baseUrl.value = d.baseUrl || "";
-    fields.videoOn.value = d.videoOn ? "1" : "0";
-    fields.vipOn.value = d.vipOn ? "1" : "0";
-    fields.vipCode.value = d.vipCode || "";
-
-    fields.expDate.value = d.expDate || "";
-    fields.expTime.value = d.expTime || "";
-
-    fields.groom.value = d.groom || "";
-    fields.bride.value = d.bride || "";
-    fields.title.value = d.title || "";
-    fields.eventDate.value = d.eventDate || "";
-    fields.eventTime.value = d.eventTime || "";
-    fields.venue.value = d.venue || "";
-    fields.videoSrc.value = d.videoSrc || "";
+    try{ writeForm(JSON.parse(raw)); setMsg("✅ Data dimuatkan."); }catch(e){}
   }
 
   function base64UrlEncode(str){
@@ -384,17 +383,33 @@
   }
 
   function safeCopy(text){
-    // Android friendly copy
     return navigator.clipboard?.writeText(text).catch(() => {
       const ta = document.createElement("textarea");
       ta.value = text;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
+      ta.style.position="fixed"; ta.style.opacity="0";
       document.body.appendChild(ta);
       ta.focus(); ta.select();
       document.execCommand("copy");
       ta.remove();
     });
+  }
+
+  function clearExpiredHard(){
+    // Clear UI
+    fields.expOn.value = "0";
+    fields.expDate.value = "";
+    fields.expTime.value = "";
+
+    // Clear saved data too (so it won't auto-come-back)
+    const data = readForm();
+    data.expOn = false;
+    data.expDate = "";
+    data.expTime = "";
+    localStorage.setItem(KEY, JSON.stringify(data));
+
+    out.style.display = "none";
+    debug.style.display = "none";
+    setMsg("✅ Expired sudah dipadam (reset). Tekan Generate untuk link baru.");
   }
 
   function generate(){
@@ -413,7 +428,7 @@
       return;
     }
 
-    const exp = buildExpiryMs(data.expDate, data.expTime);
+    const exp = buildExpiryMs(data.expOn, data.expDate, data.expTime);
     if(exp.error){
       setMsg("❌ " + exp.error, false);
       return;
@@ -428,10 +443,14 @@
       venue: data.venue,
       videoOn: data.videoOn ? 1 : 0,
       videoSrc: data.videoSrc,
+
       vipOn: data.vipOn ? 1 : 0,
       vipCode: data.vipOn ? data.vipCode : "",
-      expMs: exp.ms, // null jika tiada
-      ver: 1
+
+      expOn: data.expOn ? 1 : 0,
+      expMs: exp.ms,           // null jika OFF
+      expIso: exp.iso || null, // debug / rujukan
+      ver: 2
     };
 
     const encoded = base64UrlEncode(JSON.stringify(payload));
@@ -440,16 +459,20 @@
     out.style.display = "block";
     out.textContent = link;
 
-    safeCopy(link).then(() => {
-      setMsg("✅ Link siap & sudah copy. Bagi link ini kepada tetamu.");
-    }).catch(() => {
-      setMsg("✅ Link siap. Tekan lama untuk copy jika clipboard block.", true);
-    });
+    debug.style.display = "block";
+    debug.textContent =
+      "VIP: " + (payload.vipOn ? "ON" : "OFF") +
+      " | Expired: " + (payload.expOn ? ("ON (" + (payload.expIso || payload.expMs) + ")") : "OFF") +
+      " | Video: " + (payload.videoOn ? "ON" : "OFF");
+
+    safeCopy(link).then(() => setMsg("✅ Link baru siap & sudah copy. Buka guna Incognito untuk test."))
+                  .catch(() => setMsg("✅ Link siap. Tekan lama untuk copy jika clipboard block.", true));
   }
 
-  // Buttons
   $("save").addEventListener("click", save);
   $("gen").addEventListener("click", generate);
+
+  $("clearExp").addEventListener("click", clearExpiredHard);
 
   $("copyBase").addEventListener("click", () => {
     const b = normalizeBaseUrl(fields.baseUrl.value);
@@ -483,11 +506,8 @@
     }
   });
 
-  // Auto load on open
+  // Auto load
   load();
-
-  // Autofill friendly defaults (jika kosong)
-  if(!fields.vipCode.value) fields.vipCode.value = "VIP123";
 })();
 </script>
 </body>
