@@ -1,959 +1,397 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>Admin Android • R-E-M</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel - Kad Kahwin</title>
   <style>
-    :root { color-scheme: dark; }
-    body { background:#050505; }
-    .glass { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
-    .btn { padding:1.05rem 1rem; border-radius:1.25rem; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); font-weight:700; }
-    .btn:active { transform: scale(.99); }
-    .btn:hover { background:rgba(255,255,255,.10); }
-    .btnPrimary { background:rgba(255,255,255,.92); color:#111; border-color:transparent; font-weight:900; }
-    .btnPrimary:hover { background:#fff; }
-    .btnDanger { border-color: rgba(239,68,68,.45); }
-    .field { width:100%; padding:1rem 1rem; border-radius:1.25rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); outline:none; }
-    .label { font-size:11px; letter-spacing:.22em; text-transform:uppercase; opacity:.6; margin-bottom:.4rem; }
-    .hr { border-top:1px solid rgba(255,255,255,.10); }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .chip { padding:.45rem .75rem; border-radius:999px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); font-weight:800; font-size:12px; }
-    .stickyBar {
-      position: sticky; bottom: 0;
-      background: rgba(0,0,0,.65);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(255,255,255,.10);
-      padding: .75rem;
-      border-radius: 1.25rem;
-      z-index: 50;
+    :root{--accent:#d6b36a}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{min-height:100vh;background:#0b0b0c;color:#fff;padding:16px}
+    .wrap{width:min(860px,100%);margin:0 auto}
+    .card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 20px 70px rgba(0,0,0,.55);
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
     }
+    h1{font-size:20px;margin-bottom:6px}
+    p{opacity:.85;font-size:13px;line-height:1.55;margin-bottom:12px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+    .field{grid-column:span 12}
+    @media(min-width:760px){ .field.half{grid-column:span 6} }
+    label{display:block;font-size:12px;opacity:.85;margin:10px 0 6px}
+    input,textarea,select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.30);
+      color:#fff;
+      outline:none;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{
+      padding:12px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.10);color:#fff;font-weight:900;cursor:pointer
+    }
+    .btnPrimary{background:var(--accent);color:#1b1b1b;border:none}
+    .note{opacity:.75;font-size:12px;line-height:1.5;margin-top:10px}
+    .lock{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.75);z-index:50}
+    .lockCard{width:min(520px,100%);border-radius:22px;padding:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+    .tiny{font-size:12px;opacity:.8;margin-top:8px}
+    .preview{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .avatar{width:74px;height:74px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25)}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06)}
+    .toggle b{font-size:13px}
   </style>
 </head>
+<body>
 
-<body class="min-h-screen p-3">
-  <div class="max-w-[720px] mx-auto space-y-3">
-
-    <!-- HEADER -->
-    <div class="glass rounded-3xl p-4">
-      <div class="flex items-start justify-between gap-3">
-        <div>
-          <div class="text-2xl font-extrabold">Admin Android</div>
-          <div class="text-white/60 text-sm mt-1">Edit pelanggan → pilih pakej → jana link → copy.</div>
-          <div class="text-white/45 text-xs mt-2">
-            Admin default: <span class="mono">123456</span> • VIP default: <span class="mono">vip123456</span> (tukar lepas siap)
-          </div>
-        </div>
-        <div class="flex flex-col items-end gap-2">
-          <div id="sessionChip" class="chip">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-2 align-middle"></span>
-            Unlocked
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-2 mt-3">
-        <button id="btnChangeAdmin" class="btn">Tukar Admin</button>
-        <button id="btnChangeVip" class="btn">Tukar VIP</button>
-        <button id="btnLogout" class="btn">Logout</button>
-      </div>
+<div class="lock" id="lock">
+  <div class="lockCard">
+    <h1>Admin Login</h1>
+    <p>Masukkan password untuk buka panel edit.</p>
+    <label>Password</label>
+    <input id="pw" type="password" placeholder="contoh: admin123" />
+    <div class="row">
+      <button class="btnPrimary btn" id="btnLogin">Buka Admin</button>
+      <button class="btn" onclick="location.href='invite.html'">Pergi Jemputan</button>
     </div>
+    <div class="tiny">Nota: password ini hanya kunci UI (GitHub Pages tiada server).</div>
+  </div>
+</div>
 
-    <!-- LOGIN -->
-    <div id="loginCard" class="glass rounded-3xl p-4 hidden">
-      <div class="text-lg font-extrabold">Masukkan Password Admin</div>
-      <div class="text-white/55 text-sm mt-1">Jika baru pertama kali: <span class="mono">123456</span></div>
-      <input id="passInput" type="password" class="field mt-3" placeholder="Password Admin" />
-      <button id="btnLogin" class="btnPrimary w-full mt-3">Masuk</button>
-      <div id="loginMsg" class="text-sm text-red-300 mt-2"></div>
-    </div>
+<div class="wrap">
+  <div class="card">
+    <h1>Edit Maklumat Jemputan (Premium)</h1>
+    <p>Isi → tekan <b>Simpan</b>. Lepas itu buka <b>invite.html</b> untuk lihat perubahan.</p>
 
-    <!-- APP -->
-    <div id="app" class="space-y-3 hidden">
+    <div class="grid">
 
-      <!-- CUSTOMER -->
-      <div class="glass rounded-3xl p-4 space-y-3">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <div class="label">Pelanggan</div>
-            <div class="text-xl font-extrabold">Senarai</div>
-          </div>
-          <div class="grid grid-cols-3 gap-2">
-            <button id="btnNew" class="btn">+ Baru</button>
-            <button id="btnRename" class="btn">Nama</button>
-            <button id="btnDelete" class="btn btnDanger">Padam</button>
-          </div>
-        </div>
-
-        <select id="customerSelect" class="field"></select>
-
-        <div class="hr"></div>
-
-        <!-- VIP -->
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <div class="label">VIP untuk pelanggan ini</div>
-            <div class="text-white/60 text-sm">Lock = versi 4–5 tak boleh dibuka</div>
-          </div>
-          <div id="tierChip" class="chip">Pakej: NORMAL</div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <button id="btnVipUnlock" class="btnPrimary">Unlock VIP</button>
-          <button id="btnVipLock" class="btn">Lock VIP</button>
-        </div>
-
-        <div class="text-white/45 text-xs">
-          Unlock VIP akan minta Password VIP. VIP hanya untuk pelanggan yang bayar pakej VIP/Family.
-        </div>
+      <div class="field half">
+        <label>Bahasa</label>
+        <select id="lang">
+          <option value="ms">BM (Malay)</option>
+          <option value="en">EN (English)</option>
+        </select>
       </div>
 
-      <!-- BACKUP -->
-      <div class="glass rounded-3xl p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="label">Backup</div>
-            <div class="text-lg font-extrabold">Data</div>
-          </div>
-          <div class="text-xs text-white/45">localStorage (device ini)</div>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2">
-          <button id="btnExport" class="btn">Export</button>
-          <label class="btn text-center cursor-pointer">
-            Import
-            <input id="importFile" type="file" accept="application/json" class="hidden" />
-          </label>
-          <button id="btnResetAll" class="btn btnDanger">Reset</button>
-        </div>
+      <div class="field half">
+        <label>Tema</label>
+        <select id="theme">
+          <option value="gold">Gold (Premium)</option>
+          <option value="rose">Rose</option>
+          <option value="emerald">Emerald</option>
+          <option value="midnight">Midnight</option>
+        </select>
       </div>
 
-      <!-- FORM -->
-      <div class="glass rounded-3xl p-4 space-y-3">
-        <div>
-          <div class="label">Maklumat Majlis</div>
-          <div class="text-xl font-extrabold">Edit</div>
-        </div>
-
-        <div>
-          <div class="label">Base URL (auto)</div>
-          <input id="baseUrl" class="field mono" placeholder="Auto: https://.../KadKahwin4/" />
-          <div class="text-xs text-white/45 mt-2">Biarkan auto. Jika link jadi pelik, paste URL folder KadKahwin4 anda.</div>
-        </div>
-
-        <!-- GREETING -->
-        <div>
-          <div class="label">Ayat / Tajuk (pilih)</div>
-          <select id="greetingPreset" class="field">
-            <option value="Selamat Pengantin Baru">Selamat Pengantin Baru</option>
-            <option value="Raja Sehari">Raja Sehari</option>
-            <option value="Walimatulurus">Walimatulurus</option>
-            <option value="Jemputan Majlis Perkahwinan">Jemputan Majlis Perkahwinan</option>
-            <option value="Majlis Kesyukuran">Majlis Kesyukuran</option>
-            <option value="custom">Custom (isi sendiri)</option>
+      <div class="field half">
+        <div class="toggle">
+          <b>Video Background</b>
+          <select id="videoOn">
+            <option value="false">OFF</option>
+            <option value="true">ON</option>
           </select>
-          <input id="greeting" class="field mt-2" placeholder="Contoh: Walimatulurus" />
         </div>
-
-        <div class="grid grid-cols-1 gap-2">
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <div class="label">Nama Pengantin</div>
-              <input id="names" class="field" placeholder="Adam & Hawa" />
-            </div>
-            <div>
-              <div class="label">WhatsApp (60...)</div>
-              <input id="wa" class="field mono" placeholder="601111661303" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <div class="label">Tarikh</div>
-              <input id="date" class="field" placeholder="01/12/2025" />
-            </div>
-            <div>
-              <div class="label">Masa</div>
-              <input id="time" class="field" placeholder="9.00am – 2.00pm" />
-            </div>
-          </div>
-
-          <div>
-            <div class="label">Lokasi</div>
-            <input id="location" class="field" placeholder="Dewan Seri Melur" />
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <div class="label">Google Maps URL (optional)</div>
-              <input id="maps" class="field mono" placeholder="https://maps.google.com/..." />
-            </div>
-            <div>
-              <div class="label">Music URL (optional)</div>
-              <input id="music" class="field mono" placeholder="https://.../song.mp3" />
-            </div>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- PACKAGE + EXPIRE -->
-        <div class="space-y-2">
-          <div class="label">Pakej + Harga + Tempoh + Expired</div>
-
-          <div>
-            <div class="label">Plan (auto isi)</div>
-            <select id="plan" class="field">
-              <option value="basic">Basic — RM29 / 7 hari (Versi 1–3)</option>
-              <option value="standard" selected>Standard — RM59 / 30 hari (Versi 1–3)</option>
-              <option value="vip">VIP — RM99 / 30 hari (Versi 1–5)</option>
-              <option value="family">Family — RM149 / 90 hari (Versi 1–5)</option>
-              <option value="custom">Custom (isi sendiri)</option>
-            </select>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <div class="label">Jenis Pakej</div>
-              <select id="tier" class="field">
-                <option value="normal">NORMAL (Versi 1–3)</option>
-                <option value="vip">VIP/FAMILY (Versi 1–5)</option>
-              </select>
-            </div>
-            <div>
-              <div class="label">Harga (RM)</div>
-              <input id="price" class="field mono" inputmode="decimal" placeholder="cth: 59" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <div class="label">Tempoh (hari)</div>
-              <input id="days" class="field mono" inputmode="numeric" placeholder="cth: 30" />
-            </div>
-            <div>
-              <div class="label">Expire (auto)</div>
-              <input id="expireText" class="field mono" disabled />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <button id="btnStartSub" class="btn">Mulakan Langganan</button>
-            <button id="btnClearSub" class="btn btnDanger">Buang Expire</button>
-          </div>
-
-          <div class="text-xs text-white/45">
-            Bila expired: sistem akan <b>auto lock VIP</b> + jatuh ke <b>NORMAL</b> (versi 4–5 hilang).
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <!-- LINKS -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="label">Jana Link Versi</div>
-              <div class="text-white/60 text-sm">Normal: 1–3 • VIP: 1–5 (jika unlocked & belum expired)</div>
-            </div>
-            <button id="btnPreview" class="btn">Preview</button>
-          </div>
-
-          <div id="links" class="space-y-2"></div>
-        </div>
-
-        <!-- STICKY SAVE -->
-        <div class="stickyBar">
-          <div class="grid grid-cols-[1fr,56px] gap-2">
-            <button id="btnSave" class="btnPrimary w-full text-lg">Simpan</button>
-            <button id="btnTop" class="btn w-full" title="Atas">↑</button>
-          </div>
-          <div id="saveHint" class="text-xs text-white/45 mt-2">
-            Tip: Lepas Simpan → copy link versi.
-          </div>
-        </div>
-
       </div>
 
-      <div class="text-center text-xs text-white/35 select-none pb-2">
-        © R-E-M Digital Invitation • Admin Android
+      <div class="field half">
+        <div class="toggle">
+          <b>VIP Lock</b>
+          <select id="vipOn">
+            <option value="false">OFF</option>
+            <option value="true">ON</option>
+          </select>
+        </div>
       </div>
 
+      <div class="field">
+        <label>Kod VIP (jika VIP ON)</label>
+        <input id="vipCode" placeholder="Contoh: VIP123" />
+      </div>
+
+      <div class="field half">
+        <label>Top Title (atas)</label>
+        <input id="topTitle" placeholder="Kad Kahwin Digital" />
+      </div>
+
+      <div class="field half">
+        <label>Top Subtitle (atas)</label>
+        <input id="topSubtitle" placeholder="Jemputan Rasmi" />
+      </div>
+
+      <div class="field half">
+        <label>Badge (contoh: WEDDING INVITATION)</label>
+        <input id="badgeText" placeholder="WEDDING INVITATION" />
+      </div>
+
+      <div class="field half">
+        <label>Salutation (contoh: Dato’/Datin/Tuan/Puan/Encik/Cik)</label>
+        <input id="salutation" placeholder="Dato’/Datin/Tuan/Puan/Encik/Cik" />
+      </div>
+
+      <div class="field">
+        <label>Tajuk</label>
+        <input id="title" placeholder="Walimatul Urus" />
+      </div>
+
+      <div class="field">
+        <label>Nama Pengantin</label>
+        <input id="couple" placeholder="Adam & Hawa" />
+      </div>
+
+      <div class="field">
+        <label>Ayat Jemputan</label>
+        <textarea id="message" placeholder="Dengan penuh kesyukuran..."></textarea>
+      </div>
+
+      <div class="field half">
+        <label>Tarikh (DD/MM/YYYY)</label>
+        <input id="date" placeholder="01/12/2025" />
+      </div>
+
+      <div class="field half">
+        <label>Masa (contoh: 9.00am – 2.00pm)</label>
+        <input id="time" placeholder="9.00am – 2.00pm" />
+      </div>
+
+      <div class="field half">
+        <label>Tempat / Dewan</label>
+        <input id="venue" placeholder="Dewan Serbaguna" />
+      </div>
+
+      <div class="field half">
+        <label>Alamat ringkas</label>
+        <input id="address" placeholder="Alamat ringkas majlis di sini" />
+      </div>
+
+      <div class="field half">
+        <label>Link Google Maps</label>
+        <input id="maps" placeholder="https://maps.google.com/..." />
+      </div>
+
+      <div class="field half">
+        <label>Link WhatsApp RSVP</label>
+        <input id="rsvp" placeholder="https://wa.me/60....?text=..." />
+      </div>
+
+      <div class="field">
+        <label>Aturcara (ringkas)</label>
+        <textarea id="schedule" placeholder="11:00 pagi - Ketibaan tetamu..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Galeri (link/ayat)</label>
+        <textarea id="gallery" placeholder="Letak link album..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Notis / Copyright</label>
+        <input id="copyright" placeholder="Notis: Dilarang guna/ jual page ini tanpa kebenaran pemilik." />
+      </div>
+
+      <div class="field">
+        <label>Foto (Upload – simpan dalam browser sahaja)</label>
+        <input id="photoFile" type="file" accept="image/*" />
+        <div class="preview">
+          <div class="avatar"><img id="photoPreview" alt="preview"/></div>
+          <button class="btn" id="btnClearPhoto" type="button">Buang Foto</button>
+        </div>
+        <div class="note">Foto ini disimpan sebagai base64 dalam localStorage (bukan upload ke GitHub).</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btnPrimary btn" id="btnSave">Simpan</button>
+      <button class="btn" id="btnOpenInvite" type="button">Buka invite.html</button>
+      <button class="btn" id="btnOpenIndex" type="button">Buka index.html</button>
+      <button class="btn" id="btnReset" type="button">Reset Default</button>
+    </div>
+
+    <div class="note">
+      Jika perubahan tak nampak: buka invite.html → tekan <b>3 titik</b> → <b>Refresh</b> / <b>Clear cache</b>, atau tambah <b>?v=1</b> di hujung URL.
     </div>
   </div>
+</div>
 
 <script>
-/* =========================
-   STORAGE KEYS
-========================= */
-const LS_ADMIN_PASS = "REM_ADMIN_PASS_V2";
-const LS_ADMIN_OK   = "REM_ADMIN_OK_V2";
-const LS_VIP_PASS   = "REM_VIP_PASS_V2";
-const LS_CUSTOMERS  = "REM_CUSTOMERS_V2";
+  // ====== PASSWORD (TUKAR DI SINI) ======
+  const ADMIN_PASSWORD = "admin123"; // <- tukar password anda di sini
 
-/* =========================
-   DEFAULT PASSWORDS (sekali)
-========================= */
-if(!localStorage.getItem(LS_ADMIN_PASS)) localStorage.setItem(LS_ADMIN_PASS, "123456");
-if(!localStorage.getItem(LS_VIP_PASS))   localStorage.setItem(LS_VIP_PASS, "vip123456");
+  // ====== DATA STORAGE KEY ======
+  const KEY = "KADKAHWIN_DATA_V10";
 
-/* =========================
-   HELPERS
-========================= */
-const $ = (id)=>document.getElementById(id);
-
-function toast(msg){ alert(msg); }
-
-function getBaseUrlAuto(){
-  const url = new URL(location.href);
-  url.hash=""; url.search="";
-  url.pathname = url.pathname.replace(/\/[^\/]*$/, "/");
-  return url.toString();
-}
-
-function uid(){
-  return "C" + Math.random().toString(16).slice(2,10) + Date.now().toString(16);
-}
-
-function loadCustomers(){
-  try { return JSON.parse(localStorage.getItem(LS_CUSTOMERS) || "[]"); }
-  catch(e){ return []; }
-}
-function saveCustomers(list){
-  localStorage.setItem(LS_CUSTOMERS, JSON.stringify(list));
-}
-
-function nowMs(){ return Date.now(); }
-function daysToMs(d){ return Math.max(0, Number(d)||0) * 86400000; }
-function fmtDateTime(ms){
-  if(!ms) return "-";
-  const d = new Date(ms);
-  const pad = (n)=> String(n).padStart(2,"0");
-  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-
-function encodePayload(obj){
-  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-}
-
-function buildInviteUrl(version, data){
-  const base = (data.baseUrl || getBaseUrlAuto()).replace(/\/?$/, "/");
-  const payload = encodePayload(data);
-  return `${base}invite.html?v=${version}&c=${encodeURIComponent(payload)}`;
-}
-
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    toast("✅ Copy berjaya");
-  }catch(e){
-    const ta=document.createElement("textarea");
-    ta.value=text; document.body.appendChild(ta);
-    ta.select(); document.execCommand("copy");
-    ta.remove();
-    toast("✅ Copy berjaya");
-  }
-}
-
-/* =========================
-   LOGIN
-========================= */
-function showLogin(){
-  $("loginCard").classList.remove("hidden");
-  $("app").classList.add("hidden");
-  $("sessionChip").innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-2 align-middle"></span>Locked`;
-}
-function showApp(){
-  $("loginCard").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("sessionChip").innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-2 align-middle"></span>Unlocked`;
-}
-
-function doLogin(pass){
-  const real = localStorage.getItem(LS_ADMIN_PASS);
-  if(pass !== real){
-    $("loginMsg").textContent = "Password salah.";
-    return false;
-  }
-  localStorage.setItem(LS_ADMIN_OK, "1");
-  $("loginMsg").textContent = "";
-  return true;
-}
-function requireLogin(){
-  if(localStorage.getItem(LS_ADMIN_OK)==="1") return true;
-  showLogin();
-  return false;
-}
-
-/* =========================
-   DATA MODEL
-========================= */
-let LIST = [];
-let CURRENT_ID = "";
-
-const PLAN_MAP = {
-  basic:    { tier:"normal", price:"29",  days:"7"  },
-  standard: { tier:"normal", price:"59",  days:"30" },
-  vip:      { tier:"vip",    price:"99",  days:"30" },
-  family:   { tier:"vip",    price:"149", days:"90" }
-};
-
-function currentForm(){
-  return {
-    baseUrl: ($("baseUrl").value||"").trim(),
-    greeting: ($("greeting").value||"").trim(),
-    names: ($("names").value||"").trim(),
-    wa: ($("wa").value||"").trim().replace(/\s+/g,""),
-    date: ($("date").value||"").trim(),
-    time: ($("time").value||"").trim(),
-    location: ($("location").value||"").trim(),
-    maps: ($("maps").value||"").trim(),
-    music: ($("music").value||"").trim(),
-    plan: ($("plan").value||"standard"),
-    tier: ($("tier").value||"normal"),
-    price: ($("price").value||"").trim(),
-    days: ($("days").value||"").trim(),
-    subStartMs: 0,
-    expireMs: 0,
-    vipUnlocked: false
-  };
-}
-
-function fillForm(c){
-  $("baseUrl").value = c.baseUrl || getBaseUrlAuto();
-
-  $("greeting").value = c.greeting || "Selamat Pengantin Baru";
-  // sync preset
-  const preset = Array.from($("greetingPreset").options).some(o=>o.value===($("greeting").value)) ? $("greeting").value : "custom";
-  $("greetingPreset").value = preset;
-
-  $("names").value = c.names || "";
-  $("wa").value = c.wa || "";
-  $("date").value = c.date || "";
-  $("time").value = c.time || "";
-  $("location").value = c.location || "";
-  $("maps").value = c.maps || "";
-  $("music").value = c.music || "";
-
-  $("plan").value = c.plan || "standard";
-  $("tier").value = c.tier || "normal";
-  $("price").value = c.price || (PLAN_MAP[$("plan").value]?.price || "");
-  $("days").value = c.days || (PLAN_MAP[$("plan").value]?.days || "");
-
-  $("expireText").value = c.expireMs ? fmtDateTime(c.expireMs) : "-";
-}
-
-function renderSelect(list, selectedId){
-  const sel = $("customerSelect");
-  sel.innerHTML = "";
-  if(list.length===0){
-    const opt=document.createElement("option");
-    opt.value=""; opt.textContent="Tiada pelanggan";
-    sel.appendChild(opt);
-    sel.disabled=true;
-    return;
-  }
-  sel.disabled=false;
-  for(const c of list){
-    const opt=document.createElement("option");
-    opt.value=c.id;
-    opt.textContent=c.label || c.names || c.id;
-    sel.appendChild(opt);
-  }
-  sel.value = selectedId || list[0].id;
-}
-
-function isExpired(c){
-  return !!(c.expireMs && nowMs() > c.expireMs);
-}
-
-function applyAutoExpireAndLock(c){
-  // Jika expired → auto lock & normal
-  if(isExpired(c)){
-    c.vipUnlocked = false;
-    c.tier = "normal";
-  }
-  // Kalau tier normal → pastikan vipUnlocked false
-  if((c.tier||"normal")==="normal") c.vipUnlocked = false;
-  return c;
-}
-
-function allowedMaxVersion(c){
-  const expired = isExpired(c);
-  const tier = (c.tier||"normal");
-  if(expired) return 3;
-  if(tier==="vip" && c.vipUnlocked) return 5;
-  return 3;
-}
-
-function renderVipChip(c){
-  const expired = isExpired(c);
-  const maxV = allowedMaxVersion(c);
-  if(expired){
-    $("tierChip").textContent = "EXPIRED (auto lock)";
-  }else{
-    $("tierChip").textContent = (maxV===5) ? "Pakej: VIP (Unlocked)" : "Pakej: NORMAL";
-  }
-}
-
-function renderLinks(c){
-  const wrap = $("links");
-  wrap.innerHTML = "";
-
-  const maxV = allowedMaxVersion(c);
-  for(let v=1; v<=maxV; v++){
-    const payload = { ...c };
-    // payload bersih utk invite
-    delete payload.label; delete payload.id;
-
-    const url = buildInviteUrl(v, payload);
-
-    const card = document.createElement("div");
-    card.className = "glass rounded-3xl p-3";
-
-    const top = document.createElement("div");
-    top.className = "flex items-center justify-between gap-2";
-    top.innerHTML = `
-      <div class="font-extrabold">Versi ${v}</div>
-      <div class="text-xs text-white/55">${(maxV===5? "VIP" : "Normal")}</div>
-    `;
-
-    const link = document.createElement("div");
-    link.className = "text-xs text-white/55 mono truncate mt-2";
-    link.textContent = url;
-
-    const btnRow = document.createElement("div");
-    btnRow.className = "grid grid-cols-2 gap-2 mt-3";
-    btnRow.innerHTML = `
-      <button class="btnPrimary">Copy</button>
-      <button class="btn">Buka</button>
-    `;
-    btnRow.children[0].onclick = ()=>copyText(url);
-    btnRow.children[1].onclick = ()=>window.open(url, "_blank");
-
-    card.appendChild(top);
-    card.appendChild(link);
-    card.appendChild(btnRow);
-    wrap.appendChild(card);
-  }
-
-  if(maxV===3){
-    const note = document.createElement("div");
-    note.className = "text-xs text-white/45 mt-2";
-    note.innerHTML = `Jika nak versi 4–5: pilih Plan VIP/Family + Unlock VIP (tak expired).`;
-    wrap.appendChild(note);
-  }
-}
-
-/* =========================
-   REFRESH
-========================= */
-function ensureDefaultCustomer(){
-  const c = {
-    id: uid(),
-    label: "Default",
-    baseUrl: getBaseUrlAuto(),
-    greeting: "Selamat Pengantin Baru",
-    names: "Adam & Hawa",
-    wa: "601111661303",
-    date: "01/12/2025",
-    time: "9.00am – 2.00pm",
-    location: "Dewan Seri Melur",
-    maps: "",
-    music: "",
-    plan: "standard",
-    tier: "normal",
-    price: "59",
-    days: "30",
-    subStartMs: 0,
-    expireMs: 0,
-    vipUnlocked: false
-  };
-  return c;
-}
-
-function refresh(){
-  LIST = loadCustomers();
-  if(!LIST.length){
-    LIST = [ensureDefaultCustomer()];
-    saveCustomers(LIST);
-  }
-
-  if(!CURRENT_ID || !LIST.some(x=>x.id===CURRENT_ID)) CURRENT_ID = LIST[0].id;
-
-  // apply auto lock for all
-  LIST = LIST.map(c=>applyAutoExpireAndLock(c));
-  saveCustomers(LIST);
-
-  renderSelect(LIST, CURRENT_ID);
-
-  const c = LIST.find(x=>x.id===CURRENT_ID) || LIST[0];
-  fillForm(c);
-  renderVipChip(c);
-  $("expireText").value = c.expireMs ? fmtDateTime(c.expireMs) : "-";
-  renderLinks(c);
-}
-
-function saveCurrent(){
-  const data = currentForm();
-
-  if(!data.greeting) data.greeting = "Selamat Pengantin Baru";
-  if(!data.names) return toast("Isi Nama Pengantin dulu.");
-  if(!data.wa) return toast("Isi nombor WhatsApp (contoh: 60123456789).");
-
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  const old = idx>=0 ? LIST[idx] : null;
-
-  const saved = {
-    ...(old||{}),
-    ...data,
-    id: CURRENT_ID,
-    label: (data.names || "Pelanggan").slice(0,32),
+  const DEFAULT_DATA = {
+    lang:"ms",
+    theme:"gold",
+    videoOn:false,
+    vipOn:false,
+    vipCode:"VIP123",
+    topTitle:"Kad Kahwin Digital",
+    topSubtitle:"Jemputan Rasmi",
+    badgeText:"WEDDING INVITATION",
+    salutation:"Dato’/Datin/Tuan/Puan/Encik/Cik",
+    title:"Walimatul Urus",
+    couple:"Adam & Hawa",
+    message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
+    date:"01/12/2025",
+    time:"9.00am – 2.00pm",
+    venue:"Dewan Serbaguna",
+    address:"Alamat ringkas majlis di sini",
+    maps:"https://maps.google.com/",
+    rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
+    schedule:"11:00 pagi - Ketibaan tetamu • 12:30 tgh - Ketibaan pengantin • 2:00 ptg - Majlis tamat",
+    gallery:"Letak link album atau info galeri di admin panel.",
+    photoDataUrl:"",
+    copyright:"Notis: Dilarang guna/ jual page ini tanpa kebenaran pemilik."
   };
 
-  // preserve subscription timestamps if already set
-  if(old){
-    saved.subStartMs = old.subStartMs || 0;
-    saved.expireMs = old.expireMs || 0;
-    saved.vipUnlocked = !!old.vipUnlocked;
+  function loadData(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      return raw ? Object.assign({}, DEFAULT_DATA, JSON.parse(raw)) : DEFAULT_DATA;
+    }catch(e){ return DEFAULT_DATA; }
   }
+  function saveData(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
 
-  // apply auto lock if expired
-  applyAutoExpireAndLock(saved);
-
-  if(idx>=0) LIST[idx] = saved;
-  else LIST.unshift(saved);
-
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Disimpan");
-}
-
-function newCustomer(){
-  const base = currentForm();
-  const fresh = {
-    ...base,
-    id: uid(),
-    label: "Pelanggan Baru",
-    subStartMs: 0,
-    expireMs: 0,
-    vipUnlocked: false
+  // ====== LOGIN ======
+  const lock = document.getElementById("lock");
+  document.getElementById("btnLogin").onclick = () => {
+    const pw = document.getElementById("pw").value || "";
+    if(pw === ADMIN_PASSWORD){
+      lock.style.display = "none";
+      hydrateForm();
+    }else{
+      alert("Password salah.");
+    }
   };
-  applyAutoExpireAndLock(fresh);
-  LIST.unshift(fresh);
-  saveCustomers(LIST);
-  CURRENT_ID = fresh.id;
-  refresh();
-  toast("✅ Pelanggan baru dibuat");
-}
 
-function renameCustomer(){
-  const name = prompt("Nama label pelanggan (contoh: Karim / AdamHawa):", "");
-  if(!name) return;
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  if(idx<0) return;
-  LIST[idx].label = name.slice(0,40);
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Nama ditukar");
-}
+  // ====== FORM HELPERS ======
+  const $ = (id)=>document.getElementById(id);
+  function setVal(id,val){ $(id).value = (val ?? ""); }
+  function getVal(id){ return $(id).value; }
+  function getBool(id){ return getVal(id) === "true"; }
 
-function deleteCustomer(){
-  const ok = confirm("Padam pelanggan ini? (tidak boleh undo)");
-  if(!ok) return;
-
-  LIST = LIST.filter(x=>x.id!==CURRENT_ID);
-
-  // kalau habis semua, buat default baru (supaya tak ‘stuck’)
-  if(!LIST.length){
-    LIST = [ensureDefaultCustomer()];
+  // ====== PHOTO ======
+  function setPreview(dataUrl){
+    const img = $("photoPreview");
+    img.src = dataUrl || "";
   }
 
-  saveCustomers(LIST);
-  CURRENT_ID = LIST[0].id;
-  refresh();
-  toast("✅ Dipadam");
-}
-
-/* =========================
-   VIP LOCK / UNLOCK
-========================= */
-function vipUnlock(){
-  LIST = loadCustomers();
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  if(idx<0) return;
-
-  const c = LIST[idx];
-  applyAutoExpireAndLock(c);
-
-  if(isExpired(c)){
-    toast("❌ Dah expired. Tak boleh unlock VIP.");
-    return;
+  async function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{
+      const r = new FileReader();
+      r.onload = ()=>resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
   }
 
-  // mesti plan/tier vip
-  if((c.tier||"normal")!=="vip"){
-    const go = confirm("Pelanggan ini bukan pakej VIP. Tukar ke VIP sekarang?");
-    if(!go) return;
-    c.tier = "vip";
+  // ====== HYDRATE ======
+  function hydrateForm(){
+    const d = loadData();
+    setVal("lang", d.lang);
+    setVal("theme", d.theme);
+    setVal("videoOn", String(!!d.videoOn));
+    setVal("vipOn", String(!!d.vipOn));
+    setVal("vipCode", d.vipCode);
+
+    setVal("topTitle", d.topTitle);
+    setVal("topSubtitle", d.topSubtitle);
+    setVal("badgeText", d.badgeText);
+    setVal("salutation", d.salutation);
+
+    setVal("title", d.title);
+    setVal("couple", d.couple);
+    setVal("message", d.message);
+
+    setVal("date", d.date);
+    setVal("time", d.time);
+    setVal("venue", d.venue);
+    setVal("address", d.address);
+
+    setVal("maps", d.maps);
+    setVal("rsvp", d.rsvp);
+
+    setVal("schedule", d.schedule);
+    setVal("gallery", d.gallery);
+
+    setVal("copyright", d.copyright);
+
+    setPreview(d.photoDataUrl);
   }
 
-  const pass = prompt("Masukkan Password VIP:");
-  if(pass !== localStorage.getItem(LS_VIP_PASS)){
-    toast("❌ VIP Password salah");
-    return;
-  }
+  // ====== SAVE ======
+  $("btnSave").onclick = () => {
+    const d = loadData();
+    d.lang = getVal("lang");
+    d.theme = getVal("theme");
+    d.videoOn = getBool("videoOn");
+    d.vipOn = getBool("vipOn");
+    d.vipCode = getVal("vipCode").trim() || DEFAULT_DATA.vipCode;
 
-  c.vipUnlocked = true;
-  LIST[idx] = c;
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ VIP unlocked");
-}
+    d.topTitle = getVal("topTitle").trim();
+    d.topSubtitle = getVal("topSubtitle").trim();
+    d.badgeText = getVal("badgeText").trim();
+    d.salutation = getVal("salutation").trim();
 
-function vipLock(){
-  LIST = loadCustomers();
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  if(idx<0) return;
+    d.title = getVal("title").trim();
+    d.couple = getVal("couple").trim();
+    d.message = getVal("message").trim();
 
-  const c = LIST[idx];
-  c.vipUnlocked = false;
-  c.tier = "normal"; // lock turun normal
-  LIST[idx] = c;
+    d.date = getVal("date").trim();
+    d.time = getVal("time").trim();
+    d.venue = getVal("venue").trim();
+    d.address = getVal("address").trim();
 
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ VIP di-lock (jadi NORMAL)");
-}
+    d.maps = getVal("maps").trim();
+    d.rsvp = getVal("rsvp").trim();
 
-/* =========================
-   PLAN / EXPIRE
-========================= */
-function applyPlan(p){
-  if(p==="custom") return;
-  const m = PLAN_MAP[p];
-  if(!m) return;
-  $("tier").value = m.tier;
-  $("price").value = m.price;
-  $("days").value = m.days;
-}
+    d.schedule = getVal("schedule").trim();
+    d.gallery = getVal("gallery").trim();
 
-function startSubscription(){
-  LIST = loadCustomers();
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  if(idx<0) return;
+    d.copyright = getVal("copyright").trim();
 
-  const days = Number(($("days").value||"").trim());
-  if(!days || days<=0) return toast("Isi Tempoh (hari) yang betul.");
+    saveData(d);
+    alert("✅ Berjaya simpan! Sekarang buka invite.html untuk lihat perubahan.");
+  };
 
-  const c = LIST[idx];
-  c.plan = $("plan").value || c.plan || "standard";
-  c.tier = $("tier").value || c.tier || "normal";
-  c.price = ($("price").value||"").trim();
-  c.days = String(days);
+  $("btnOpenInvite").onclick = () => location.href = "invite.html";
+  $("btnOpenIndex").onclick = () => location.href = "index.html";
 
-  c.subStartMs = nowMs();
-  c.expireMs = c.subStartMs + daysToMs(days);
+  $("btnReset").onclick = () => {
+    if(confirm("Reset semua data ke default?")){
+      saveData(DEFAULT_DATA);
+      hydrateForm();
+      alert("Reset siap. Buka invite.html untuk lihat.");
+    }
+  };
 
-  applyAutoExpireAndLock(c);
-  LIST[idx] = c;
-
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Langganan dimulakan");
-}
-
-function clearSubscription(){
-  LIST = loadCustomers();
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  if(idx<0) return;
-
-  const ok = confirm("Buang expire/langganan untuk pelanggan ini?");
-  if(!ok) return;
-
-  const c = LIST[idx];
-  c.subStartMs = 0;
-  c.expireMs = 0;
-
-  // bila buang expire, ikut tier semasa
-  applyAutoExpireAndLock(c);
-
-  LIST[idx]=c;
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Expire dibuang");
-}
-
-/* =========================
-   BACKUP
-========================= */
-function exportJson(){
-  const data = JSON.stringify(loadCustomers(), null, 2);
-  const blob = new Blob([data], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "rem_admin_android_backup.json";
-  a.click();
-}
-
-async function importJson(file){
-  if(!file) return;
-  const text = await file.text();
-  try{
-    const arr = JSON.parse(text);
-    if(!Array.isArray(arr)) throw new Error("not array");
-    saveCustomers(arr);
-    CURRENT_ID = arr[0]?.id || "";
-    refresh();
-    toast("✅ Import berjaya");
-  }catch(e){
-    toast("❌ File JSON tidak sah");
-  }
-}
-
-function resetAll(){
-  const ok = confirm("Reset semua data + logout? (tidak boleh undo)");
-  if(!ok) return;
-  localStorage.removeItem(LS_CUSTOMERS);
-  localStorage.removeItem(LS_ADMIN_OK);
-  toast("✅ Reset siap");
-  location.reload();
-}
-
-/* =========================
-   PASSWORD ACTIONS
-========================= */
-function changeAdminPassword(){
-  const oldP = prompt("Password Admin lama:");
-  if(oldP !== localStorage.getItem(LS_ADMIN_PASS)) return toast("Password Admin lama salah");
-  const newP = prompt("Password Admin baru (min 6):");
-  if(!newP || newP.length<6) return toast("Password baru terlalu pendek");
-  localStorage.setItem(LS_ADMIN_PASS, newP);
-  toast("✅ Admin password ditukar");
-}
-
-function changeVipPassword(){
-  const oldP = prompt("Password VIP lama:");
-  if(oldP !== localStorage.getItem(LS_VIP_PASS)) return toast("Password VIP lama salah");
-  const newP = prompt("Password VIP baru (min 6):");
-  if(!newP || newP.length<6) return toast("Password baru terlalu pendek");
-  localStorage.setItem(LS_VIP_PASS, newP);
-  toast("✅ VIP password ditukar");
-}
-
-function logout(){
-  localStorage.removeItem(LS_ADMIN_OK);
-  toast("Logout");
-  location.reload();
-}
-
-/* =========================
-   EVENTS
-========================= */
-$("btnLogin").onclick = ()=>{
-  const pass = $("passInput").value || "";
-  if(doLogin(pass)){ showApp(); refresh(); }
-};
-
-$("btnChangeAdmin").onclick = changeAdminPassword;
-$("btnChangeVip").onclick   = changeVipPassword;
-$("btnLogout").onclick      = logout;
-
-$("customerSelect").onchange = ()=>{
-  CURRENT_ID = $("customerSelect").value;
-  refresh();
-};
-
-$("btnSave").onclick   = saveCurrent;
-$("btnNew").onclick    = newCustomer;
-$("btnRename").onclick = renameCustomer;
-$("btnDelete").onclick = deleteCustomer;
-
-$("btnVipUnlock").onclick = vipUnlock;
-$("btnVipLock").onclick   = vipLock;
-
-$("btnExport").onclick = exportJson;
-$("btnResetAll").onclick = resetAll;
-
-$("importFile").onchange = async (e)=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  await importJson(file);
-  e.target.value = "";
-};
-
-$("btnTop").onclick = ()=> window.scrollTo({top:0, behavior:"smooth"});
-
-$("btnPreview").onclick = ()=>{
-  // preview versi 1
-  const c = LIST.find(x=>x.id===CURRENT_ID) || currentForm();
-  const payload = { ...c };
-  delete payload.label; delete payload.id;
-  const url = buildInviteUrl(1, payload);
-  window.open(url, "_blank");
-};
-
-$("plan").addEventListener("change", ()=>{
-  applyPlan($("plan").value);
-  // live update tier chip & links
-  const c = LIST.find(x=>x.id===CURRENT_ID);
-  if(c){
-    c.plan = $("plan").value;
-    c.tier = $("tier").value;
-    c.price = $("price").value;
-    c.days = $("days").value;
-    renderVipChip(c);
-  }
-});
-
-$("tier").addEventListener("change", ()=>{
-  const c = LIST.find(x=>x.id===CURRENT_ID);
-  if(c){
-    c.tier = $("tier").value;
-    applyAutoExpireAndLock(c);
-    renderVipChip(c);
-    renderLinks(c);
-  }
-});
-
-$("btnStartSub").onclick = startSubscription;
-$("btnClearSub").onclick = clearSubscription;
-
-$("greetingPreset").addEventListener("change", ()=>{
-  const v = $("greetingPreset").value;
-  if(v==="custom"){
-    $("greeting").focus();
-  }else{
-    $("greeting").value = v;
-  }
-  const c = LIST.find(x=>x.id===CURRENT_ID);
-  if(c){ c.greeting = $("greeting").value; renderLinks(c); }
-});
-
-["baseUrl","greeting","names","wa","date","time","location","maps","music","price","days"].forEach(id=>{
-  $(id).addEventListener("input", ()=>{
-    const c = LIST.find(x=>x.id===CURRENT_ID);
-    if(!c) return;
-    // live reflect (tanpa simpan lagi)
-    const tmp = { ...c, ...currentForm(), id:c.id, label:c.label, subStartMs:c.subStartMs, expireMs:c.expireMs, vipUnlocked:c.vipUnlocked };
-    applyAutoExpireAndLock(tmp);
-    renderVipChip(tmp);
-    $("expireText").value = tmp.expireMs ? fmtDateTime(tmp.expireMs) : "-";
-    renderLinks(tmp);
+  // Photo upload
+  $("photoFile").addEventListener("change", async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    const d = loadData();
+    const dataUrl = await fileToDataUrl(file);
+    d.photoDataUrl = dataUrl;
+    saveData(d);
+    setPreview(dataUrl);
+    alert("Foto disimpan (device ini).");
   });
-});
 
-/* =========================
-   BOOT
-========================= */
-$("baseUrl").value = getBaseUrlAuto();
-applyPlan($("plan").value);
-
-if(requireLogin()){
-  showApp();
-  refresh();
-}
+  $("btnClearPhoto").onclick = ()=>{
+    const d = loadData();
+    d.photoDataUrl = "";
+    saveData(d);
+    setPreview("");
+    alert("Foto dibuang.");
+  };
 </script>
 </body>
-  </html>
+</html>
