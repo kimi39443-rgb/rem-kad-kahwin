@@ -1,815 +1,494 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-  <title>Admin Panel (Premium)</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Admin Android (Stabil)</title>
   <style>
     :root{
-      --bg:#0b0c10; --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.04);
-      --bd:rgba(255,255,255,.10); --txt:#f3f4f6; --mut:rgba(255,255,255,.72);
-      --acc:#91a4ff; --bad:#ff6b6b; --ok:#22c55e;
-      --r:18px;
-      --pad:16px;
-      --fs:14px;
+      --bg:#0b0f14; --card:#131a22; --muted:#a7b0bb; --txt:#e8edf2;
+      --line:#223040; --ok:#29d07f; --warn:#ffcc66;
+      --btn:#1f2a36; --btn2:#202b3a;
+      --accent:#8fb3ff;
+      --radius:18px;
     }
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{margin:0;background:radial-gradient(1200px 600px at 20% 0%,rgba(145,164,255,.18),transparent 60%),
-                  radial-gradient(900px 500px at 80% 20%,rgba(255,255,255,.08),transparent 65%),
-                  var(--bg); color:var(--txt); font-size:var(--fs);}
-    a{color:inherit}
-    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 36px}
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(1200px 600px at 30% 0%, #182433 0%, #0b0f14 60%, #0b0f14 100%);
+      color:var(--txt);
+      -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+      padding: 18px 14px 36px;
+    }
+    .wrap{max-width:900px;margin:0 auto}
     .top{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
-      background:var(--card); border:1px solid var(--bd); border-radius:var(--r);
-      padding:14px 14px; backdrop-filter: blur(10px);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:16px 16px 12px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.35);
+      position:sticky; top:12px; z-index:5;
+      backdrop-filter: blur(10px);
     }
-    .brand h1{margin:0;font-size:18px;letter-spacing:.2px}
-    .brand p{margin:4px 0 0;color:var(--mut);font-size:12px}
-    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .row{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    h1{font-size:22px;margin:0; letter-spacing:.2px}
+    .status{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.25);
+      font-weight:700; font-size:12px;
+    }
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--ok); box-shadow:0 0 0 4px rgba(41,208,127,.12)}
+    .sub{
+      margin-top:8px; color:var(--muted); font-size:13px; line-height:1.35
+    }
+    .hint{
+      margin-top:10px; padding:10px 12px; border-radius:16px;
+      border:1px solid rgba(41,208,127,.22);
+      background:rgba(41,208,127,.08);
+      color:#dff8ea; font-size:13px;
+    }
+
+    .grid{display:grid; grid-template-columns:1fr; gap:14px; margin-top:14px}
+    @media(min-width:860px){ .grid{grid-template-columns: 1.2fr .8fr;} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      padding:14px;
+      box-shadow:0 14px 34px rgba(0,0,0,.3);
+    }
+    .card h2{margin:0 0 10px; font-size:16px; letter-spacing:.2px}
+    label{display:block; margin:12px 0 6px; color:var(--muted); font-size:13px}
+    input, select, textarea{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.25);
+      color:var(--txt);
+      padding:12px 12px;
+      font-size:15px;
+      outline:none;
+    }
+    textarea{min-height:90px; resize:vertical}
+    input::placeholder, textarea::placeholder{color:rgba(167,176,187,.65)}
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .three{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+    @media(max-width:520px){ .two, .three{grid-template-columns:1fr;} }
+
+    .btnrow{
+      display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px
+    }
     .btn{
-      border:1px solid var(--bd); background:rgba(255,255,255,.08); color:var(--txt);
-      padding:10px 12px;border-radius:14px;cursor:pointer;font-weight:700;
+      border:0; border-radius:18px;
+      padding:12px 14px;
+      font-size:15px;
+      font-weight:800;
+      background:var(--btn);
+      color:var(--txt);
+      cursor:pointer;
+      box-shadow:0 10px 22px rgba(0,0,0,.25);
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      user-select:none; -webkit-tap-highlight-color:transparent;
     }
-    .btn:hover{opacity:.95}
-    .btn.primary{background:rgba(145,164,255,.25); border-color:rgba(145,164,255,.45)}
-    .btn.danger{background:rgba(255,107,107,.14); border-color:rgba(255,107,107,.35)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background: linear-gradient(135deg, #ffeaa3, #ffd06f); color:#1a1a1a;}
+    .btn.secondary{background: linear-gradient(135deg, #b7c6ff, #8fb3ff); color:#0b0f14;}
+    .btn.small{padding:10px 12px; font-size:14px; border-radius:16px; background:var(--btn2);}
     .pill{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
-      border:1px solid var(--bd); background:rgba(255,255,255,.05); font-weight:700; font-size:12px;
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      font-size:12px; color:var(--muted);
     }
-    .pill i{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--ok)}
-    .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
-    @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
-
-    /* Tabs */
-    .tabs{
-      display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
-      background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:var(--r);padding:10px;
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .out{
+      margin-top:10px;
+      padding:12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      word-break:break-all;
+      font-size:13px;
+      color:#dfe7ef;
     }
-    .tab{
-      padding:10px 12px;border-radius:14px;border:1px solid transparent;cursor:pointer;
-      background:transparent;color:var(--mut);font-weight:800;font-size:13px;
+    .msg{margin-top:10px; font-size:13px; color:var(--muted); line-height:1.45}
+    .warn{
+      border:1px solid rgba(255,204,102,.25);
+      background:rgba(255,204,102,.08);
+      color:#fff1d1;
+      padding:10px 12px; border-radius:16px; margin-top:10px;
+      font-size:13px;
     }
-    .tab.active{color:var(--txt);background:rgba(145,164,255,.18);border-color:rgba(145,164,255,.35)}
-    .panel{display:none;margin-top:12px}
-    .panel.active{display:block}
-
-    /* Sections (Collapse) */
-    .section{
-      background:var(--card); border:1px solid var(--bd); border-radius:var(--r);
-      overflow:hidden; backdrop-filter: blur(10px);
-    }
-    .section header{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
-      padding:14px 14px; cursor:pointer; font-weight:900;
-      background:rgba(255,255,255,.04);
-    }
-    .section header small{color:var(--mut);font-weight:700}
-    .section .body{display:none;padding:14px}
-    .section.open .body{display:block}
-
-    /* Forms */
-    label{display:block;color:var(--mut);font-weight:800;font-size:12px;margin:12px 0 6px}
-    input, textarea, select{
-      width:100%; border:1px solid var(--bd); background:rgba(0,0,0,.22); color:var(--txt);
-      border-radius:14px; padding:12px 12px; outline:none;
-    }
-    textarea{min-height:92px;resize:vertical}
-    .row{display:grid;grid-template-columns:1fr;gap:10px}
-    @media(min-width:600px){ .row{grid-template-columns:1fr 1fr} }
-
-    .muted{color:var(--mut);font-size:12px;line-height:1.5}
-    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
-    .miniBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .codebox{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      font-size:12px; white-space:nowrap; overflow:auto;
-      padding:12px;border:1px solid var(--bd);border-radius:14px;background:rgba(0,0,0,.25)
-    }
-
-    /* Lock screen */
-    .lock{
-      position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
-      padding:18px; background:rgba(0,0,0,.70); backdrop-filter: blur(10px);
-    }
-    .lockCard{
-      width:min(520px,100%); background:rgba(255,255,255,.06); border:1px solid var(--bd);
-      border-radius:22px; padding:18px;
-    }
-    .lockCard h2{margin:0 0 6px;font-size:18px}
-    .lockCard p{margin:0 0 14px;color:var(--mut);font-size:12px;line-height:1.5}
-    .lockRow{display:flex;gap:10px}
-    .lockRow input{flex:1}
+    .footer{margin-top:14px; color:rgba(167,176,187,.8); font-size:12px; line-height:1.5}
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
   </style>
 </head>
 <body>
   <div class="wrap">
+
     <div class="top">
-      <div class="brand">
-        <h1>Admin Panel (Premium)</h1>
-        <p>Edit pelanggan → auto link → copy Versi 1–5 → VIP lock → backup.</p>
+      <div class="row">
+        <div>
+          <h1>Admin Android (Stabil)</h1>
+          <div class="sub">Isi maklumat → tekan <b>Simpan</b>. Untuk tetamu tekan <b>Generate</b> dan bagi link <span class="mono">?d=</span>.</div>
+        </div>
+        <div class="status"><span class="dot"></span> STATUS: OK</div>
       </div>
-      <div class="actions">
-        <span class="pill" id="statusPill"><i></i><span id="statusTxt">STATUS: OK</span></span>
-        <button class="btn" id="btnSwitch">Tukar Pelanggan</button>
-        <button class="btn danger" id="btnLogout">Logout</button>
-      </div>
+      <div class="hint">✅ Data admin disimpan dalam telefon (localStorage). Untuk pindah device: guna Export/Import (optional).</div>
     </div>
 
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-tab="utama">Utama</button>
-      <button class="tab" data-tab="majlis">Majlis</button>
-      <button class="tab" data-tab="vip">VIP</button>
-      <button class="tab" data-tab="link">Link & Copy</button>
-      <button class="tab" data-tab="backup">Backup</button>
-      <button class="tab" data-tab="setting">Settings</button>
-    </div>
+    <div class="grid">
+      <div class="card">
+        <h2>Setup Asas</h2>
 
-    <!-- PANEL: UTAMA -->
-    <div class="panel active" id="p-utama">
-      <div class="grid">
-        <div class="section open">
-          <header><span>👤 Pelanggan</span><small>nama pelanggan / projek</small></header>
-          <div class="body">
-            <label>Nama Pelanggan (folder / label)</label>
-            <input id="c_name" placeholder="Contoh: Karim&Masni" />
-            <div class="miniBtns">
-              <button class="btn primary" id="btnSaveCustomer">Simpan & Guna</button>
-              <button class="btn" id="btnNewCustomer">Tambah Baru</button>
-            </div>
-            <div class="hr"></div>
-            <div class="muted">Tip: Setiap pelanggan disimpan berasingan (localStorage). Anda boleh export JSON untuk pindah ke device lain.</div>
+        <label>Base URL <b>invite.html</b> (WAJIB)</label>
+        <input id="baseUrl" placeholder="https://username.github.io/repo/folder/invite.html" />
+
+        <label>Video Background</label>
+        <select id="videoOn">
+          <option value="1">ON</option>
+          <option value="0">OFF</option>
+        </select>
+
+        <label>VIP Lock</label>
+        <select id="vipOn">
+          <option value="0">OFF</option>
+          <option value="1">ON</option>
+        </select>
+
+        <label>Kod VIP (jika VIP ON)</label>
+        <input id="vipCode" placeholder="Contoh: VIP123" />
+
+        <div class="two">
+          <div>
+            <label>Expired (optional) — format <b>DD/MM/YYYY</b></label>
+            <input id="expDate" placeholder="31/12/2025" inputmode="numeric" />
+          </div>
+          <div>
+            <label>Masa Expired (12 jam) — optional</label>
+            <input id="expTime" placeholder="11:59 PM" />
           </div>
         </div>
 
-        <div class="section open">
-          <header><span>⚡ Ringkas</span><small>edit cepat</small></header>
-          <div class="body">
-            <div class="row">
-              <div>
-                <label>Tajuk</label>
-                <input id="d_title" placeholder="Walimatul Urus" />
-              </div>
-              <div>
-                <label>Nama Pengantin</label>
-                <input id="d_couple" placeholder="Adam & Hawa" />
-              </div>
-            </div>
-            <label>Ayat Jemputan (Premium)</label>
-            <textarea id="d_message" placeholder="Dengan penuh kesyukuran..."></textarea>
-            <div class="miniBtns">
-              <button class="btn primary" id="btnSaveAllTop">Simpan</button>
-              <button class="btn" id="btnOpenInvite">Buka invite.html</button>
-            </div>
-          </div>
+        <div class="warn">
+          Tip: Isi tarikh sahaja → sistem auto set masa <b>11:59 PM</b> ikut waktu telefon.
+        </div>
+
+        <div class="btnrow">
+          <button class="btn small" id="copyBase">📋 Copy Base</button>
+          <button class="btn small" id="openInvite">🔎 Buka invite.html</button>
+        </div>
+
+        <div class="btnrow">
+          <button class="btn primary" id="save">💾 Simpan</button>
+          <button class="btn secondary" id="gen">⚡ Generate</button>
+        </div>
+
+        <div class="msg" id="msg"></div>
+        <div class="out mono" id="out" style="display:none"></div>
+
+        <div class="footer">
+          Nota: Jangan guna page ini untuk jual semula tanpa kebenaran pemilik template.
         </div>
       </div>
 
-      <div class="section">
-        <header><span>🧩 Ciri Paparan</span><small>tema / video / bahasa</small></header>
-        <div class="body">
-          <div class="row">
-            <div>
-              <label>Bahasa</label>
-              <select id="d_lang">
-                <option value="ms">BM (Malay)</option>
-                <option value="en">EN (English)</option>
-              </select>
-            </div>
-            <div>
-              <label>Tema</label>
-              <select id="d_theme">
-                <option value="midnight">Midnight</option>
-                <option value="gold">Gold</option>
-                <option value="aurora">Aurora</option>
-              </select>
-            </div>
-          </div>
+      <div class="card">
+        <h2>Maklumat Kad (Contoh)</h2>
 
-          <div class="row">
-            <div>
-              <label>Video Background</label>
-              <select id="d_videoOn">
-                <option value="on">ON</option>
-                <option value="off">OFF</option>
-              </select>
-            </div>
-            <div>
-              <label>Motion / Animasi</label>
-              <select id="d_motion">
-                <option value="on">ON</option>
-                <option value="off">OFF</option>
-              </select>
-            </div>
-          </div>
+        <label>Nama Pengantin</label>
+        <div class="two">
+          <input id="groom" placeholder="Nama Pengantin Lelaki" />
+          <input id="bride" placeholder="Nama Pengantin Perempuan" />
+        </div>
 
-          <div class="miniBtns">
-            <button class="btn primary" id="btnSaveDisplay">Simpan Paparan</button>
+        <label>Tajuk / Ayat Jemputan</label>
+        <textarea id="title" placeholder="Jemputan Majlis Perkahwinan"></textarea>
+
+        <div class="two">
+          <div>
+            <label>Tarikh Majlis (paparan)</label>
+            <input id="eventDate" placeholder="31/12/2025" />
+          </div>
+          <div>
+            <label>Masa Majlis (12 jam)</label>
+            <input id="eventTime" placeholder="9:00 AM - 2:00 PM" />
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- PANEL: MAJLIS -->
-    <div class="panel" id="p-majlis">
-      <div class="section open">
-        <header><span>📌 Maklumat Majlis</span><small>tarikh / masa / tempat / alamat</small></header>
-        <div class="body">
-          <div class="row">
-            <div>
-              <label>Tarikh (cth: 01/12/2025)</label>
-              <input id="d_date" placeholder="01/12/2025" />
-            </div>
-            <div>
-              <label>Masa (cth: 9.00am – 2.00pm)</label>
-              <input id="d_time" placeholder="9.00am – 2.00pm" />
-            </div>
-          </div>
+        <label>Lokasi</label>
+        <textarea id="venue" placeholder="Dewan / alamat penuh"></textarea>
 
-          <div class="row">
-            <div>
-              <label>Tempat / Dewan</label>
-              <input id="d_venue" placeholder="Dewan Serbaguna" />
-            </div>
-            <div>
-              <label>Alamat ringkas</label>
-              <input id="d_address" placeholder="Alamat ringkas majlis di sini" />
-            </div>
-          </div>
+        <label>Link Video (mp4 / direct URL) — optional</label>
+        <input id="videoSrc" placeholder="https://.../video.mp4" />
 
-          <div class="row">
-            <div>
-              <label>Link Google Maps</label>
-              <input id="d_maps" placeholder="https://maps.google.com/..." />
-            </div>
-            <div>
-              <label>Link WhatsApp RSVP</label>
-              <input id="d_rsvp" placeholder="https://wa.me/60...." />
-            </div>
-          </div>
-
-          <label>Badge (cth: MAJLIS PERKAHWINAN)</label>
-          <input id="d_badge" placeholder="MAJLIS PERKAHWINAN" />
-
-          <label>Top Title (atas)</label>
-          <input id="d_topTitle" placeholder="Kad Kahwin Digital" />
-
-          <label>Top Subtitle (atas)</label>
-          <input id="d_topSub" placeholder="Jemputan Rasmi" />
-
-          <label>Nama Tetamu (default jika tiada)</label>
-          <input id="d_guestDefault" placeholder="Tetamu" />
-
-          <label>Notis / Hak Milik</label>
-          <input id="d_notice" placeholder="Dilarang guna/jual page ini tanpa kebenaran..." />
-
-          <div class="miniBtns">
-            <button class="btn primary" id="btnSaveMajlis">Simpan Maklumat</button>
-            <button class="btn" id="btnCalendarTest">Test “Add to Calendar”</button>
-          </div>
-          <div class="muted" style="margin-top:10px">
-            Nota: “Add to Calendar” dijana automatik dari tarikh + masa + tempat.
-          </div>
+        <div class="btnrow">
+          <button class="btn small" id="exportBtn">⬇️ Export</button>
+          <button class="btn small" id="importBtn">⬆️ Import</button>
         </div>
+
+        <div class="out mono" id="io" style="display:none"></div>
+        <div class="msg">Export akan keluarkan JSON. Copy dan simpan. Import tampal balik JSON untuk pindah phone.</div>
       </div>
-    </div>
-
-    <!-- PANEL: VIP -->
-    <div class="panel" id="p-vip">
-      <div class="section open">
-        <header><span>🔒 VIP Lock</span><small>tetamu perlu kod VIP</small></header>
-        <div class="body">
-          <div class="row">
-            <div>
-              <label>VIP Lock</label>
-              <select id="d_vipOn">
-                <option value="off">OFF</option>
-                <option value="on">ON</option>
-              </select>
-            </div>
-            <div>
-              <label>Kod VIP</label>
-              <input id="d_vipCode" placeholder="VIP123" />
-            </div>
-          </div>
-          <div class="miniBtns">
-            <button class="btn primary" id="btnSaveVIP">Simpan VIP</button>
-          </div>
-          <div class="muted" style="margin-top:10px">
-            Tip: Kod VIP boleh dihantar kepada tetamu tertentu melalui WhatsApp.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL: LINK -->
-    <div class="panel" id="p-link">
-      <div class="section open">
-        <header><span>🔗 Link & Copy (Versi 1–5)</span><small>siap “from + copy link”</small></header>
-        <div class="body">
-          <label>Base URL invite.html (biar auto)</label>
-          <input id="baseUrl" readonly />
-
-          <div class="row">
-            <div>
-              <label>Nama Tetamu (parameter: to)</label>
-              <input id="paramTo" placeholder="Contoh: Encik Ali" />
-            </div>
-            <div>
-              <label>From (parameter: from)</label>
-              <input id="paramFrom" placeholder="Contoh: Karim&Masni" />
-            </div>
-          </div>
-
-          <div class="hr"></div>
-          <div class="muted">
-            ✅ “Share Link (DATA)” = tetamu akan nampak maklumat yang anda edit (walaupun phone lain).  
-            ✅ Versi 1–5 hanya untuk variasi styling (jika anda guna dalam invite.html).
-          </div>
-
-          <label>Share Link (DATA dalam link)</label>
-          <div class="codebox" id="shareLinkBox">-</div>
-          <div class="miniBtns">
-            <button class="btn primary" id="btnMakeShare">Jana Share Link (DATA)</button>
-            <button class="btn" id="btnCopyShare">Copy Share Link</button>
-          </div>
-
-          <div class="hr"></div>
-
-          <label>Copy Link Versi 1–5</label>
-          <div class="miniBtns" id="verBtns"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL: BACKUP -->
-    <div class="panel" id="p-backup">
-      <div class="section open">
-        <header><span>💾 Backup</span><small>export/import/reset</small></header>
-        <div class="body">
-          <div class="miniBtns">
-            <button class="btn" id="btnExport">Export JSON</button>
-            <button class="btn" id="btnImport">Import JSON</button>
-            <button class="btn danger" id="btnResetAll">Reset Semua</button>
-          </div>
-          <label>Data JSON (untuk import/export)</label>
-          <textarea id="jsonBox" placeholder="JSON akan keluar di sini..."></textarea>
-          <div class="muted">
-            Data admin disimpan dalam <b>localStorage (device ini)</b>. Kalau tukar phone, guna Export/Import.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PANEL: SETTINGS -->
-    <div class="panel" id="p-setting">
-      <div class="section open">
-        <header><span>⚙️ Settings</span><small>password admin + auto logout</small></header>
-        <div class="body">
-          <label>Password Admin (client-side sahaja)</label>
-          <input id="adminPass" placeholder="ADMIN123" />
-
-          <label>Auto Logout (minit)</label>
-          <input id="autoLogoutMin" type="number" min="1" value="8" />
-
-          <div class="miniBtns">
-            <button class="btn primary" id="btnSaveSettings">Simpan Settings</button>
-          </div>
-
-          <div class="muted" style="margin-top:10px">
-            Nota keselamatan: GitHub Pages ialah static. Password ini hanya “halang biasa”, bukan security tahap bank.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="muted" style="margin-top:14px;text-align:center;opacity:.7">
-      © Admin Premium — Data disimpan dalam device (localStorage) + Share Link (data) untuk tetamu.
     </div>
   </div>
 
-  <!-- LOCK SCREEN -->
-  <div class="lock" id="lock" style="display:none">
-    <div class="lockCard">
-      <h2>Admin Locked</h2>
-      <p>Masukkan password admin untuk buka panel.</p>
-      <div class="lockRow">
-        <input id="lockPass" type="password" placeholder="Password admin" />
-        <button class="btn primary" id="btnUnlock">Buka</button>
-      </div>
-      <p class="muted" style="margin-top:10px">Tip: password boleh diubah dalam tab Settings.</p>
-    </div>
-  </div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
 
-  <script>
-    // ====== STORAGE KEYS ======
-    const ROOT_KEY = "KADKAHWIN_ROOT_V2";
-    const CUSTOMER_KEY = (name)=> `KADKAHWIN_DATA_V2::${name}`;
-    const SETTINGS_KEY = "KADKAHWIN_ADMIN_SETTINGS_V2";
-    const SESSION_UNLOCK = "KADKAHWIN_ADMIN_UNLOCKED_V2";
+  const KEY = "KK4_ADMIN_STABLE_v1";
 
-    // ====== DEFAULTS ======
-    const DEFAULT_DATA = {
-      lang:"ms",
-      theme:"midnight",
-      videoOn:"on",
-      motion:"on",
+  const fields = {
+    baseUrl: $("baseUrl"),
+    videoOn: $("videoOn"),
+    vipOn: $("vipOn"),
+    vipCode: $("vipCode"),
+    expDate: $("expDate"),
+    expTime: $("expTime"),
 
-      topTitle:"Kad Kahwin Digital",
-      topSub:"Jemputan Rasmi",
-      badge:"MAJLIS PERKAHWINAN",
+    groom: $("groom"),
+    bride: $("bride"),
+    title: $("title"),
+    eventDate: $("eventDate"),
+    eventTime: $("eventTime"),
+    venue: $("venue"),
+    videoSrc: $("videoSrc"),
+  };
 
-      title:"Walimatul Urus",
-      couple:"Adam & Hawa",
-      guestDefault:"Tetamu",
-      message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
+  const msg = $("msg");
+  const out = $("out");
+  const io = $("io");
 
-      date:"01/12/2025",
-      time:"9.00am – 2.00pm",
-      venue:"Dewan Serbaguna",
-      address:"Alamat ringkas majlis di sini",
-      maps:"https://maps.google.com/",
-      rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
+  function setMsg(t, good=true){
+    msg.textContent = t || "";
+    msg.style.color = good ? "rgba(167,176,187,.95)" : "#ffb3b3";
+  }
 
-      notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik.® R-E-M Creative Studio",
-      vipOn:"off",
-      vipCode:"VIP123"
+  function normalizeBaseUrl(u){
+    u = (u || "").trim();
+    return u;
+  }
+
+  function parseDDMMYYYY(dateStr){
+    const s = (dateStr || "").trim();
+    if(!s) return null;
+    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(!m) return { error: "Tarikh mesti format DD/MM/YYYY" };
+    let dd = parseInt(m[1],10), mm = parseInt(m[2],10), yyyy = parseInt(m[3],10);
+    if(mm < 1 || mm > 12) return { error: "Bulan mesti 1-12" };
+    if(dd < 1 || dd > 31) return { error: "Hari mesti 1-31" };
+    const d = new Date(yyyy, mm-1, dd);
+    // Validate real date (contoh 31/02 invalid)
+    if(d.getFullYear() !== yyyy || d.getMonth() !== (mm-1) || d.getDate() !== dd){
+      return { error: "Tarikh tidak sah" };
+    }
+    return { dd, mm, yyyy };
+  }
+
+  function parse12hTime(timeStr){
+    const s = (timeStr || "").trim();
+    if(!s) return null;
+    // Accept: "11:59 PM", "11 PM", "9:05am", "9am"
+    const m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*([AaPp][Mm])$/);
+    if(!m) return { error: "Masa mesti format 12 jam: contoh 11:59 PM" };
+    let hh = parseInt(m[1],10);
+    let min = m[2] ? parseInt(m[2],10) : 0;
+    const ap = m[3].toUpperCase();
+    if(hh < 1 || hh > 12) return { error: "Jam mesti 1-12" };
+    if(min < 0 || min > 59) return { error: "Minit mesti 00-59" };
+    if(ap === "PM" && hh !== 12) hh += 12;
+    if(ap === "AM" && hh === 12) hh = 0;
+    return { hh24: hh, min };
+  }
+
+  function buildExpiryMs(expDateStr, expTimeStr){
+    const d = parseDDMMYYYY(expDateStr);
+    if(!d) return { ms: null };
+    if(d.error) return { error: d.error };
+
+    const t = parse12hTime(expTimeStr);
+    if(t && t.error) return { error: t.error };
+
+    const hh = t ? t.hh24 : 23;
+    const min = t ? t.min : 59;
+    const exp = new Date(d.yyyy, d.mm-1, d.dd, hh, min, 0, 0);
+    return { ms: exp.getTime() };
+  }
+
+  function save(){
+    const data = readForm();
+    localStorage.setItem(KEY, JSON.stringify(data));
+    setMsg("✅ Disimpan dalam telefon.");
+  }
+
+  function load(){
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return;
+    try{
+      const data = JSON.parse(raw);
+      writeForm(data);
+      setMsg("✅ Data dimuatkan.");
+    }catch(e){}
+  }
+
+  function readForm(){
+    return {
+      baseUrl: normalizeBaseUrl(fields.baseUrl.value),
+      videoOn: fields.videoOn.value === "1",
+      vipOn: fields.vipOn.value === "1",
+      vipCode: (fields.vipCode.value || "").trim(),
+
+      expDate: (fields.expDate.value || "").trim(),
+      expTime: (fields.expTime.value || "").trim(),
+
+      groom: (fields.groom.value || "").trim(),
+      bride: (fields.bride.value || "").trim(),
+      title: (fields.title.value || "").trim(),
+      eventDate: (fields.eventDate.value || "").trim(),
+      eventTime: (fields.eventTime.value || "").trim(),
+      venue: (fields.venue.value || "").trim(),
+      videoSrc: (fields.videoSrc.value || "").trim(),
+      v: 1
     };
+  }
 
-    const DEFAULT_ROOT = { currentCustomer:"Karim&Masni" };
+  function writeForm(d){
+    fields.baseUrl.value = d.baseUrl || "";
+    fields.videoOn.value = d.videoOn ? "1" : "0";
+    fields.vipOn.value = d.vipOn ? "1" : "0";
+    fields.vipCode.value = d.vipCode || "";
 
-    const DEFAULT_SETTINGS = {
-      adminPass:"ADMIN123",
-      autoLogoutMin:8
-    };
+    fields.expDate.value = d.expDate || "";
+    fields.expTime.value = d.expTime || "";
 
-    // ====== HELPERS ======
-    const $ = (id)=> document.getElementById(id);
-    const safeParse = (raw, fallback)=>{ try{ return JSON.parse(raw) ?? fallback; }catch(e){ return fallback; } };
+    fields.groom.value = d.groom || "";
+    fields.bride.value = d.bride || "";
+    fields.title.value = d.title || "";
+    fields.eventDate.value = d.eventDate || "";
+    fields.eventTime.value = d.eventTime || "";
+    fields.venue.value = d.venue || "";
+    fields.videoSrc.value = d.videoSrc || "";
+  }
 
-    function loadRoot(){
-      return safeParse(localStorage.getItem(ROOT_KEY), DEFAULT_ROOT);
-    }
-    function saveRoot(r){
-      localStorage.setItem(ROOT_KEY, JSON.stringify(r));
-    }
+  function base64UrlEncode(str){
+    const utf8 = new TextEncoder().encode(str);
+    let bin = "";
+    utf8.forEach(b => bin += String.fromCharCode(b));
+    const b64 = btoa(bin);
+    return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
 
-    function loadSettings(){
-      const s = safeParse(localStorage.getItem(SETTINGS_KEY), DEFAULT_SETTINGS);
-      // ensure fields
-      if(!s.adminPass) s.adminPass = DEFAULT_SETTINGS.adminPass;
-      if(!s.autoLogoutMin) s.autoLogoutMin = DEFAULT_SETTINGS.autoLogoutMin;
-      return s;
-    }
-    function saveSettings(s){
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
-    }
-
-    function loadCustomer(name){
-      const d = safeParse(localStorage.getItem(CUSTOMER_KEY(name)), null);
-      return d ? ({...DEFAULT_DATA, ...d}) : ({...DEFAULT_DATA});
-    }
-    function saveCustomer(name, data){
-      localStorage.setItem(CUSTOMER_KEY(name), JSON.stringify(data));
-    }
-
-    function now(){ return Date.now(); }
-
-    // ====== AUTO LOGOUT TIMER ======
-    let logoutTimer = null;
-    function resetAutoLogout(){
-      const s = loadSettings();
-      const ms = Math.max(1, Number(s.autoLogoutMin||8)) * 60 * 1000;
-      if(logoutTimer) clearTimeout(logoutTimer);
-      logoutTimer = setTimeout(()=> {
-        sessionStorage.removeItem(SESSION_UNLOCK);
-        showLock(true);
-      }, ms);
-    }
-    ["click","touchstart","keydown","scroll"].forEach(ev=>{
-      window.addEventListener(ev, ()=> resetAutoLogout(), {passive:true});
+  function safeCopy(text){
+    // Android friendly copy
+    return navigator.clipboard?.writeText(text).catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand("copy");
+      ta.remove();
     });
+  }
 
-    // ====== LOCK ======
-    function showLock(on){
-      $("lock").style.display = on ? "flex" : "none";
+  function generate(){
+    const data = readForm();
+
+    if(!data.baseUrl){
+      setMsg("❌ Base URL wajib isi (mesti habis dengan invite.html).", false);
+      return;
     }
-    function ensureUnlocked(){
-      const ok = sessionStorage.getItem(SESSION_UNLOCK) === "1";
-      if(!ok) showLock(true);
-      else showLock(false);
-      return ok;
+    if(!/invite\.html(\?.*)?$/i.test(data.baseUrl)){
+      setMsg("❌ Base URL mesti link penuh ke invite.html", false);
+      return;
     }
-
-    // ====== INIT ======
-    let root = loadRoot();
-    let currentName = root.currentCustomer || "Karim&Masni";
-    let data = loadCustomer(currentName);
-
-    function fillForm(){
-      $("c_name").value = currentName;
-
-      $("d_lang").value = data.lang;
-      $("d_theme").value = data.theme;
-      $("d_videoOn").value = data.videoOn;
-      $("d_motion").value = data.motion;
-
-      $("d_topTitle").value = data.topTitle;
-      $("d_topSub").value = data.topSub;
-      $("d_badge").value = data.badge;
-
-      $("d_title").value = data.title;
-      $("d_couple").value = data.couple;
-      $("d_message").value = data.message;
-
-      $("d_date").value = data.date;
-      $("d_time").value = data.time;
-      $("d_venue").value = data.venue;
-      $("d_address").value = data.address;
-      $("d_maps").value = data.maps;
-      $("d_rsvp").value = data.rsvp;
-
-      $("d_guestDefault").value = data.guestDefault;
-      $("d_notice").value = data.notice;
-
-      $("d_vipOn").value = data.vipOn;
-      $("d_vipCode").value = data.vipCode;
-
-      const s = loadSettings();
-      $("adminPass").value = s.adminPass;
-      $("autoLogoutMin").value = s.autoLogoutMin;
-
-      buildBaseUrl();
-      buildVersionButtons();
-      buildShareLinkBox(); // update
+    if(data.vipOn && !data.vipCode){
+      setMsg("❌ VIP ON tapi Kod VIP kosong.", false);
+      return;
     }
 
-    function readFormTop(){
-      data.title = $("d_title").value.trim() || DEFAULT_DATA.title;
-      data.couple = $("d_couple").value.trim() || DEFAULT_DATA.couple;
-      data.message = $("d_message").value.trim() || DEFAULT_DATA.message;
+    const exp = buildExpiryMs(data.expDate, data.expTime);
+    if(exp.error){
+      setMsg("❌ " + exp.error, false);
+      return;
     }
 
-    function readDisplay(){
-      data.lang = $("d_lang").value;
-      data.theme = $("d_theme").value;
-      data.videoOn = $("d_videoOn").value;
-      data.motion = $("d_motion").value;
-    }
+    const payload = {
+      groom: data.groom,
+      bride: data.bride,
+      title: data.title,
+      eventDate: data.eventDate,
+      eventTime: data.eventTime,
+      venue: data.venue,
+      videoOn: data.videoOn ? 1 : 0,
+      videoSrc: data.videoSrc,
+      vipOn: data.vipOn ? 1 : 0,
+      vipCode: data.vipOn ? data.vipCode : "",
+      expMs: exp.ms, // null jika tiada
+      ver: 1
+    };
 
-    function readMajlis(){
-      data.topTitle = $("d_topTitle").value.trim() || DEFAULT_DATA.topTitle;
-      data.topSub = $("d_topSub").value.trim() || DEFAULT_DATA.topSub;
-      data.badge = $("d_badge").value.trim() || DEFAULT_DATA.badge;
+    const encoded = base64UrlEncode(JSON.stringify(payload));
+    const link = data.baseUrl + (data.baseUrl.includes("?") ? "&" : "?") + "d=" + encoded;
 
-      data.date = $("d_date").value.trim() || DEFAULT_DATA.date;
-      data.time = $("d_time").value.trim() || DEFAULT_DATA.time;
-      data.venue = $("d_venue").value.trim() || DEFAULT_DATA.venue;
-      data.address = $("d_address").value.trim() || DEFAULT_DATA.address;
-      data.maps = $("d_maps").value.trim() || DEFAULT_DATA.maps;
-      data.rsvp = $("d_rsvp").value.trim() || DEFAULT_DATA.rsvp;
+    out.style.display = "block";
+    out.textContent = link;
 
-      data.guestDefault = $("d_guestDefault").value.trim() || DEFAULT_DATA.guestDefault;
-      data.notice = $("d_notice").value.trim() || DEFAULT_DATA.notice;
-    }
-
-    function readVIP(){
-      data.vipOn = $("d_vipOn").value;
-      data.vipCode = $("d_vipCode").value.trim() || DEFAULT_DATA.vipCode;
-    }
-
-    function setStatus(msg="OK", good=true){
-      $("statusTxt").textContent = "STATUS: " + msg;
-      $("statusPill").querySelector("i").style.background = good ? "var(--ok)" : "var(--bad)";
-    }
-
-    function saveAll(){
-      saveCustomer(currentName, data);
-      setStatus("SAVED", true);
-      setTimeout(()=> setStatus("OK", true), 1200);
-      buildShareLinkBox();
-    }
-
-    // ====== Tabs ======
-    document.querySelectorAll(".tab").forEach(t=>{
-      t.addEventListener("click", ()=>{
-        document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-        document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
-        t.classList.add("active");
-        $("p-"+t.dataset.tab).classList.add("active");
-        window.scrollTo({top:0,behavior:"smooth"});
-      });
+    safeCopy(link).then(() => {
+      setMsg("✅ Link siap & sudah copy. Bagi link ini kepada tetamu.");
+    }).catch(() => {
+      setMsg("✅ Link siap. Tekan lama untuk copy jika clipboard block.", true);
     });
+  }
 
-    // ====== Collapse Sections ======
-    document.querySelectorAll(".section header").forEach(h=>{
-      h.addEventListener("click", ()=> h.parentElement.classList.toggle("open"));
-    });
+  // Buttons
+  $("save").addEventListener("click", save);
+  $("gen").addEventListener("click", generate);
 
-    // ====== Links ======
-    function buildBaseUrl(){
-      // admin.html berada dalam folder KadKahwin4
-      // base untuk invite.html dalam folder sama
-      const url = location.href.split("#")[0].split("?")[0];
-      const base = url.replace(/admin(-android)?\.html$/i, "invite.html");
-      $("baseUrl").value = base;
-      return base;
+  $("copyBase").addEventListener("click", () => {
+    const b = normalizeBaseUrl(fields.baseUrl.value);
+    if(!b){ setMsg("❌ Base URL kosong.", false); return; }
+    safeCopy(b).then(() => setMsg("✅ Base URL sudah copy."));
+  });
+
+  $("openInvite").addEventListener("click", () => {
+    const b = normalizeBaseUrl(fields.baseUrl.value);
+    if(!b){ setMsg("❌ Base URL kosong.", false); return; }
+    window.open(b, "_blank");
+  });
+
+  $("exportBtn").addEventListener("click", () => {
+    const data = readForm();
+    io.style.display = "block";
+    io.textContent = JSON.stringify(data, null, 2);
+    safeCopy(io.textContent).then(() => setMsg("✅ Export siap & sudah copy."));
+  });
+
+  $("importBtn").addEventListener("click", () => {
+    const txt = prompt("Tampal JSON Export di sini:");
+    if(!txt) return;
+    try{
+      const data = JSON.parse(txt);
+      writeForm(data);
+      save();
+      setMsg("✅ Import berjaya.");
+    }catch(e){
+      setMsg("❌ JSON tidak sah.", false);
     }
+  });
 
-    function qs(params){
-      const u = new URL("https://x.test/");
-      Object.entries(params).forEach(([k,v])=>{
-        if(v!==undefined && v!==null && String(v).trim()!=="") u.searchParams.set(k, v);
-      });
-      return u.search.replace(/^\?/,"");
-    }
+  // Auto load on open
+  load();
 
-    function buildVersionButtons(){
-      const wrap = $("verBtns");
-      wrap.innerHTML = "";
-      for(let i=1;i<=5;i++){
-        const b = document.createElement("button");
-        b.className = "btn";
-        b.textContent = "Copy Versi " + i;
-        b.onclick = ()=>{
-          const base = buildBaseUrl();
-          const to = $("paramTo").value.trim();
-          const from = $("paramFrom").value.trim();
-          const link = base + "?" + qs({v:i,to,from});
-          navigator.clipboard.writeText(link).then(()=> setStatus("COPIED V"+i,true))
-            .catch(()=> alert(link));
-        };
-        wrap.appendChild(b);
-      }
-    }
-
-    function b64urlEncode(obj){
-      const json = JSON.stringify(obj);
-      const b64 = btoa(unescape(encodeURIComponent(json)))
-        .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-      return b64;
-    }
-
-    function buildShareLinkBox(){
-      const base = buildBaseUrl();
-      const to = $("paramTo").value.trim();
-      const from = $("paramFrom").value.trim();
-      // Simpan data dalam hash #data=...
-      const payload = {...data};
-      const encoded = b64urlEncode(payload);
-      const link = base + "?" + qs({to,from}) + "#data=" + encoded;
-      $("shareLinkBox").textContent = link;
-      return link;
-    }
-
-    // ====== Buttons ======
-    $("btnSaveAllTop").onclick = ()=>{ readFormTop(); saveAll(); };
-    $("btnSaveDisplay").onclick = ()=>{ readDisplay(); saveAll(); };
-    $("btnSaveMajlis").onclick = ()=>{ readMajlis(); saveAll(); };
-    $("btnSaveVIP").onclick = ()=>{ readVIP(); saveAll(); };
-
-    $("btnOpenInvite").onclick = ()=> {
-      const base = buildBaseUrl();
-      window.open(base, "_blank");
-    };
-
-    $("btnMakeShare").onclick = ()=> {
-      // Pastikan latest value disimpan sebelum jana link
-      readDisplay(); readFormTop(); readMajlis(); readVIP(); saveAll();
-      const link = buildShareLinkBox();
-      setStatus("SHARE READY", true);
-      // auto copy
-      navigator.clipboard.writeText(link).then(()=> setStatus("COPIED SHARE", true)).catch(()=>{});
-    };
-
-    $("btnCopyShare").onclick = ()=> {
-      const link = buildShareLinkBox();
-      navigator.clipboard.writeText(link).then(()=> setStatus("COPIED SHARE", true))
-        .catch(()=> alert(link));
-    };
-
-    $("paramTo").addEventListener("input", buildShareLinkBox);
-    $("paramFrom").addEventListener("input", buildShareLinkBox);
-
-    $("btnCalendarTest").onclick = ()=> {
-      // buka invite & tekan Add to Calendar
-      window.open(buildBaseUrl(), "_blank");
-    };
-
-    // Customer actions
-    $("btnSaveCustomer").onclick = ()=>{
-      const nm = $("c_name").value.trim();
-      if(!nm){ alert("Sila isi Nama Pelanggan"); return; }
-      currentName = nm;
-      root.currentCustomer = currentName;
-      saveRoot(root);
-      data = loadCustomer(currentName);
-      fillForm();
-      setStatus("CUSTOMER SET", true);
-    };
-
-    $("btnNewCustomer").onclick = ()=>{
-      const nm = prompt("Nama pelanggan baru? (cth: Ali&Sara)");
-      if(!nm) return;
-      currentName = nm.trim();
-      root.currentCustomer = currentName;
-      saveRoot(root);
-      data = {...DEFAULT_DATA};
-      saveAll();
-      fillForm();
-    };
-
-    $("btnSwitch").onclick = ()=>{
-      const nm = prompt("Tukar pelanggan kepada nama apa?\nContoh: Karim&Masni");
-      if(!nm) return;
-      currentName = nm.trim();
-      root.currentCustomer = currentName;
-      saveRoot(root);
-      data = loadCustomer(currentName);
-      fillForm();
-    };
-
-    // Backup
-    $("btnExport").onclick = ()=>{
-      readDisplay(); readFormTop(); readMajlis(); readVIP(); saveAll();
-      const pack = {
-        customer: currentName,
-        data,
-        exportedAt: new Date().toISOString()
-      };
-      $("jsonBox").value = JSON.stringify(pack, null, 2);
-      setStatus("EXPORTED", true);
-    };
-
-    $("btnImport").onclick = ()=>{
-      const raw = $("jsonBox").value.trim();
-      if(!raw){ alert("Paste JSON dulu"); return; }
-      const pack = safeParse(raw, null);
-      if(!pack || !pack.data){ alert("JSON tidak sah"); return; }
-      currentName = (pack.customer || currentName || "Karim&Masni");
-      root.currentCustomer = currentName;
-      saveRoot(root);
-      data = {...DEFAULT_DATA, ...pack.data};
-      saveAll();
-      fillForm();
-      setStatus("IMPORTED", true);
-    };
-
-    $("btnResetAll").onclick = ()=>{
-      if(!confirm("Reset semua data untuk pelanggan ini?")) return;
-      localStorage.removeItem(CUSTOMER_KEY(currentName));
-      data = {...DEFAULT_DATA};
-      saveAll();
-      fillForm();
-      setStatus("RESET", true);
-    };
-
-    // Settings
-    $("btnSaveSettings").onclick = ()=>{
-      const s = loadSettings();
-      s.adminPass = $("adminPass").value.trim() || DEFAULT_SETTINGS.adminPass;
-      s.autoLogoutMin = Math.max(1, Number($("autoLogoutMin").value||8));
-      saveSettings(s);
-      setStatus("SETTINGS SAVED", true);
-    };
-
-    // Logout
-    $("btnLogout").onclick = ()=>{
-      sessionStorage.removeItem(SESSION_UNLOCK);
-      showLock(true);
-      setStatus("LOCKED", false);
-    };
-
-    // Unlock
-    $("btnUnlock").onclick = ()=>{
-      const pass = $("lockPass").value;
-      const s = loadSettings();
-      if(pass === s.adminPass){
-        sessionStorage.setItem(SESSION_UNLOCK, "1");
-        $("lockPass").value = "";
-        showLock(false);
-        setStatus("OK", true);
-        resetAutoLogout();
-      }else{
-        alert("Password salah");
-      }
-    };
-
-    // Enter key unlock
-    $("lockPass").addEventListener("keydown",(e)=>{
-      if(e.key==="Enter") $("btnUnlock").click();
-    });
-
-    // ====== Boot ======
-    (function boot(){
-      fillForm();
-      // Require unlock
-      ensureUnlocked();
-      resetAutoLogout();
-    })();
-
-    // If locked overlay is open, block clicks behind (already full screen)
-  </script>
+  // Autofill friendly defaults (jika kosong)
+  if(!fields.vipCode.value) fields.vipCode.value = "VIP123";
+})();
+</script>
 </body>
 </html>
