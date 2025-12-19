@@ -1,188 +1,815 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Kad Kahwin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Admin Panel (Premium)</title>
   <style>
-    :root{--bg:#0b0b0f;--card:rgba(255,255,255,.08);--bd:rgba(255,255,255,.14);--txt:#fff;--mut:rgba(255,255,255,.75)}
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    body{margin:0;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-    .wrap{width:min(820px,100%)}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
-    h1{margin:0 0 10px;font-size:20px}
-    p{margin:0 0 14px;color:var(--mut);line-height:1.5}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    @media(max-width:720px){.grid{grid-template-columns:1fr}}
-    label{font-size:12px;color:var(--mut);display:block;margin:10px 0 6px}
-    input,textarea{width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--bd);background:rgba(0,0,0,.25);color:#fff;outline:none}
-    textarea{min-height:90px;resize:vertical}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .btn{padding:12px 14px;border-radius:999px;border:1px solid var(--bd);background:rgba(255,255,255,.12);color:#fff;font-weight:700;cursor:pointer}
-    .btn.primary{background:#fff;color:#000;border-color:#fff}
-    .hint{margin-top:12px;font-size:12px;color:var(--mut)}
-    .lock{display:none}
-    .lock.show{display:block}
+    :root{
+      --bg:#0b0c10; --card:rgba(255,255,255,.06); --card2:rgba(255,255,255,.04);
+      --bd:rgba(255,255,255,.10); --txt:#f3f4f6; --mut:rgba(255,255,255,.72);
+      --acc:#91a4ff; --bad:#ff6b6b; --ok:#22c55e;
+      --r:18px;
+      --pad:16px;
+      --fs:14px;
+    }
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:0;background:radial-gradient(1200px 600px at 20% 0%,rgba(145,164,255,.18),transparent 60%),
+                  radial-gradient(900px 500px at 80% 20%,rgba(255,255,255,.08),transparent 65%),
+                  var(--bg); color:var(--txt); font-size:var(--fs);}
+    a{color:inherit}
+    .wrap{max-width:980px;margin:0 auto;padding:18px 14px 36px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      background:var(--card); border:1px solid var(--bd); border-radius:var(--r);
+      padding:14px 14px; backdrop-filter: blur(10px);
+    }
+    .brand h1{margin:0;font-size:18px;letter-spacing:.2px}
+    .brand p{margin:4px 0 0;color:var(--mut);font-size:12px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .btn{
+      border:1px solid var(--bd); background:rgba(255,255,255,.08); color:var(--txt);
+      padding:10px 12px;border-radius:14px;cursor:pointer;font-weight:700;
+    }
+    .btn:hover{opacity:.95}
+    .btn.primary{background:rgba(145,164,255,.25); border-color:rgba(145,164,255,.45)}
+    .btn.danger{background:rgba(255,107,107,.14); border-color:rgba(255,107,107,.35)}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+      border:1px solid var(--bd); background:rgba(255,255,255,.05); font-weight:700; font-size:12px;
+    }
+    .pill i{display:inline-block;width:8px;height:8px;border-radius:99px;background:var(--ok)}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+    @media(min-width:860px){ .grid{grid-template-columns:1fr 1fr} }
+
+    /* Tabs */
+    .tabs{
+      display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;
+      background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:var(--r);padding:10px;
+    }
+    .tab{
+      padding:10px 12px;border-radius:14px;border:1px solid transparent;cursor:pointer;
+      background:transparent;color:var(--mut);font-weight:800;font-size:13px;
+    }
+    .tab.active{color:var(--txt);background:rgba(145,164,255,.18);border-color:rgba(145,164,255,.35)}
+    .panel{display:none;margin-top:12px}
+    .panel.active{display:block}
+
+    /* Sections (Collapse) */
+    .section{
+      background:var(--card); border:1px solid var(--bd); border-radius:var(--r);
+      overflow:hidden; backdrop-filter: blur(10px);
+    }
+    .section header{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 14px; cursor:pointer; font-weight:900;
+      background:rgba(255,255,255,.04);
+    }
+    .section header small{color:var(--mut);font-weight:700}
+    .section .body{display:none;padding:14px}
+    .section.open .body{display:block}
+
+    /* Forms */
+    label{display:block;color:var(--mut);font-weight:800;font-size:12px;margin:12px 0 6px}
+    input, textarea, select{
+      width:100%; border:1px solid var(--bd); background:rgba(0,0,0,.22); color:var(--txt);
+      border-radius:14px; padding:12px 12px; outline:none;
+    }
+    textarea{min-height:92px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr;gap:10px}
+    @media(min-width:600px){ .row{grid-template-columns:1fr 1fr} }
+
+    .muted{color:var(--mut);font-size:12px;line-height:1.5}
+    .hr{height:1px;background:rgba(255,255,255,.08);margin:14px 0}
+    .miniBtns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .codebox{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:12px; white-space:nowrap; overflow:auto;
+      padding:12px;border:1px solid var(--bd);border-radius:14px;background:rgba(0,0,0,.25)
+    }
+
+    /* Lock screen */
+    .lock{
+      position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+      padding:18px; background:rgba(0,0,0,.70); backdrop-filter: blur(10px);
+    }
+    .lockCard{
+      width:min(520px,100%); background:rgba(255,255,255,.06); border:1px solid var(--bd);
+      border-radius:22px; padding:18px;
+    }
+    .lockCard h2{margin:0 0 6px;font-size:18px}
+    .lockCard p{margin:0 0 14px;color:var(--mut);font-size:12px;line-height:1.5}
+    .lockRow{display:flex;gap:10px}
+    .lockRow input{flex:1}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="card" id="loginCard">
-      <h1>Admin Panel</h1>
-      <p>Masukkan kata laluan untuk edit maklumat kad.</p>
-      <label>Kata laluan</label>
-      <input id="pw" type="password" placeholder="••••••••" />
-      <div class="row">
-        <button class="btn primary" id="btnLogin">Masuk</button>
+    <div class="top">
+      <div class="brand">
+        <h1>Admin Panel (Premium)</h1>
+        <p>Edit pelanggan → auto link → copy Versi 1–5 → VIP lock → backup.</p>
       </div>
-      <div class="hint">Tip: Tukar password di dalam kod (cari: <b>ADMIN_PASSWORD</b>).</div>
+      <div class="actions">
+        <span class="pill" id="statusPill"><i></i><span id="statusTxt">STATUS: OK</span></span>
+        <button class="btn" id="btnSwitch">Tukar Pelanggan</button>
+        <button class="btn danger" id="btnLogout">Logout</button>
+      </div>
     </div>
 
-    <div class="card lock" id="formCard">
-      <h1>Edit Maklumat Jemputan</h1>
-      <p>Isi, tekan <b>Simpan</b>. Lepas itu buka <b>invite.html</b> untuk lihat perubahan.</p>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="utama">Utama</button>
+      <button class="tab" data-tab="majlis">Majlis</button>
+      <button class="tab" data-tab="vip">VIP</button>
+      <button class="tab" data-tab="link">Link & Copy</button>
+      <button class="tab" data-tab="backup">Backup</button>
+      <button class="tab" data-tab="setting">Settings</button>
+    </div>
 
+    <!-- PANEL: UTAMA -->
+    <div class="panel active" id="p-utama">
       <div class="grid">
-        <div>
-          <label>Tajuk (contoh: Walimatul Urus)</label>
-          <input id="title" />
-        </div>
-        <div>
-          <label>Nama Pengantin (contoh: Adam & Hawa)</label>
-          <input id="couple" />
-        </div>
-
-        <div>
-          <label>Tarikh (contoh: 01/12/2025)</label>
-          <input id="date" />
-        </div>
-        <div>
-          <label>Masa (contoh: 9.00am – 2.00pm)</label>
-          <input id="time" />
+        <div class="section open">
+          <header><span>👤 Pelanggan</span><small>nama pelanggan / projek</small></header>
+          <div class="body">
+            <label>Nama Pelanggan (folder / label)</label>
+            <input id="c_name" placeholder="Contoh: Karim&Masni" />
+            <div class="miniBtns">
+              <button class="btn primary" id="btnSaveCustomer">Simpan & Guna</button>
+              <button class="btn" id="btnNewCustomer">Tambah Baru</button>
+            </div>
+            <div class="hr"></div>
+            <div class="muted">Tip: Setiap pelanggan disimpan berasingan (localStorage). Anda boleh export JSON untuk pindah ke device lain.</div>
+          </div>
         </div>
 
-        <div>
-          <label>Tempat / Dewan</label>
-          <input id="venue" />
-        </div>
-        <div>
-          <label>Alamat ringkas</label>
-          <input id="address" />
-        </div>
-
-        <div>
-          <label>Link Google Maps</label>
-          <input id="maps" placeholder="https://maps.google.com/?q=..." />
-        </div>
-        <div>
-          <label>Link WhatsApp RSVP</label>
-          <input id="rsvp" placeholder="https://wa.me/60xxxx?text=..." />
+        <div class="section open">
+          <header><span>⚡ Ringkas</span><small>edit cepat</small></header>
+          <div class="body">
+            <div class="row">
+              <div>
+                <label>Tajuk</label>
+                <input id="d_title" placeholder="Walimatul Urus" />
+              </div>
+              <div>
+                <label>Nama Pengantin</label>
+                <input id="d_couple" placeholder="Adam & Hawa" />
+              </div>
+            </div>
+            <label>Ayat Jemputan (Premium)</label>
+            <textarea id="d_message" placeholder="Dengan penuh kesyukuran..."></textarea>
+            <div class="miniBtns">
+              <button class="btn primary" id="btnSaveAllTop">Simpan</button>
+              <button class="btn" id="btnOpenInvite">Buka invite.html</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <label>Ayat Jemputan (premium)</label>
-      <textarea id="message"></textarea>
+      <div class="section">
+        <header><span>🧩 Ciri Paparan</span><small>tema / video / bahasa</small></header>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>Bahasa</label>
+              <select id="d_lang">
+                <option value="ms">BM (Malay)</option>
+                <option value="en">EN (English)</option>
+              </select>
+            </div>
+            <div>
+              <label>Tema</label>
+              <select id="d_theme">
+                <option value="midnight">Midnight</option>
+                <option value="gold">Gold</option>
+                <option value="aurora">Aurora</option>
+              </select>
+            </div>
+          </div>
 
-      <div class="row">
-        <button class="btn primary" id="btnSave">Simpan</button>
-        <button class="btn" id="btnReset">Reset (default)</button>
-        <button class="btn" id="btnLogout">Logout</button>
-      </div>
+          <div class="row">
+            <div>
+              <label>Video Background</label>
+              <select id="d_videoOn">
+                <option value="on">ON</option>
+                <option value="off">OFF</option>
+              </select>
+            </div>
+            <div>
+              <label>Motion / Animasi</label>
+              <select id="d_motion">
+                <option value="on">ON</option>
+                <option value="off">OFF</option>
+              </select>
+            </div>
+          </div>
 
-      <div class="hint">
-        Data disimpan dalam <b>LocalStorage</b> (device/browser yang sama).
+          <div class="miniBtns">
+            <button class="btn primary" id="btnSaveDisplay">Simpan Paparan</button>
+          </div>
+        </div>
       </div>
+    </div>
+
+    <!-- PANEL: MAJLIS -->
+    <div class="panel" id="p-majlis">
+      <div class="section open">
+        <header><span>📌 Maklumat Majlis</span><small>tarikh / masa / tempat / alamat</small></header>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>Tarikh (cth: 01/12/2025)</label>
+              <input id="d_date" placeholder="01/12/2025" />
+            </div>
+            <div>
+              <label>Masa (cth: 9.00am – 2.00pm)</label>
+              <input id="d_time" placeholder="9.00am – 2.00pm" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Tempat / Dewan</label>
+              <input id="d_venue" placeholder="Dewan Serbaguna" />
+            </div>
+            <div>
+              <label>Alamat ringkas</label>
+              <input id="d_address" placeholder="Alamat ringkas majlis di sini" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label>Link Google Maps</label>
+              <input id="d_maps" placeholder="https://maps.google.com/..." />
+            </div>
+            <div>
+              <label>Link WhatsApp RSVP</label>
+              <input id="d_rsvp" placeholder="https://wa.me/60...." />
+            </div>
+          </div>
+
+          <label>Badge (cth: MAJLIS PERKAHWINAN)</label>
+          <input id="d_badge" placeholder="MAJLIS PERKAHWINAN" />
+
+          <label>Top Title (atas)</label>
+          <input id="d_topTitle" placeholder="Kad Kahwin Digital" />
+
+          <label>Top Subtitle (atas)</label>
+          <input id="d_topSub" placeholder="Jemputan Rasmi" />
+
+          <label>Nama Tetamu (default jika tiada)</label>
+          <input id="d_guestDefault" placeholder="Tetamu" />
+
+          <label>Notis / Hak Milik</label>
+          <input id="d_notice" placeholder="Dilarang guna/jual page ini tanpa kebenaran..." />
+
+          <div class="miniBtns">
+            <button class="btn primary" id="btnSaveMajlis">Simpan Maklumat</button>
+            <button class="btn" id="btnCalendarTest">Test “Add to Calendar”</button>
+          </div>
+          <div class="muted" style="margin-top:10px">
+            Nota: “Add to Calendar” dijana automatik dari tarikh + masa + tempat.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: VIP -->
+    <div class="panel" id="p-vip">
+      <div class="section open">
+        <header><span>🔒 VIP Lock</span><small>tetamu perlu kod VIP</small></header>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label>VIP Lock</label>
+              <select id="d_vipOn">
+                <option value="off">OFF</option>
+                <option value="on">ON</option>
+              </select>
+            </div>
+            <div>
+              <label>Kod VIP</label>
+              <input id="d_vipCode" placeholder="VIP123" />
+            </div>
+          </div>
+          <div class="miniBtns">
+            <button class="btn primary" id="btnSaveVIP">Simpan VIP</button>
+          </div>
+          <div class="muted" style="margin-top:10px">
+            Tip: Kod VIP boleh dihantar kepada tetamu tertentu melalui WhatsApp.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: LINK -->
+    <div class="panel" id="p-link">
+      <div class="section open">
+        <header><span>🔗 Link & Copy (Versi 1–5)</span><small>siap “from + copy link”</small></header>
+        <div class="body">
+          <label>Base URL invite.html (biar auto)</label>
+          <input id="baseUrl" readonly />
+
+          <div class="row">
+            <div>
+              <label>Nama Tetamu (parameter: to)</label>
+              <input id="paramTo" placeholder="Contoh: Encik Ali" />
+            </div>
+            <div>
+              <label>From (parameter: from)</label>
+              <input id="paramFrom" placeholder="Contoh: Karim&Masni" />
+            </div>
+          </div>
+
+          <div class="hr"></div>
+          <div class="muted">
+            ✅ “Share Link (DATA)” = tetamu akan nampak maklumat yang anda edit (walaupun phone lain).  
+            ✅ Versi 1–5 hanya untuk variasi styling (jika anda guna dalam invite.html).
+          </div>
+
+          <label>Share Link (DATA dalam link)</label>
+          <div class="codebox" id="shareLinkBox">-</div>
+          <div class="miniBtns">
+            <button class="btn primary" id="btnMakeShare">Jana Share Link (DATA)</button>
+            <button class="btn" id="btnCopyShare">Copy Share Link</button>
+          </div>
+
+          <div class="hr"></div>
+
+          <label>Copy Link Versi 1–5</label>
+          <div class="miniBtns" id="verBtns"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: BACKUP -->
+    <div class="panel" id="p-backup">
+      <div class="section open">
+        <header><span>💾 Backup</span><small>export/import/reset</small></header>
+        <div class="body">
+          <div class="miniBtns">
+            <button class="btn" id="btnExport">Export JSON</button>
+            <button class="btn" id="btnImport">Import JSON</button>
+            <button class="btn danger" id="btnResetAll">Reset Semua</button>
+          </div>
+          <label>Data JSON (untuk import/export)</label>
+          <textarea id="jsonBox" placeholder="JSON akan keluar di sini..."></textarea>
+          <div class="muted">
+            Data admin disimpan dalam <b>localStorage (device ini)</b>. Kalau tukar phone, guna Export/Import.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL: SETTINGS -->
+    <div class="panel" id="p-setting">
+      <div class="section open">
+        <header><span>⚙️ Settings</span><small>password admin + auto logout</small></header>
+        <div class="body">
+          <label>Password Admin (client-side sahaja)</label>
+          <input id="adminPass" placeholder="ADMIN123" />
+
+          <label>Auto Logout (minit)</label>
+          <input id="autoLogoutMin" type="number" min="1" value="8" />
+
+          <div class="miniBtns">
+            <button class="btn primary" id="btnSaveSettings">Simpan Settings</button>
+          </div>
+
+          <div class="muted" style="margin-top:10px">
+            Nota keselamatan: GitHub Pages ialah static. Password ini hanya “halang biasa”, bukan security tahap bank.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="muted" style="margin-top:14px;text-align:center;opacity:.7">
+      © Admin Premium — Data disimpan dalam device (localStorage) + Share Link (data) untuk tetamu.
     </div>
   </div>
 
-<script>
-  // ✅ TUKAR PASSWORD DI SINI
-  const ADMIN_PASSWORD = "12345";
+  <!-- LOCK SCREEN -->
+  <div class="lock" id="lock" style="display:none">
+    <div class="lockCard">
+      <h2>Admin Locked</h2>
+      <p>Masukkan password admin untuk buka panel.</p>
+      <div class="lockRow">
+        <input id="lockPass" type="password" placeholder="Password admin" />
+        <button class="btn primary" id="btnUnlock">Buka</button>
+      </div>
+      <p class="muted" style="margin-top:10px">Tip: password boleh diubah dalam tab Settings.</p>
+    </div>
+  </div>
 
-  const KEY = "KADKAHWIN_DATA_V1";
+  <script>
+    // ====== STORAGE KEYS ======
+    const ROOT_KEY = "KADKAHWIN_ROOT_V2";
+    const CUSTOMER_KEY = (name)=> `KADKAHWIN_DATA_V2::${name}`;
+    const SETTINGS_KEY = "KADKAHWIN_ADMIN_SETTINGS_V2";
+    const SESSION_UNLOCK = "KADKAHWIN_ADMIN_UNLOCKED_V2";
 
-  const DEFAULT_DATA = {
-    title: "Walimatul Urus",
-    couple: "Adam & Hawa",
-    date: "01/12/2025",
-    time: "9.00am – 2.00pm",
-    venue: "Dewan Serbaguna",
-    address: "Alamat ringkas majlis di sini",
-    maps: "https://maps.google.com/",
-    rsvp: "https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
-    message: "Dengan penuh kesyukuran, kami menjemput Dato’/Datin/Tuan/Puan/Encik/Cik sekeluarga hadir memeriahkan majlis perkahwinan kami."
-  };
+    // ====== DEFAULTS ======
+    const DEFAULT_DATA = {
+      lang:"ms",
+      theme:"midnight",
+      videoOn:"on",
+      motion:"on",
 
-  const $ = (id)=>document.getElementById(id);
+      topTitle:"Kad Kahwin Digital",
+      topSub:"Jemputan Rasmi",
+      badge:"MAJLIS PERKAHWINAN",
 
-  function loadData(){
-    try{
-      const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : DEFAULT_DATA;
-    }catch(e){
-      return DEFAULT_DATA;
-    }
-  }
-  function saveData(data){
-    localStorage.setItem(KEY, JSON.stringify(data));
-  }
+      title:"Walimatul Urus",
+      couple:"Adam & Hawa",
+      guestDefault:"Tetamu",
+      message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
 
-  function fillForm(d){
-    $("title").value = d.title || "";
-    $("couple").value = d.couple || "";
-    $("date").value = d.date || "";
-    $("time").value = d.time || "";
-    $("venue").value = d.venue || "";
-    $("address").value = d.address || "";
-    $("maps").value = d.maps || "";
-    $("rsvp").value = d.rsvp || "";
-    $("message").value = d.message || "";
-  }
-  function getForm(){
-    return {
-      title: $("title").value.trim(),
-      couple: $("couple").value.trim(),
-      date: $("date").value.trim(),
-      time: $("time").value.trim(),
-      venue: $("venue").value.trim(),
-      address: $("address").value.trim(),
-      maps: $("maps").value.trim(),
-      rsvp: $("rsvp").value.trim(),
-      message: $("message").value.trim(),
+      date:"01/12/2025",
+      time:"9.00am – 2.00pm",
+      venue:"Dewan Serbaguna",
+      address:"Alamat ringkas majlis di sini",
+      maps:"https://maps.google.com/",
+      rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
+
+      notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik.® R-E-M Creative Studio",
+      vipOn:"off",
+      vipCode:"VIP123"
     };
-  }
 
-  function showForm(){
-    $("loginCard").style.display = "none";
-    $("formCard").classList.add("show");
-    fillForm(loadData());
-  }
+    const DEFAULT_ROOT = { currentCustomer:"Karim&Masni" };
 
-  $("btnLogin").addEventListener("click", ()=>{
-    if(($("pw").value || "") === ADMIN_PASSWORD){
-      showForm();
-    }else{
-      alert("Password salah.");
+    const DEFAULT_SETTINGS = {
+      adminPass:"ADMIN123",
+      autoLogoutMin:8
+    };
+
+    // ====== HELPERS ======
+    const $ = (id)=> document.getElementById(id);
+    const safeParse = (raw, fallback)=>{ try{ return JSON.parse(raw) ?? fallback; }catch(e){ return fallback; } };
+
+    function loadRoot(){
+      return safeParse(localStorage.getItem(ROOT_KEY), DEFAULT_ROOT);
     }
-  });
-
-  $("btnSave").addEventListener("click", ()=>{
-    const data = getForm();
-    saveData(data);
-    alert("Berjaya simpan! Buka invite.html untuk lihat.");
-  });
-
-  $("btnReset").addEventListener("click", ()=>{
-    if(confirm("Reset ke default?")){
-      saveData(DEFAULT_DATA);
-      fillForm(DEFAULT_DATA);
-      alert("Sudah reset.");
+    function saveRoot(r){
+      localStorage.setItem(ROOT_KEY, JSON.stringify(r));
     }
-  });
 
-  $("btnLogout").addEventListener("click", ()=>{
-    location.reload();
-  });
-</script>
+    function loadSettings(){
+      const s = safeParse(localStorage.getItem(SETTINGS_KEY), DEFAULT_SETTINGS);
+      // ensure fields
+      if(!s.adminPass) s.adminPass = DEFAULT_SETTINGS.adminPass;
+      if(!s.autoLogoutMin) s.autoLogoutMin = DEFAULT_SETTINGS.autoLogoutMin;
+      return s;
+    }
+    function saveSettings(s){
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    }
+
+    function loadCustomer(name){
+      const d = safeParse(localStorage.getItem(CUSTOMER_KEY(name)), null);
+      return d ? ({...DEFAULT_DATA, ...d}) : ({...DEFAULT_DATA});
+    }
+    function saveCustomer(name, data){
+      localStorage.setItem(CUSTOMER_KEY(name), JSON.stringify(data));
+    }
+
+    function now(){ return Date.now(); }
+
+    // ====== AUTO LOGOUT TIMER ======
+    let logoutTimer = null;
+    function resetAutoLogout(){
+      const s = loadSettings();
+      const ms = Math.max(1, Number(s.autoLogoutMin||8)) * 60 * 1000;
+      if(logoutTimer) clearTimeout(logoutTimer);
+      logoutTimer = setTimeout(()=> {
+        sessionStorage.removeItem(SESSION_UNLOCK);
+        showLock(true);
+      }, ms);
+    }
+    ["click","touchstart","keydown","scroll"].forEach(ev=>{
+      window.addEventListener(ev, ()=> resetAutoLogout(), {passive:true});
+    });
+
+    // ====== LOCK ======
+    function showLock(on){
+      $("lock").style.display = on ? "flex" : "none";
+    }
+    function ensureUnlocked(){
+      const ok = sessionStorage.getItem(SESSION_UNLOCK) === "1";
+      if(!ok) showLock(true);
+      else showLock(false);
+      return ok;
+    }
+
+    // ====== INIT ======
+    let root = loadRoot();
+    let currentName = root.currentCustomer || "Karim&Masni";
+    let data = loadCustomer(currentName);
+
+    function fillForm(){
+      $("c_name").value = currentName;
+
+      $("d_lang").value = data.lang;
+      $("d_theme").value = data.theme;
+      $("d_videoOn").value = data.videoOn;
+      $("d_motion").value = data.motion;
+
+      $("d_topTitle").value = data.topTitle;
+      $("d_topSub").value = data.topSub;
+      $("d_badge").value = data.badge;
+
+      $("d_title").value = data.title;
+      $("d_couple").value = data.couple;
+      $("d_message").value = data.message;
+
+      $("d_date").value = data.date;
+      $("d_time").value = data.time;
+      $("d_venue").value = data.venue;
+      $("d_address").value = data.address;
+      $("d_maps").value = data.maps;
+      $("d_rsvp").value = data.rsvp;
+
+      $("d_guestDefault").value = data.guestDefault;
+      $("d_notice").value = data.notice;
+
+      $("d_vipOn").value = data.vipOn;
+      $("d_vipCode").value = data.vipCode;
+
+      const s = loadSettings();
+      $("adminPass").value = s.adminPass;
+      $("autoLogoutMin").value = s.autoLogoutMin;
+
+      buildBaseUrl();
+      buildVersionButtons();
+      buildShareLinkBox(); // update
+    }
+
+    function readFormTop(){
+      data.title = $("d_title").value.trim() || DEFAULT_DATA.title;
+      data.couple = $("d_couple").value.trim() || DEFAULT_DATA.couple;
+      data.message = $("d_message").value.trim() || DEFAULT_DATA.message;
+    }
+
+    function readDisplay(){
+      data.lang = $("d_lang").value;
+      data.theme = $("d_theme").value;
+      data.videoOn = $("d_videoOn").value;
+      data.motion = $("d_motion").value;
+    }
+
+    function readMajlis(){
+      data.topTitle = $("d_topTitle").value.trim() || DEFAULT_DATA.topTitle;
+      data.topSub = $("d_topSub").value.trim() || DEFAULT_DATA.topSub;
+      data.badge = $("d_badge").value.trim() || DEFAULT_DATA.badge;
+
+      data.date = $("d_date").value.trim() || DEFAULT_DATA.date;
+      data.time = $("d_time").value.trim() || DEFAULT_DATA.time;
+      data.venue = $("d_venue").value.trim() || DEFAULT_DATA.venue;
+      data.address = $("d_address").value.trim() || DEFAULT_DATA.address;
+      data.maps = $("d_maps").value.trim() || DEFAULT_DATA.maps;
+      data.rsvp = $("d_rsvp").value.trim() || DEFAULT_DATA.rsvp;
+
+      data.guestDefault = $("d_guestDefault").value.trim() || DEFAULT_DATA.guestDefault;
+      data.notice = $("d_notice").value.trim() || DEFAULT_DATA.notice;
+    }
+
+    function readVIP(){
+      data.vipOn = $("d_vipOn").value;
+      data.vipCode = $("d_vipCode").value.trim() || DEFAULT_DATA.vipCode;
+    }
+
+    function setStatus(msg="OK", good=true){
+      $("statusTxt").textContent = "STATUS: " + msg;
+      $("statusPill").querySelector("i").style.background = good ? "var(--ok)" : "var(--bad)";
+    }
+
+    function saveAll(){
+      saveCustomer(currentName, data);
+      setStatus("SAVED", true);
+      setTimeout(()=> setStatus("OK", true), 1200);
+      buildShareLinkBox();
+    }
+
+    // ====== Tabs ======
+    document.querySelectorAll(".tab").forEach(t=>{
+      t.addEventListener("click", ()=>{
+        document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+        t.classList.add("active");
+        $("p-"+t.dataset.tab).classList.add("active");
+        window.scrollTo({top:0,behavior:"smooth"});
+      });
+    });
+
+    // ====== Collapse Sections ======
+    document.querySelectorAll(".section header").forEach(h=>{
+      h.addEventListener("click", ()=> h.parentElement.classList.toggle("open"));
+    });
+
+    // ====== Links ======
+    function buildBaseUrl(){
+      // admin.html berada dalam folder KadKahwin4
+      // base untuk invite.html dalam folder sama
+      const url = location.href.split("#")[0].split("?")[0];
+      const base = url.replace(/admin(-android)?\.html$/i, "invite.html");
+      $("baseUrl").value = base;
+      return base;
+    }
+
+    function qs(params){
+      const u = new URL("https://x.test/");
+      Object.entries(params).forEach(([k,v])=>{
+        if(v!==undefined && v!==null && String(v).trim()!=="") u.searchParams.set(k, v);
+      });
+      return u.search.replace(/^\?/,"");
+    }
+
+    function buildVersionButtons(){
+      const wrap = $("verBtns");
+      wrap.innerHTML = "";
+      for(let i=1;i<=5;i++){
+        const b = document.createElement("button");
+        b.className = "btn";
+        b.textContent = "Copy Versi " + i;
+        b.onclick = ()=>{
+          const base = buildBaseUrl();
+          const to = $("paramTo").value.trim();
+          const from = $("paramFrom").value.trim();
+          const link = base + "?" + qs({v:i,to,from});
+          navigator.clipboard.writeText(link).then(()=> setStatus("COPIED V"+i,true))
+            .catch(()=> alert(link));
+        };
+        wrap.appendChild(b);
+      }
+    }
+
+    function b64urlEncode(obj){
+      const json = JSON.stringify(obj);
+      const b64 = btoa(unescape(encodeURIComponent(json)))
+        .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+      return b64;
+    }
+
+    function buildShareLinkBox(){
+      const base = buildBaseUrl();
+      const to = $("paramTo").value.trim();
+      const from = $("paramFrom").value.trim();
+      // Simpan data dalam hash #data=...
+      const payload = {...data};
+      const encoded = b64urlEncode(payload);
+      const link = base + "?" + qs({to,from}) + "#data=" + encoded;
+      $("shareLinkBox").textContent = link;
+      return link;
+    }
+
+    // ====== Buttons ======
+    $("btnSaveAllTop").onclick = ()=>{ readFormTop(); saveAll(); };
+    $("btnSaveDisplay").onclick = ()=>{ readDisplay(); saveAll(); };
+    $("btnSaveMajlis").onclick = ()=>{ readMajlis(); saveAll(); };
+    $("btnSaveVIP").onclick = ()=>{ readVIP(); saveAll(); };
+
+    $("btnOpenInvite").onclick = ()=> {
+      const base = buildBaseUrl();
+      window.open(base, "_blank");
+    };
+
+    $("btnMakeShare").onclick = ()=> {
+      // Pastikan latest value disimpan sebelum jana link
+      readDisplay(); readFormTop(); readMajlis(); readVIP(); saveAll();
+      const link = buildShareLinkBox();
+      setStatus("SHARE READY", true);
+      // auto copy
+      navigator.clipboard.writeText(link).then(()=> setStatus("COPIED SHARE", true)).catch(()=>{});
+    };
+
+    $("btnCopyShare").onclick = ()=> {
+      const link = buildShareLinkBox();
+      navigator.clipboard.writeText(link).then(()=> setStatus("COPIED SHARE", true))
+        .catch(()=> alert(link));
+    };
+
+    $("paramTo").addEventListener("input", buildShareLinkBox);
+    $("paramFrom").addEventListener("input", buildShareLinkBox);
+
+    $("btnCalendarTest").onclick = ()=> {
+      // buka invite & tekan Add to Calendar
+      window.open(buildBaseUrl(), "_blank");
+    };
+
+    // Customer actions
+    $("btnSaveCustomer").onclick = ()=>{
+      const nm = $("c_name").value.trim();
+      if(!nm){ alert("Sila isi Nama Pelanggan"); return; }
+      currentName = nm;
+      root.currentCustomer = currentName;
+      saveRoot(root);
+      data = loadCustomer(currentName);
+      fillForm();
+      setStatus("CUSTOMER SET", true);
+    };
+
+    $("btnNewCustomer").onclick = ()=>{
+      const nm = prompt("Nama pelanggan baru? (cth: Ali&Sara)");
+      if(!nm) return;
+      currentName = nm.trim();
+      root.currentCustomer = currentName;
+      saveRoot(root);
+      data = {...DEFAULT_DATA};
+      saveAll();
+      fillForm();
+    };
+
+    $("btnSwitch").onclick = ()=>{
+      const nm = prompt("Tukar pelanggan kepada nama apa?\nContoh: Karim&Masni");
+      if(!nm) return;
+      currentName = nm.trim();
+      root.currentCustomer = currentName;
+      saveRoot(root);
+      data = loadCustomer(currentName);
+      fillForm();
+    };
+
+    // Backup
+    $("btnExport").onclick = ()=>{
+      readDisplay(); readFormTop(); readMajlis(); readVIP(); saveAll();
+      const pack = {
+        customer: currentName,
+        data,
+        exportedAt: new Date().toISOString()
+      };
+      $("jsonBox").value = JSON.stringify(pack, null, 2);
+      setStatus("EXPORTED", true);
+    };
+
+    $("btnImport").onclick = ()=>{
+      const raw = $("jsonBox").value.trim();
+      if(!raw){ alert("Paste JSON dulu"); return; }
+      const pack = safeParse(raw, null);
+      if(!pack || !pack.data){ alert("JSON tidak sah"); return; }
+      currentName = (pack.customer || currentName || "Karim&Masni");
+      root.currentCustomer = currentName;
+      saveRoot(root);
+      data = {...DEFAULT_DATA, ...pack.data};
+      saveAll();
+      fillForm();
+      setStatus("IMPORTED", true);
+    };
+
+    $("btnResetAll").onclick = ()=>{
+      if(!confirm("Reset semua data untuk pelanggan ini?")) return;
+      localStorage.removeItem(CUSTOMER_KEY(currentName));
+      data = {...DEFAULT_DATA};
+      saveAll();
+      fillForm();
+      setStatus("RESET", true);
+    };
+
+    // Settings
+    $("btnSaveSettings").onclick = ()=>{
+      const s = loadSettings();
+      s.adminPass = $("adminPass").value.trim() || DEFAULT_SETTINGS.adminPass;
+      s.autoLogoutMin = Math.max(1, Number($("autoLogoutMin").value||8));
+      saveSettings(s);
+      setStatus("SETTINGS SAVED", true);
+    };
+
+    // Logout
+    $("btnLogout").onclick = ()=>{
+      sessionStorage.removeItem(SESSION_UNLOCK);
+      showLock(true);
+      setStatus("LOCKED", false);
+    };
+
+    // Unlock
+    $("btnUnlock").onclick = ()=>{
+      const pass = $("lockPass").value;
+      const s = loadSettings();
+      if(pass === s.adminPass){
+        sessionStorage.setItem(SESSION_UNLOCK, "1");
+        $("lockPass").value = "";
+        showLock(false);
+        setStatus("OK", true);
+        resetAutoLogout();
+      }else{
+        alert("Password salah");
+      }
+    };
+
+    // Enter key unlock
+    $("lockPass").addEventListener("keydown",(e)=>{
+      if(e.key==="Enter") $("btnUnlock").click();
+    });
+
+    // ====== Boot ======
+    (function boot(){
+      fillForm();
+      // Require unlock
+      ensureUnlocked();
+      resetAutoLogout();
+    })();
+
+    // If locked overlay is open, block clicks behind (already full screen)
+  </script>
 </body>
 </html>
