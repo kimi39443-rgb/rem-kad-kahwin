@@ -1,890 +1,405 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Admin Android • R-E-M Kad Kahwin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Admin Android - R-E-M Kad Kahwin</title>
   <style>
-    :root{
-      --bg1:#070707; --bg2:#000;
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.14);
-      --text: #fff;
-      --accent: #d4af37;
-      --radius: 22px;
+    :root{--bg:#0b0b0e;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--txt:rgba(255,255,255,.92);--muted:rgba(255,255,255,.70);--btn:rgba(255,255,255,.12);--accent:rgba(255,205,88,.95)}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .wrap{max-width:760px;margin:0 auto;padding:14px 12px 130px}
+    .hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .h1{font-size:18px;font-weight:950;margin:0}
+    .sub{margin:6px 0 0;opacity:.8;line-height:1.5;font-size:13px}
+    .chip{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:900}
+    .card{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
+    .title{font-weight:950;font-size:16px;margin:0 0 10px}
+    label{display:block;font-size:12px;opacity:.75;margin:10px 2px 6px}
+    input,select,textarea{
+      width:100%;padding:12px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);color:#fff;outline:none;font-weight:700
     }
-    body{
-      margin:0; color:var(--text);
-      background:
-        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.07), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-      padding-bottom: 108px; /* ruang sticky bar */
+    textarea{min-height:90px;resize:vertical}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .btnRow{position:fixed;left:0;right:0;bottom:0;padding:10px 10px 18px;background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));display:flex;justify-content:center}
+    .btnInner{width:min(760px,100%);display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    button{
+      padding:14px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
+      background:var(--btn);color:#fff;font-weight:950;font-size:15px
     }
-    .glass{
-      background:var(--card);
-      border:1px solid var(--stroke);
-      border-radius:var(--radius);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.55);
-      position: relative;
-      overflow: hidden;
-    }
-    .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
-    .input{
-      width:100%;
-      border-radius: 16px;
-      border:1px solid var(--stroke);
-      padding: 12px 14px;
-      background: rgba(0,0,0,.25);
-      outline:none;
-      color: white;
-    }
-    .ta{
-      width:100%;
-      border-radius: 16px;
-      border:1px solid var(--stroke);
-      padding: 12px 14px;
-      background: rgba(0,0,0,.25);
-      outline:none;
-      color: white;
-      min-height: 92px;
-      resize: vertical;
-    }
-    .btn{
-      border-radius: 16px;
-      border: 1px solid var(--stroke);
-      padding: 12px 14px;
-      background: rgba(0,0,0,.22);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      font-weight: 800;
-    }
-    .btn:active{ transform: scale(.99); }
-    .btnPrimary{
-      background: var(--accent);
-      color: #0b0b0b;
-      border-color: rgba(255,255,255,.18);
-      font-weight: 900;
-    }
-    .btnDanger{
-      background: rgba(239,68,68,.22);
-      border-color: rgba(239,68,68,.35);
-    }
-    .btnOk{
-      background: rgba(34,197,94,.18);
-      border-color: rgba(34,197,94,.25);
-    }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
-    .small{ font-size: 12px; opacity:.7; }
-    .rowCard{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 18px;
-      background: rgba(0,0,0,.20);
-      padding: 10px;
-    }
-    .toggle{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      border-radius: 18px;
-      padding: 12px 14px;
-    }
-    .switch{
-      width: 58px; height: 32px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.08);
-      position: relative;
-      flex: 0 0 auto;
-    }
-    .switch::after{
-      content:"";
-      position:absolute; top:3px; left:3px;
-      width: 26px; height: 26px; border-radius: 999px;
-      background: rgba(255,255,255,.85);
-      transition: .18s ease;
-    }
-    .switch.on{
-      background: color-mix(in srgb, var(--accent) 30%, rgba(255,255,255,.08));
-      border-color: color-mix(in srgb, var(--accent) 35%, rgba(255,255,255,.14));
-    }
-    .switch.on::after{ left: 29px; background: #0b0b0b; }
-    a.link{
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: rgba(255,255,255,.25);
-      word-break: break-all;
-    }
-
-    /* Sticky Bar Android */
-    .stickyBar{
-      position: fixed;
-      left: 0; right: 0;
-      bottom: 0;
-      z-index: 999;
-      padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72));
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
-    .stickyInner{
-      max-width: 760px;
-      margin: 0 auto;
-    }
-    .stickyGrid{
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .stickyGrid3{
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    /* batch textarea */
-    .batchTA{
-      min-height: 170px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
-      font-size: 12px;
-      line-height: 1.45;
-    }
-    .pill{
-      display:inline-flex; align-items:center; gap:8px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.18);
-      font-size: 12px;
-      font-weight: 800;
-    }
+    button.primary{background:var(--accent);color:#1a1200;border-color:rgba(255,255,255,.18)}
+    button:active{transform:scale(.99)}
+    .smallRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .out{margin-top:10px;padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;word-break:break-all}
+    .hint{font-size:12px;opacity:.7;line-height:1.5;margin-top:8px}
+    .warn{margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(255,180,60,.14);border:1px solid rgba(255,180,60,.22);font-size:13px;line-height:1.5}
   </style>
 </head>
+<body>
+<div class="wrap">
 
-<body class="p-4 max-w-[760px] mx-auto space-y-4">
-
-  <div class="glass p-5 space-y-2">
-    <div class="flex items-center justify-between gap-2">
-      <div>
-        <div class="text-xs tracking-[.35em] uppercase opacity-70">Admin Android</div>
-        <div class="text-2xl font-extrabold">R-E-M Kad Kahwin</div>
-      </div>
-      <div class="chip text-xs px-3 py-2 rounded-full">Batch + Expired</div>
-    </div>
-    <div class="text-sm text-white/70 leading-relaxed">
-      Isi maklumat → tekan <b>Generate</b> → copy link bagi tetamu.
-      Ada <b>Batch</b> untuk jana ramai tetamu sekali.
-    </div>
-  </div>
-
-  <!-- 1) Base URL + Pakej -->
-  <div class="glass p-5 space-y-4">
-    <div class="text-lg font-extrabold">Setup Asas</div>
-
+  <div class="hero">
     <div>
-      <div class="text-sm text-white/70 mb-1">Base URL invite.html (WAJIB)</div>
-      <input id="fBase" class="input" placeholder="https://.../KadKahwin4/invite.html" />
-      <div class="small mt-1">
-        Contoh: <span class="mono">https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html</span>
-      </div>
+      <p class="h1">ADMIN ANDROID — R-E-M Kad Kahwin</p>
+      <p class="sub">Isi maklumat → <b>Simpan</b> → <b>Generate</b> → <b>Copy</b> link untuk tetamu. (Paling stabil guna link yang ada <b>?d=</b>).</p>
     </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div>
-        <div class="text-sm text-white/70 mb-1">Pakej</div>
-        <select id="fPkg" class="input">
-          <option value="basic">Basic (Versi 1)</option>
-          <option value="vip" selected>VIP (Versi 1–3)</option>
-          <option value="pro">Pro (Versi 1–5)</option>
-        </select>
-      </div>
-
-      <div>
-        <div class="text-sm text-white/70 mb-1">Versi Utama</div>
-        <select id="fVer" class="input">
-          <option value="1">Versi 1</option>
-          <option value="2">Versi 2</option>
-          <option value="3">Versi 3</option>
-          <option value="4">Versi 4</option>
-          <option value="5">Versi 5</option>
-        </select>
-        <div class="small mt-1">Versi akan auto lock ikut pakej.</div>
-      </div>
-
-      <div>
-        <div class="text-sm text-white/70 mb-1">Expired Date</div>
-        <input id="fExpire" class="input" placeholder="2025-12-31 23:59" />
-        <div class="small mt-1">Format: <span class="mono">YYYY-MM-DD HH:mm</span> (Malaysia)</div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div class="rowCard">
-        <div class="font-extrabold">Harga (RM)</div>
-        <input id="fPrice" class="input mt-2" placeholder="79" />
-      </div>
-      <div class="rowCard">
-        <div class="font-extrabold">Tempoh (hari)</div>
-        <input id="fDays" class="input mt-2" placeholder="30" />
-      </div>
-      <div class="rowCard">
-        <div class="font-extrabold">Auto-set expired</div>
-        <button id="btnAutoExpire" class="btn btnOk w-full mt-2">Set Expired = Hari Ini + Tempoh</button>
-        <div class="small mt-2">Berguna kalau jual langganan.</div>
-      </div>
-    </div>
-
-    <div class="flex gap-2 flex-wrap">
-      <span class="pill">✅ Auto Lock bila expired</span>
-      <span class="pill">✅ Copy 1–5</span>
-      <span class="pill">✅ Batch tetamu</span>
-    </div>
+    <div class="chip" id="statusChip">STATUS: OK</div>
   </div>
 
-  <!-- 2) Maklumat Majlis -->
-  <div class="glass p-5 space-y-4">
-    <div class="flex items-center justify-between gap-2">
-      <div class="text-lg font-extrabold">Maklumat Jemputan</div>
-      <button id="btnReset" class="btn btnDanger">Reset</button>
-    </div>
+  <div class="card">
+    <p class="title">Mod Sistem</p>
+    <label>Mod</label>
+    <select id="mode">
+      <option value="stable">STABIL (tetamu wajib link Generate)</option>
+      <option value="sale">JUALAN (copy 1–5 + template WhatsApp)</option>
+      <option value="personal">SENDIRI GUNA (boleh buka invite.html terus)</option>
+    </select>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="grid">
       <div>
-        <div class="text-sm text-white/70 mb-1">Tajuk</div>
-        <input id="fTitle" class="input" placeholder="Walimatul Urus" />
-      </div>
-      <div>
-        <div class="text-sm text-white/70 mb-1">Nama Pengantin</div>
-        <input id="fCouple" class="input" placeholder="Karim & Masni" />
-      </div>
-
-      <div>
-        <div class="text-sm text-white/70 mb-1">Tarikh (dd/mm/yyyy)</div>
-        <input id="fDate" class="input" placeholder="01/12/2025" />
-      </div>
-      <div>
-        <div class="text-sm text-white/70 mb-1">Masa</div>
-        <input id="fTime" class="input" placeholder="9.00am – 2.00pm" />
-      </div>
-
-      <div>
-        <div class="text-sm text-white/70 mb-1">Tempat / Dewan</div>
-        <input id="fVenue" class="input" placeholder="Dewan Serbaguna" />
-      </div>
-      <div>
-        <div class="text-sm text-white/70 mb-1">Alamat</div>
-        <input id="fAddress" class="input" placeholder="Alamat ringkas majlis" />
-      </div>
-    </div>
-
-    <div>
-      <div class="text-sm text-white/70 mb-1">Ayat Jemputan</div>
-      <textarea id="fMessage" class="ta" placeholder="Dengan penuh kesyukuran..."></textarea>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div>
-        <div class="text-sm text-white/70 mb-1">WhatsApp RSVP (60...)</div>
-        <input id="fWA" class="input mono" placeholder="60123456789" />
-      </div>
-      <div>
-        <div class="text-sm text-white/70 mb-1">Google Maps Link</div>
-        <input id="fMaps" class="input" placeholder="https://maps.google.com/..." />
-      </div>
-      <div>
-        <div class="text-sm text-white/70 mb-1">Waze Link (optional)</div>
-        <input id="fWaze" class="input" placeholder="https://waze.com/..." />
-      </div>
-    </div>
-  </div>
-
-  <!-- 3) Tema Premium -->
-  <div class="glass p-5 space-y-4">
-    <div class="text-lg font-extrabold">Tema Premium</div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <div>
-        <div class="text-sm text-white/70 mb-1">Mood</div>
-        <select id="fMood" class="input">
-          <option value="aurora">Aurora Silk</option>
-          <option value="gold">Gold Foil Luxe</option>
-          <option value="galaxy">Starfield Galaxy</option>
-          <option value="bokeh">Bokeh Romance</option>
-          <option value="islamic">Islamic Emerald</option>
-          <option value="marble">Royal Marble</option>
-        </select>
-      </div>
-
-      <div>
-        <div class="text-sm text-white/70 mb-1">Accent Color</div>
-        <input id="fAccent" type="color" class="input" style="height:48px" value="#d4af37" />
-      </div>
-
-      <div class="space-y-2">
-        <div class="toggle">
-          <div>
-            <div class="font-extrabold">Video Background</div>
-            <div class="small">Fail: <span class="mono">assets/bg.mp4</span></div>
-          </div>
-          <div id="swVideo" class="switch"></div>
-        </div>
-        <div class="toggle">
-          <div>
-            <div class="font-extrabold">Photo Background</div>
-            <div class="small">Fail: <span class="mono">assets/p1.jpg..l3.jpg</span></div>
-          </div>
-          <div id="swPhoto" class="switch"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <div>
-        <div class="text-sm text-white/70 mb-1">Photo Template</div>
-        <select id="fPhotoKey" class="input">
-          <option value="p1">Portrait • p1.jpg</option>
-          <option value="p2">Portrait • p2.jpg</option>
-          <option value="p3">Portrait • p3.jpg</option>
-          <option value="l1">Landscape • l1.jpg</option>
-          <option value="l2">Landscape • l2.jpg</option>
-          <option value="l3">Landscape • l3.jpg</option>
+        <label>Video Background</label>
+        <select id="videoOn">
+          <option value="true">ON</option>
+          <option value="false">OFF</option>
         </select>
       </div>
       <div>
-        <div class="text-sm text-white/70 mb-1">Orientation</div>
-        <select id="fOri" class="input">
-          <option value="portrait">Portrait</option>
-          <option value="landscape">Landscape</option>
+        <label>VIP Lock</label>
+        <select id="vipOn">
+          <option value="false">OFF</option>
+          <option value="true">ON</option>
         </select>
       </div>
     </div>
 
-    <div>
-      <div class="text-sm text-white/70 mb-1">Music URL (optional)</div>
-      <input id="fMusic" class="input" placeholder="https://.../music.mp3" />
-    </div>
-  </div>
-
-  <!-- 4) Personalize -->
-  <div class="glass p-5 space-y-4">
-    <div class="text-lg font-extrabold">Personalize Link (Optional)</div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    <div class="grid">
       <div>
-        <div class="text-sm text-white/70 mb-1">From (cth: Keluarga Karim)</div>
-        <input id="fFrom" class="input" placeholder="Keluarga Karim" />
+        <label>Kod VIP (jika VIP ON)</label>
+        <input id="vipCode" placeholder="Contoh: VIP123" />
       </div>
       <div>
-        <div class="text-sm text-white/70 mb-1">Nama Tetamu (auto isi RSVP)</div>
-        <input id="fGuest" class="input" placeholder="Encik Ali" />
+        <label>Expired (optional) format: 2025-12-31 23:59</label>
+        <input id="expiredAt" placeholder="YYYY-MM-DD HH:MM" />
       </div>
     </div>
 
-    <div class="rowCard">
-      <div class="font-extrabold mb-2">Batch Tetamu (1 baris = 1 tetamu)</div>
-      <div class="small mb-2">Format: <span class="mono">Nama Tetamu | From</span> (From optional)</div>
-      <textarea id="batchTA" class="ta batchTA" placeholder="Encik Ali | Keluarga Karim&#10;Puan Siti | Keluarga Masni&#10;Ahmad"></textarea>
+    <label>Notis bawah</label>
+    <input id="notice" placeholder="Notis: Dilarang guna/jual..." />
+  </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
-        <button id="btnMakeBatch" class="btn btnOk">Jana Link Batch</button>
-        <button id="btnCopyBatch" class="btn btnPrimary">Copy Semua Link Batch</button>
+  <div class="card">
+    <p class="title">Maklumat Paparan</p>
+    <div class="grid">
+      <div>
+        <label>Top Title</label>
+        <input id="topTitle" />
       </div>
+      <div>
+        <label>Top Subtitle</label>
+        <input id="topSub" />
+      </div>
+    </div>
 
-      <div class="small mt-3">Output:</div>
-      <textarea id="batchOut" class="ta batchTA" readonly placeholder="Link batch akan keluar di sini..."></textarea>
+    <div class="grid">
+      <div>
+        <label>Badge</label>
+        <input id="badge" />
+      </div>
+      <div>
+        <label>Tajuk</label>
+        <input id="title" />
+      </div>
+    </div>
+
+    <label>Mesej Jemputan</label>
+    <textarea id="message"></textarea>
+
+    <label>Nama Pengantin</label>
+    <input id="couple" />
+
+    <div class="grid">
+      <div>
+        <label>Tarikh (DD/MM/YYYY)</label>
+        <input id="date" placeholder="01/12/2025" />
+      </div>
+      <div>
+        <label>Masa (contoh 9.00am – 2.00pm)</label>
+        <input id="time" placeholder="9.00am – 2.00pm" />
+      </div>
+    </div>
+
+    <label>Tempat / Dewan</label>
+    <input id="venue" />
+
+    <label>Alamat ringkas</label>
+    <input id="address" />
+
+    <div class="grid">
+      <div>
+        <label>Link Google Maps</label>
+        <input id="maps" placeholder="https://maps.google.com/..." />
+      </div>
+      <div>
+        <label>Link WhatsApp RSVP</label>
+        <input id="rsvp" placeholder="https://wa.me/60..." />
+      </div>
     </div>
   </div>
 
-  <!-- 5) OUTPUT -->
-  <div class="glass p-5 space-y-3">
-    <div class="flex items-center justify-between gap-2">
-      <div class="text-lg font-extrabold">Link Utama</div>
-      <div class="chip text-xs px-3 py-2 rounded-full">Auto Generate</div>
+  <div class="card">
+    <p class="title">Generate Link</p>
+
+    <label>Base URL invite.html (auto)</label>
+    <input id="baseUrl" />
+
+    <div class="smallRow" style="margin-top:10px">
+      <button id="btnGenerate" class="primary">🔁 Generate</button>
+      <button id="btnCopy">📋 Copy Link</button>
     </div>
 
-    <div class="rowCard">
-      <div class="small mb-2">Link untuk tetamu:</div>
-      <a id="outLink" class="link" href="#" target="_blank">—</a>
+    <div class="smallRow" style="margin-top:10px">
+      <button id="btnCopy15">📦 Copy 1–5</button>
+      <button id="btnBatch">👥 Batch</button>
     </div>
 
-    <div class="grid grid-cols-2 gap-2">
-      <button id="btnCopy" class="btn btnPrimary">Copy Link</button>
-      <button id="btnPreview" class="btn">Preview</button>
-    </div>
-
-    <div class="rowCard">
-      <div class="font-extrabold mb-2">Copy 1–5 (Versi)</div>
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
-        <button class="btn" data-copyver="1">Copy V1</button>
-        <button class="btn" data-copyver="2">Copy V2</button>
-        <button class="btn" data-copyver="3">Copy V3</button>
-        <button class="btn" data-copyver="4">Copy V4</button>
-        <button class="btn" data-copyver="5">Copy V5</button>
-      </div>
-      <button id="btnCopyAllVers" class="btn btnOk w-full mt-2">Copy Semua (V1–V5)</button>
-      <textarea id="allVersOut" class="ta batchTA mt-2" readonly placeholder="Link V1–V5 akan keluar di sini..."></textarea>
-    </div>
-
-    <div class="small">
-      ⚠️ Expired: Bila masa tamat, jemputan akan auto lock (kena update <b>invite.html patch</b> bawah).
-    </div>
+    <div class="out" id="outLink">—</div>
+    <div class="hint" id="hintText"></div>
+    <div class="warn" id="warn" style="display:none"></div>
   </div>
 
-  <!-- Sticky bar -->
-  <div class="stickyBar">
-    <div class="stickyInner glass p-3 rounded-[22px]">
-      <div class="stickyGrid">
-        <button id="btnSave" class="btn btnPrimary">💾 Simpan</button>
-        <button id="btnRegen" class="btn">🔁 Generate</button>
-      </div>
-      <div class="stickyGrid3 mt-2">
-        <button id="btnQuickCopy" class="btn">📋 Copy</button>
-        <button id="btnQuickV" class="btn">📦 Copy 1–5</button>
-        <button id="btnQuickBatch" class="btn">👥 Batch</button>
-      </div>
-      <div class="small mt-2 opacity-60">Data auto simpan dalam telefon (Android friendly).</div>
+  <div class="card">
+    <p class="title">Backup</p>
+    <div class="smallRow">
+      <button id="btnExport">Export JSON</button>
+      <button id="btnImport">Import JSON</button>
     </div>
+    <input type="file" id="file" accept="application/json" style="display:none" />
+    <div class="hint">Data admin disimpan dalam telefon (localStorage). Untuk tetamu, gunakan link Generate.</div>
   </div>
+
+</div>
+
+<div class="btnRow">
+  <div class="btnInner">
+    <button id="btnSave" class="primary">💾 Simpan</button>
+    <button id="btnOpenInvite">👁️ Buka Invite</button>
+    <button id="btnReset">🧹 Reset</button>
+  </div>
+</div>
 
 <script>
-/* =========================
-   STORAGE
-========================= */
-const KEY = "REM_ADMIN_ANDROID_V3";
+/* ========= CONFIG ========= */
+const STORE_KEY = "KADKAHWIN_DATA_V2";
 
-const DEFAULT = {
-  base:"",
-  pkg:"vip",
-  v:1,
-
-  // jualan/langganan
-  price:"79",
-  days:"30",
-  expire:"", // "YYYY-MM-DD HH:mm"
-
+/* ========= DEFAULT ========= */
+const DEFAULT_DATA = {
+  mode:"stable",
+  videoOn:true,
+  vipOn:false,
+  vipCode:"VIP123",
+  expiredAt:"",
+  topTitle:"Kad Kahwin Digital",
+  topSub:"Jemputan Rasmi",
+  badge:"WEDDING INVITATION",
   title:"Walimatul Urus",
-  couple:"Karim & Masni",
+  message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
+  couple:"Adam & Hawa",
   date:"01/12/2025",
   time:"9.00am – 2.00pm",
   venue:"Dewan Serbaguna",
-  address:"",
-  message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis.",
-
-  wa:"60123456789",
-  maps:"",
-  waze:"",
-  music:"",
-
-  theme:"aurora",
-  accent:"#d4af37",
-  videoOn:false,
-  photoOn:false,
-  photoKey:"p1",
-  ori:"portrait",
-
-  from:"",
-  guest:"",
-  batchText:""
+  address:"Alamat ringkas majlis di sini",
+  maps:"https://maps.google.com/",
+  rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
+  notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik."
 };
 
 const $ = (id)=>document.getElementById(id);
+const FIELDS = ["mode","videoOn","vipOn","vipCode","expiredAt","notice","topTitle","topSub","badge","title","message","couple","date","time","venue","address","maps","rsvp"];
 
-function onlyDigits(s){ return (s||"").toString().replace(/[^\d]/g,""); }
-function safeParse(raw){ try{ return JSON.parse(raw); }catch(e){ return null; } }
-function load(){
-  const raw = localStorage.getItem(KEY);
-  const d = raw ? safeParse(raw) : null;
-  return { ...DEFAULT, ...(d||{}) };
-}
-function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
+function safeParse(raw){ try{return JSON.parse(raw);}catch(e){return null;} }
 
-let DATA = load();
-
-/* =========================
-   SWITCH
-========================= */
-function setSwitch(el, on){
-  el.classList.toggle("on", !!on);
-  el.dataset.on = on ? "1" : "0";
-}
-function getSwitch(el){ return el.dataset.on === "1"; }
-function bindSwitch(id){
-  const el = $(id);
-  el.addEventListener("click", ()=>{
-    const now = !getSwitch(el);
-    setSwitch(el, now);
-    // rule: video ON => photo OFF
-    if(id==="swVideo" && now){
-      setSwitch($("swPhoto"), false);
-    }
-    regenAll();
-  });
+/* base url */
+function calcBaseUrl(){
+  // admin-android.html & invite.html dalam folder sama
+  const u = new URL(location.href);
+  u.pathname = u.pathname.replace(/\/[^\/]*$/, "/invite.html");
+  u.search = ""; u.hash = "";
+  return u.toString();
 }
 
-/* =========================
-   ENCODE
-========================= */
+/* base64url encode json (stable) */
 function b64urlEncode(obj){
   const json = JSON.stringify(obj);
-  const b64 = btoa(unescape(encodeURIComponent(json)));
-  return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  const bytes = encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_,p)=>String.fromCharCode('0x'+p));
+  const b64 = btoa(bytes).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return b64;
 }
 
-/* =========================
-   PKG LOCK
-========================= */
-function pkgAllowed(pkg){
-  const p = (pkg||"vip").toLowerCase();
-  if(p==="basic") return [1];
-  if(p==="vip") return [1,2,3];
-  return [1,2,3,4,5];
+/* load/save */
+function loadData(){
+  const saved = safeParse(localStorage.getItem(STORE_KEY));
+  return Object.assign({}, DEFAULT_DATA, (saved||{}));
 }
-function clampVerByPkg(){
-  const allowed = pkgAllowed($("fPkg").value);
-  const v = parseInt($("fVer").value||"1",10);
-  if(!allowed.includes(v)) $("fVer").value = String(allowed[0]);
-  [...$("fVer").options].forEach(opt=>{
-    const n = parseInt(opt.value,10);
-    opt.disabled = !allowed.includes(n);
-    opt.textContent = "Versi " + n + (opt.disabled ? " (Lock)" : "");
-  });
+function collectData(){
+  const d = {};
+  for(const k of FIELDS){
+    let v = $(k).value;
+    if(k==="videoOn" || k==="vipOn") v = (v==="true");
+    d[k]=v;
+  }
+  return d;
 }
-
-/* =========================
-   EXPIRE HANDLING
-========================= */
-function nowLocalYMDHM(){
-  const d = new Date();
-  const pad = (n)=>String(n).padStart(2,"0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
-function addDaysToNow(days){
-  const d = new Date();
-  d.setDate(d.getDate() + (parseInt(days||"0",10)||0));
-  const pad = (n)=>String(n).padStart(2,"0");
-  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} 23:59`;
+function fillForm(d){
+  for(const k of FIELDS){
+    if(k==="videoOn" || k==="vipOn"){
+      $(k).value = String(!!d[k]);
+    }else{
+      $(k).value = (d[k] ?? "");
+    }
+  }
 }
 
-/* =========================
-   UI
-========================= */
-function fillUI(){
-  $("fBase").value = DATA.base || "";
-  $("fPkg").value = DATA.pkg || "vip";
-  $("fVer").value = String(DATA.v||1);
+function showWarn(msg){
+  const w = $("warn");
+  w.style.display="block";
+  w.textContent = msg;
+}
+function hideWarn(){ $("warn").style.display="none"; $("warn").textContent=""; }
 
-  $("fPrice").value = DATA.price || "";
-  $("fDays").value = DATA.days || "";
-  $("fExpire").value = DATA.expire || "";
-
-  $("fTitle").value = DATA.title || "";
-  $("fCouple").value = DATA.couple || "";
-  $("fDate").value = DATA.date || "";
-  $("fTime").value = DATA.time || "";
-  $("fVenue").value = DATA.venue || "";
-  $("fAddress").value = DATA.address || "";
-  $("fMessage").value = DATA.message || "";
-
-  $("fWA").value = DATA.wa || "";
-  $("fMaps").value = DATA.maps || "";
-  $("fWaze").value = DATA.waze || "";
-  $("fMusic").value = DATA.music || "";
-
-  $("fMood").value = DATA.theme || "aurora";
-  $("fAccent").value = DATA.accent || "#d4af37";
-
-  setSwitch($("swVideo"), !!DATA.videoOn);
-  setSwitch($("swPhoto"), !!DATA.photoOn);
-  $("fPhotoKey").value = DATA.photoKey || "p1";
-  $("fOri").value = DATA.ori || "portrait";
-
-  $("fFrom").value = DATA.from || "";
-  $("fGuest").value = DATA.guest || "";
-
-  $("batchTA").value = DATA.batchText || "";
-
-  clampVerByPkg();
-  regenAll();
+function save(){
+  hideWarn();
+  const d = collectData();
+  localStorage.setItem(STORE_KEY, JSON.stringify(d));
+  $("statusChip").textContent = "STATUS: SAVED";
+  setTimeout(()=>$("statusChip").textContent="STATUS: OK", 900);
+  // auto update base url
+  $("baseUrl").value = calcBaseUrl();
+}
+function resetAll(){
+  if(!confirm("Reset semua data admin?")) return;
+  localStorage.removeItem(STORE_KEY);
+  fillForm(DEFAULT_DATA);
+  $("outLink").textContent="—";
+  $("hintText").textContent="";
+  save();
 }
 
-function readUI(){
-  DATA.base = ($("fBase").value||"").trim();
-  DATA.pkg  = ($("fPkg").value||"vip").toLowerCase();
-  DATA.v    = parseInt($("fVer").value||"1",10) || 1;
-
-  DATA.price = ($("fPrice").value||"").trim();
-  DATA.days  = ($("fDays").value||"").trim();
-  DATA.expire= ($("fExpire").value||"").trim();
-
-  DATA.title = ($("fTitle").value||"").trim();
-  DATA.couple= ($("fCouple").value||"").trim();
-  DATA.date  = ($("fDate").value||"").trim();
-  DATA.time  = ($("fTime").value||"").trim();
-  DATA.venue = ($("fVenue").value||"").trim();
-  DATA.address = ($("fAddress").value||"").trim();
-  DATA.message = ($("fMessage").value||"").trim();
-
-  DATA.wa = onlyDigits($("fWA").value||"");
-  DATA.maps = ($("fMaps").value||"").trim();
-  DATA.waze = ($("fWaze").value||"").trim();
-  DATA.music= ($("fMusic").value||"").trim();
-
-  DATA.theme= ($("fMood").value||"aurora").toLowerCase();
-  DATA.accent=($("fAccent").value||"#d4af37").trim();
-
-  DATA.videoOn = getSwitch($("swVideo"));
-  DATA.photoOn = getSwitch($("swPhoto"));
-  DATA.photoKey= ($("fPhotoKey").value||"p1").trim();
-  DATA.ori     = ($("fOri").value||"portrait").trim();
-
-  DATA.from = ($("fFrom").value||"").trim();
-  DATA.guest= ($("fGuest").value||"").trim();
-
-  DATA.batchText = ($("batchTA").value||"").trim();
-}
-
-/* =========================
-   BUILD LINK
-========================= */
-function buildPayload(){
-  readUI();
-  clampVerByPkg();
-  DATA.v = parseInt($("fVer").value||"1",10) || 1;
-
-  return {
-    title: DATA.title,
-    message: DATA.message,
-    couple: DATA.couple,
-    date: DATA.date,
-    time: DATA.time,
-    venue: DATA.venue,
-    address: DATA.address,
-
-    wa: DATA.wa,
-    maps: DATA.maps,
-    waze: DATA.waze,
-    music: DATA.music,
-
-    pkg: DATA.pkg,
-    theme: DATA.theme,
-    accent: DATA.accent,
-
-    videoOn: !!DATA.videoOn,
-    photoOn: !!DATA.photoOn,
-    photoKey: DATA.photoKey,
-    ori: DATA.ori,
-
-    // jualan/langganan
-    price: DATA.price,
-    days: DATA.days,
-    expire: DATA.expire
-  };
-}
-
-function buildUrl(ver, guestName="", fromName=""){
-  const base = (DATA.base||"").trim();
-  if(!base) return "";
-
-  const payload = buildPayload();
-  const data = b64urlEncode(payload);
+function genLink(guestName="Tetamu"){
+  hideWarn();
+  const base = ($("baseUrl").value||"").trim();
+  if(!base.includes("invite.html")){
+    showWarn("Base URL tidak betul. Pastikan berakhir dengan /invite.html");
+    return "";
+  }
+  const d = collectData();
+  // tetamu tak perlu localStorage → data dalam URL
+  const payload = Object.assign({}, d);
+  const token = b64urlEncode(payload);
 
   const url = new URL(base);
-  url.searchParams.set("data", data);
-  url.searchParams.set("pkg", payload.pkg || "vip");
-  url.searchParams.set("v", String(ver));
-
-  // theme in url (optional)
-  if(payload.theme) url.searchParams.set("m", payload.theme);
-  if(payload.accent && payload.accent.startsWith("#")) url.searchParams.set("a", payload.accent.replace("#",""));
-
-  // video/photo
-  url.searchParams.set("video", payload.videoOn ? "1":"0");
-  url.searchParams.set("photo", payload.photoOn ? "1":"0");
-  if(payload.photoKey) url.searchParams.set("img", payload.photoKey);
-  if(payload.ori) url.searchParams.set("ori", payload.ori);
-
-  // personalize
-  const g = (guestName || DATA.guest || "").trim();
-  const f = (fromName || DATA.from || "").trim();
-  if(g) url.searchParams.set("g", g); else url.searchParams.delete("g");
-  if(f) url.searchParams.set("from", f); else url.searchParams.delete("from");
-
+  url.searchParams.set("to", guestName);
+  url.searchParams.set("d", token);
   return url.toString();
 }
 
-function regenMain(){
-  const link = buildUrl(DATA.v);
-  $("outLink").textContent = link ? link : "— (Isi Base URL dulu)";
-  $("outLink").href = link ? link : "#";
-}
-
-function regenAllVers(){
-  // jana V1-5 (ikut lock? — kita jana semua tapi nanti invite lock ikut pkg)
-  const lines = [];
-  for(let v=1; v<=5; v++){
-    lines.push(`V${v}: ${buildUrl(v)}`);
-  }
-  $("allVersOut").value = lines.join("\n\n");
-}
-
-function regenAll(){
-  readUI();
-  save(DATA);
-  regenMain();
-  regenAllVers();
-}
-
-/* =========================
-   COPY
-========================= */
-async function copyText(text){
+async function copyText(txt){
   try{
-    await navigator.clipboard.writeText(text);
-    return true;
+    await navigator.clipboard.writeText(txt);
+    alert("Disalin.");
   }catch(e){
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    return true;
+    prompt("Copy manual:", txt);
   }
 }
 
-/* =========================
-   BATCH
-========================= */
-function makeBatch(){
-  const raw = ($("batchTA").value||"").trim();
-  if(!raw){
-    $("batchOut").value = "";
-    return;
-  }
-  const rows = raw.split("\n").map(x=>x.trim()).filter(Boolean);
-  const out = [];
-
-  // guna versi utama (pilih)
-  const mainVer = parseInt($("fVer").value||"1",10) || 1;
-
-  rows.forEach((line, idx)=>{
-    const parts = line.split("|").map(x=>x.trim());
-    const name = parts[0] || "";
-    const from = parts[1] || "";
-    const url = buildUrl(mainVer, name, from);
-    if(url) out.push(`${idx+1}. ${name}${from?` (From: ${from})`:""}\n${url}`);
-  });
-
-  $("batchOut").value = out.join("\n\n");
+function waTemplate(link, guest="Tetamu"){
+  return `Assalamualaikum ${guest}.\n\nJemputan Majlis: ${link}\n\nTerima kasih.`;
 }
 
-/* =========================
-   EVENTS
-========================= */
-[
-  "fBase","fPkg","fVer","fExpire","fPrice","fDays",
-  "fTitle","fCouple","fDate","fTime","fVenue","fAddress","fMessage",
-  "fWA","fMaps","fWaze","fMusic",
-  "fMood","fAccent","fPhotoKey","fOri",
-  "fFrom","fGuest"
-].forEach(id=>{
-  $(id).addEventListener("input", regenAll);
-  $(id).addEventListener("change", regenAll);
-});
+/* boot */
+(function init(){
+  $("baseUrl").value = calcBaseUrl();
+  fillForm(loadData());
+  $("statusChip").textContent="STATUS: OK";
+})();
 
-$("fPkg").addEventListener("change", ()=>{
-  clampVerByPkg();
-  regenAll();
-});
+/* actions */
+$("btnSave").onclick = save;
 
-bindSwitch("swVideo");
-bindSwitch("swPhoto");
-
-$("btnAutoExpire").addEventListener("click", ()=>{
-  const days = parseInt($("fDays").value||"0",10) || 0;
-  $("fExpire").value = days>0 ? addDaysToNow(days) : nowLocalYMDHM();
-  regenAll();
-});
-
-$("btnReset").addEventListener("click", ()=>{
-  if(!confirm("Reset semua data admin?")) return;
-  localStorage.removeItem(KEY);
-  DATA = load();
-  fillUI();
-});
-
-$("btnSave").addEventListener("click", ()=>{
-  readUI(); save(DATA);
-  const old = $("btnSave").textContent;
-  $("btnSave").textContent = "✅ Saved";
-  setTimeout(()=> $("btnSave").textContent = old, 900);
-});
-
-$("btnRegen").addEventListener("click", regenAll);
-
-$("btnCopy").addEventListener("click", async ()=>{
-  const link = $("outLink").href;
-  if(!link || link==="#"){ alert("Isi Base URL dulu."); return; }
-  await copyText(link);
-  $("btnCopy").textContent = "Copied!";
-  setTimeout(()=> $("btnCopy").textContent = "Copy Link", 900);
-});
-
-$("btnPreview").addEventListener("click", ()=>{
-  const link = $("outLink").href;
-  if(!link || link==="#"){ alert("Isi Base URL dulu."); return; }
+$("btnOpenInvite").onclick = ()=>{
+  // buka invite guna link generate (tetamu)
+  const link = genLink("Tetamu");
+  if(!link) return;
   window.open(link, "_blank");
-});
+};
 
-document.querySelectorAll("button[data-copyver]").forEach(btn=>{
-  btn.addEventListener("click", async ()=>{
-    const ver = parseInt(btn.getAttribute("data-copyver"),10);
-    const url = buildUrl(ver);
-    await copyText(url);
-    const old = btn.textContent;
-    btn.textContent = "✅";
-    setTimeout(()=> btn.textContent = old, 700);
-  });
-});
+$("btnReset").onclick = resetAll;
 
-$("btnCopyAllVers").addEventListener("click", async ()=>{
-  regenAllVers();
-  const txt = $("allVersOut").value || "";
-  if(!txt){ alert("Isi Base URL dulu."); return; }
-  await copyText(txt);
-  $("btnCopyAllVers").textContent = "✅ Copied";
-  setTimeout(()=> $("btnCopyAllVers").textContent = "Copy Semua (V1–V5)", 900);
-});
+$("btnGenerate").onclick = ()=>{
+  const link = genLink("Tetamu");
+  if(!link) return;
+  $("outLink").textContent = link;
 
-$("btnMakeBatch").addEventListener("click", ()=>{
-  makeBatch();
-  const old = $("btnMakeBatch").textContent;
-  $("btnMakeBatch").textContent = "✅ Siap";
-  setTimeout(()=> $("btnMakeBatch").textContent = old, 900);
-});
+  const mode = $("mode").value;
+  if(mode==="sale"){
+    $("hintText").textContent = "Jualan: guna Copy 1–5 atau Batch untuk jana ramai tetamu. Link ini stabil (data dalam URL).";
+  }else if(mode==="personal"){
+    $("hintText").textContent = "Sendiri guna: anda juga boleh buka invite.html tanpa ?d= (ambil data localStorage). Tetamu tetap disaran guna link Generate.";
+  }else{
+    $("hintText").textContent = "Stabil: hantar link ini kepada tetamu (ada ?d=).";
+  }
+};
 
-$("btnCopyBatch").addEventListener("click", async ()=>{
-  makeBatch();
-  const txt = $("batchOut").value || "";
-  if(!txt){ alert("Isi batch dulu."); return; }
-  await copyText(txt);
-  $("btnCopyBatch").textContent = "✅ Copied";
-  setTimeout(()=> $("btnCopyBatch").textContent = "Copy Semua Link Batch", 900);
-});
+$("btnCopy").onclick = async ()=>{
+  const link = $("outLink").textContent.trim();
+  if(!link || link==="—") return alert("Tekan Generate dulu.");
+  await copyText(link);
+};
 
-// Quick buttons (sticky)
-$("btnQuickCopy").addEventListener("click", ()=> $("btnCopy").click());
-$("btnQuickV").addEventListener("click", ()=> $("btnCopyAllVers").click());
-$("btnQuickBatch").addEventListener("click", ()=>{
-  // scroll to batch
-  document.getElementById("batchTA").scrollIntoView({behavior:"smooth", block:"start"});
-});
+$("btnCopy15").onclick = async ()=>{
+  const baseNames = ["Tetamu 1","Tetamu 2","Tetamu 3","Tetamu 4","Tetamu 5"];
+  let out = "";
+  for(const n of baseNames){
+    const link = genLink(n);
+    out += `${n}: ${link}\n\n`;
+  }
+  await copyText(out.trim());
+};
 
-// Boot
-fillUI();
+$("btnBatch").onclick = async ()=>{
+  const raw = prompt("Masukkan nama tetamu (satu nama setiap baris). Contoh:\nAli\nSiti\nPak Long", "Ali\nSiti\nPak Long");
+  if(!raw) return;
+  const names = raw.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,120);
+  let out = "";
+  for(const n of names){
+    const link = genLink(n);
+    out += `${n}: ${link}\n`;
+  }
+  await copyText(out.trim());
+};
+
+$("btnExport").onclick = ()=>{
+  const d = collectData();
+  const blob = new Blob([JSON.stringify(d,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kadkahwin-data.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+};
+
+$("btnImport").onclick = ()=> $("file").click();
+
+$("file").addEventListener("change", async (e)=>{
+  const f = e.target.files?.[0]; if(!f) return;
+  const txt = await f.text();
+  const data = safeParse(txt);
+  if(!data){ alert("Fail JSON tidak sah."); return; }
+  const merged = Object.assign({}, DEFAULT_DATA, data);
+  fillForm(merged);
+  save();
+});
 </script>
-
 </body>
 </html>
