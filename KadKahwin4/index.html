@@ -1,165 +1,441 @@
-<!DOCTYPE html>
-<html lang="ms">
+<!doctype html>
+<html lang="ms" data-theme="floral">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Kad Kahwin Digital</title>
   <style>
     :root{
-      --bg:#07080b; --glass: rgba(255,255,255,.10); --stroke: rgba(255,255,255,.14);
-      --text:#fff; --muted: rgba(255,255,255,.78);
+      --bg:#f7f3ef;
+      --card:#ffffffcc;
+      --text:#222;
+      --muted:#666;
+      --accent:#d59aa5;
+      --line:#d8c37a;
+      --shadow: 0 20px 60px rgba(0,0,0,.18);
+      --radius: 28px;
     }
-    *{box-sizing:border-box; margin:0; padding:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;}
-    html,body{height:100%; background:var(--bg); color:var(--text);}
-    body{overflow:hidden;}
 
+    /* THEMES */
+    [data-theme="floral"]{
+      --bg:#f7f3ef; --card:#ffffffcc; --text:#222; --muted:#666; --accent:#d59aa5; --line:#d8c37a;
+    }
+    [data-theme="gold"]{
+      --bg:#0f0f12; --card:rgba(255,255,255,.10); --text:#fff; --muted:rgba(255,255,255,.75); --accent:#e7c96e; --line:#e7c96e;
+    }
+    [data-theme="midnight"]{
+      --bg:#05060a; --card:rgba(255,255,255,.08); --text:#fff; --muted:rgba(255,255,255,.72); --accent:#9bb8ff; --line:#4c5cff;
+    }
+    [data-theme="emerald"]{
+      --bg:#07110d; --card:rgba(255,255,255,.09); --text:#eafff5; --muted:rgba(234,255,245,.75); --accent:#53f0b7; --line:#2ad39c;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow:hidden;
+    }
+
+    /* optional video bg */
     #bgVideo{
-      position:fixed; inset:0; width:100%; height:100%;
-      object-fit:cover; z-index:-3; background:#000;
-      transform: translateZ(0);
+      position:fixed; inset:0;
+      width:100%; height:100%;
+      object-fit:cover;
+      z-index:-3;
+      background:#000;
+      display:none; /* default OFF */
     }
     .overlay{
-      position:fixed; inset:0; z-index:-2;
-      background: radial-gradient(1200px 600px at 50% 20%, rgba(0,0,0,.35), rgba(0,0,0,.70));
-    }
-    .wrap{
-      min-height:100%;
-      display:flex; align-items:center; justify-content:center;
-      padding:24px;
-    }
-    .card{
-      width:min(520px,100%);
-      background:var(--glass);
-      border:1px solid var(--stroke);
-      border-radius:22px;
-      padding:22px 18px;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 22px 70px rgba(0,0,0,.40);
-      text-align:center;
-    }
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:7px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.16);
-      color: rgba(255,255,255,.86);
-      font-size:12px; letter-spacing:.12em; text-transform:uppercase;
-      margin-bottom:12px;
-    }
-    h1{font-size:30px; line-height:1.1; margin-bottom:10px;}
-    p{color:var(--muted); line-height:1.5; margin-bottom:16px;}
-    .btn{
-      width:100%;
-      padding:14px 16px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background:#fff; color:#111;
-      font-weight:800; font-size:16px;
-      cursor:pointer;
-      transition: transform .12s ease, opacity .12s ease;
-    }
-    .btn:active{transform:scale(.99);}
-    .btn2{
-      margin-top:10px;
-      width:100%;
-      padding:12px 16px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.10);
-      color:#fff;
-      font-weight:750; font-size:14px;
-      cursor:pointer;
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.35);
+      z-index:-2;
+      display:none; /* auto ON bila video ON */
     }
 
-    /* Tap to play layer */
+    .topBar{
+      position:fixed;
+      top:12px; left:12px; right:12px;
+      display:flex; gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      z-index:5;
+      pointer-events:none;
+    }
+    .pill{
+      pointer-events:auto;
+      display:flex; gap:8px; align-items:center;
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.25);
+      color:#fff;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+    }
+    .pill select, .pill button{
+      font:inherit;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:#fff;
+    }
+    .pill button{ cursor:pointer; padding:2px 6px; }
+
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 26px;
+    }
+    .card{
+      width:min(520px, 100%);
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 22px;
+      text-align:center;
+      position: relative;
+    }
+    .bismillah{
+      font-size: 22px;
+      margin-bottom: 12px;
+      color: var(--accent);
+      line-height:1.35;
+    }
+    .tag{
+      letter-spacing: .22em;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .title{
+      font-size: 16px;
+      opacity:.9;
+      margin-bottom:4px;
+    }
+    .couple{
+      font-size: 36px;
+      line-height: 1.1;
+      margin: 0 0 14px;
+      font-weight:800;
+    }
+    .desc{
+      margin:0 0 18px;
+      color: var(--muted);
+      line-height:1.55;
+      font-size: 15px;
+    }
+    .openBtn{
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #fff;
+      color: #000;
+      font-weight: 850;
+      cursor: pointer;
+      min-height: 48px;
+    }
+    [data-theme="gold"] .openBtn,
+    [data-theme="midnight"] .openBtn,
+    [data-theme="emerald"] .openBtn{
+      background: var(--accent);
+      color:#07110d;
+    }
+
+    /* TAP-TO-PLAY (video autoplay fix) */
     #tapToPlay{
-      position:fixed; inset:0; z-index:50;
-      background: rgba(0,0,0,.75);
+      position:fixed; inset:0;
+      z-index:50;
       display:none;
-      align-items:center; justify-content:center;
+      align-items:center;
+      justify-content:center;
       padding:22px;
+      background: rgba(0,0,0,.55);
     }
     .tapCard{
       width:min(520px,100%);
-      background: rgba(255,255,255,.09);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:22px;
-      padding:18px;
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.20);
+      border-radius: 18px;
+      padding: 18px;
+      color:#fff;
       text-align:center;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-    .tapTitle{font-weight:900; font-size:18px; margin-bottom:6px;}
-    .tapDesc{color: rgba(255,255,255,.82); font-size:13px; line-height:1.5; margin-bottom:12px;}
+    .tapTitle{ font-weight:800; margin-bottom:6px; }
+    .tapDesc{ opacity:.85; font-size:13px; line-height:1.5; margin-bottom:12px; }
     .tapBtn{
       width:100%;
-      padding:13px 14px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.16);
+      min-height:48px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.14);
       color:#fff;
-      font-weight:850;
+      font-weight:800;
       cursor:pointer;
+    }
+
+    /* DOOR OVERLAY */
+    .doorOverlay{
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      display: none;
+      overflow: hidden;
+    }
+    .doorOverlay.active{ display:block; }
+    .doorCenter{
+      position:absolute; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:3;
+    }
+    .doorText{
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.38);
+      border: 1px solid rgba(255,255,255,.18);
+      color:#fff;
+      font-weight:800;
+    }
+
+    /* SLIDE DOOR */
+    .slideDoor{
+      position:absolute; top:0; bottom:0;
+      width:50%;
+      background:
+        radial-gradient(1200px 700px at 50% 30%, rgba(255,255,255,.16), rgba(0,0,0,.75)),
+        linear-gradient(135deg, rgba(255,255,255,.10), rgba(0,0,0,.65));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index:2;
+    }
+    .slideLeft{ left:0; transform:translateX(0); }
+    .slideRight{ right:0; transform:translateX(0); }
+
+    .doorOverlay.open[data-door="slide"] .slideLeft{ animation: doorLeft .85s ease forwards; }
+    .doorOverlay.open[data-door="slide"] .slideRight{ animation: doorRight .85s ease forwards; }
+    .doorOverlay.open .doorCenter{ animation: fadeOut .55s ease .35s forwards; }
+
+    @keyframes doorLeft{ to{ transform: translateX(-105%); } }
+    @keyframes doorRight{ to{ transform: translateX(105%); } }
+    @keyframes fadeOut{ to{ opacity:0; } }
+
+    /* 3D HINGE DOOR */
+    .hingeWrap{
+      position:absolute; inset:0;
+      perspective: 1000px;
+      z-index:2;
+      display:none;
+    }
+    .hingeDoor{
+      position:absolute; top:0; bottom:0;
+      width:50%;
+      background:
+        radial-gradient(1200px 700px at 50% 30%, rgba(255,255,255,.18), rgba(0,0,0,.78)),
+        linear-gradient(135deg, rgba(255,255,255,.10), rgba(0,0,0,.70));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transform: rotateY(0);
+    }
+    .hingeLeft{
+      left:0;
+      transform-origin: left center;
+    }
+    .hingeRight{
+      right:0;
+      transform-origin: right center;
+    }
+
+    .doorOverlay[data-door="hinge"] .hingeWrap{ display:block; }
+    .doorOverlay.open[data-door="hinge"] .hingeLeft{ animation: hingeLeft .9s ease forwards; }
+    .doorOverlay.open[data-door="hinge"] .hingeRight{ animation: hingeRight .9s ease forwards; }
+
+    @keyframes hingeLeft{ to{ transform: rotateY(78deg) translateX(-10%); } }
+    @keyframes hingeRight{ to{ transform: rotateY(-78deg) translateX(10%); } }
+
+    @media (prefers-reduced-motion: reduce){
+      .doorOverlay.open[data-door="slide"] .slideLeft,
+      .doorOverlay.open[data-door="slide"] .slideRight,
+      .doorOverlay.open[data-door="hinge"] .hingeLeft,
+      .doorOverlay.open[data-door="hinge"] .hingeRight,
+      .doorOverlay.open .doorCenter { animation:none; }
     }
   </style>
 </head>
 <body>
 
+  <!-- OPTIONAL VIDEO BG (default OFF) -->
   <video id="bgVideo" muted loop playsinline preload="auto">
     <source src="assets/bg.mp4" type="video/mp4" />
   </video>
-  <div class="overlay"></div>
+  <div class="overlay" id="overlay"></div>
 
-  <div id="tapToPlay">
-    <div class="tapCard">
-      <div class="tapTitle">Ketik untuk mula</div>
-      <div class="tapDesc">Chrome/Android kadang-kadang perlukan 1 sentuhan untuk mulakan video.</div>
-      <button class="tapBtn" id="tapBtn">Mulakan</button>
+  <!-- TOP CONTROLS -->
+  <div class="topBar">
+    <div class="pill">
+      <span style="opacity:.9;font-weight:800;">Tema</span>
+      <select id="themeSelect" aria-label="Tema">
+        <option value="floral">Floral</option>
+        <option value="gold">Gold</option>
+        <option value="midnight">Midnight</option>
+        <option value="emerald">Emerald</option>
+      </select>
+    </div>
+
+    <div class="pill">
+      <span style="opacity:.9;font-weight:800;">Pintu</span>
+      <select id="doorSelect" aria-label="Jenis pintu">
+        <option value="slide">Slide</option>
+        <option value="hinge">3D Lipat</option>
+      </select>
+      <button id="toggleVideo" type="button" title="Video ON/OFF">🎬</button>
     </div>
   </div>
 
+  <!-- INTRO -->
   <div class="wrap">
     <div class="card">
-      <div class="badge">Kad Kahwin Digital</div>
-      <h1>Walimatul Urus</h1>
-      <p>Tekan untuk buka jemputan. Jika tetamu dapat link khas, terus buka link itu.</p>
-
-      <button class="btn" onclick="location.href='invite.html'">Lihat Jemputan</button>
-      <button class="btn2" onclick="location.href='admin-android.html'">Admin (Android)</button>
+      <div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+      <div class="tag">WALIMATUL URUS</div>
+      <div class="title">Jemputan Rasmi</div>
+      <h1 class="couple">Ahmad &amp; Aisyah</h1>
+      <p class="desc">Dengan penuh kesyukuran, kami menjemput anda hadir bagi memeriahkan majlis perkahwinan kami.</p>
+      <button id="openInviteBtn" class="openBtn">Buka Warkah Jemputan</button>
     </div>
   </div>
 
-  <script>
-    const v = document.getElementById("bgVideo");
-    const tapLayer = document.getElementById("tapToPlay");
-    const tapBtn = document.getElementById("tapBtn");
+  <!-- TAP TO PLAY (video autoplay fix) -->
+  <div id="tapToPlay">
+    <div class="tapCard">
+      <div class="tapTitle">Ketik untuk mula video</div>
+      <div class="tapDesc">Sesetengah Android/Chrome sekat autoplay. Tekan butang di bawah sekali.</div>
+      <button class="tapBtn" id="tapBtn">Mulakan Video</button>
+    </div>
+  </div>
 
-    async function tryPlay(){
-      try{
-        v.muted = true;
-        await v.play();
-        tapLayer.style.display = "none";
-        return true;
-      }catch(e){
-        tapLayer.style.display = "flex";
-        return false;
-      }
+  <!-- DOOR OVERLAY -->
+  <div id="doorOverlay" class="doorOverlay" data-door="slide" aria-hidden="true">
+    <!-- slide doors -->
+    <div class="slideDoor slideLeft"></div>
+    <div class="slideDoor slideRight"></div>
+
+    <!-- 3D hinge doors -->
+    <div class="hingeWrap">
+      <div class="hingeDoor hingeLeft"></div>
+      <div class="hingeDoor hingeRight"></div>
+    </div>
+
+    <div class="doorCenter"><div class="doorText">Membuka Jemputan…</div></div>
+  </div>
+
+<script>
+  // ===== SETTINGS KEYS =====
+  const THEME_KEY = "REM_THEME_V1";
+  const DOOR_KEY  = "REM_DOOR_V1";
+  const VIDEO_KEY = "REM_VIDEO_V1";
+
+  // ===== ELEMENTS =====
+  const htmlEl = document.documentElement;
+  const themeSelect = document.getElementById("themeSelect");
+  const doorSelect  = document.getElementById("doorSelect");
+  const doorOverlay = document.getElementById("doorOverlay");
+  const openBtn = document.getElementById("openInviteBtn");
+
+  const video = document.getElementById("bgVideo");
+  const overlay = document.getElementById("overlay");
+  const tapLayer = document.getElementById("tapToPlay");
+  const tapBtn = document.getElementById("tapBtn");
+  const toggleVideoBtn = document.getElementById("toggleVideo");
+
+  // ===== THEME =====
+  function setTheme(v){
+    htmlEl.setAttribute("data-theme", v);
+    localStorage.setItem(THEME_KEY, v);
+  }
+  const savedTheme = localStorage.getItem(THEME_KEY) || "floral";
+  setTheme(savedTheme);
+  themeSelect.value = savedTheme;
+  themeSelect.addEventListener("change", e => setTheme(e.target.value));
+
+  // ===== DOOR MODE =====
+  function setDoorMode(v){
+    doorOverlay.setAttribute("data-door", v);
+    localStorage.setItem(DOOR_KEY, v);
+  }
+  const savedDoor = localStorage.getItem(DOOR_KEY) || "slide";
+  setDoorMode(savedDoor);
+  doorSelect.value = savedDoor;
+  doorSelect.addEventListener("change", e => setDoorMode(e.target.value));
+
+  // ===== VIDEO TOGGLE (OPTIONAL) =====
+  function applyVideo(on){
+    localStorage.setItem(VIDEO_KEY, on ? "1" : "0");
+    if(on){
+      video.style.display = "block";
+      overlay.style.display = "block";
+      tryPlayVideo(); // try autoplay
+    }else{
+      tapLayer.style.display = "none";
+      video.pause?.();
+      video.style.display = "none";
+      overlay.style.display = "none";
     }
+  }
 
-    window.addEventListener("load", () => { tryPlay(); });
-    tapBtn.addEventListener("click", async () => {
-      const ok = await tryPlay();
-      if(!ok) alert("Browser masih sekat autoplay. Cuba refresh dan ketik sekali lagi.");
-    });
+  async function tryPlayVideo(){
+    try{
+      video.muted = true;
+      await video.play();
+      tapLayer.style.display = "none";
+      return true;
+    }catch(e){
+      tapLayer.style.display = "flex";
+      return false;
+    }
+  }
 
-    document.addEventListener("visibilitychange", async () => {
-      try{
-        if(document.hidden) v.pause();
-        else await v.play();
-      }catch(e){}
-    });
-  </script>
+  const videoSaved = (localStorage.getItem(VIDEO_KEY) || "0") === "1";
+  applyVideo(videoSaved);
+
+  toggleVideoBtn.addEventListener("click", () => {
+    const now = (localStorage.getItem(VIDEO_KEY) || "0") === "1";
+    applyVideo(!now);
+  });
+
+  tapBtn.addEventListener("click", async () => {
+    const ok = await tryPlayVideo();
+    if(!ok) alert("Autoplay masih disekat. Cuba refresh dan ketik sekali lagi.");
+  });
+
+  document.addEventListener("visibilitychange", async () => {
+    if(video.style.display !== "block") return;
+    if(document.hidden){
+      try{ video.pause(); }catch(e){}
+    }else{
+      try{ await video.play(); }catch(e){}
+    }
+  });
+
+  // ===== OPEN DOOR THEN GO =====
+  function openDoorThenGo(){
+    doorOverlay.classList.add("active");
+    requestAnimationFrame(()=> doorOverlay.classList.add("open"));
+    setTimeout(()=> { location.href = "invite.html"; }, 920);
+  }
+  openBtn.addEventListener("click", openDoorThenGo);
+</script>
 </body>
 </html>
