@@ -4,7 +4,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
 <title>Jemputan Perkahwinan</title>
-
 <style>
   :root{
     --bg:#050505;
@@ -13,11 +12,7 @@
     --txt:#f5f7fb;
     --muted:rgba(245,247,251,.78);
     --shadow:0 28px 70px rgba(0,0,0,.65);
-
-    /* Theme defaults (Gold) */
-    --a1:#d6b46c;
-    --a2:#f3e2b8;
-    --a3:#b7c6ff;
+    --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
@@ -32,28 +27,24 @@
 
   /* Background video */
   video.bg{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
+    position:fixed; inset:0;
+    width:100%; height:100%;
     object-fit:cover;
     z-index:-4;
     display:none;
   }
   .overlay{
-    position:fixed;
-    inset:0;
-    z-index:-3;
-    background: radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%),
-                linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.88));
+    position:fixed; inset:0; z-index:-3;
+    background:
+      radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%),
+      linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.88));
   }
 
-  /* Door intro */
+  /* Tap intro (stabil untuk audio/video Android) */
   .tap{
     position:fixed; inset:0; z-index:50;
     display:flex; align-items:center; justify-content:center;
-    background:#000; color:#fff;
-    text-align:center; padding:18px;
+    background:#000; color:#fff; text-align:center; padding:18px;
   }
   .tap .box{
     width:min(440px, 92vw);
@@ -75,8 +66,11 @@
     background: linear-gradient(135deg, var(--a1), var(--a2));
     color:#111;
     font-size:15px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
   }
 
+  /* Door */
   .door{
     position:fixed; top:0; height:100%; width:50%;
     background: linear-gradient(135deg, rgba(30,30,30,.95), rgba(0,0,0,.98));
@@ -91,25 +85,16 @@
   body.open .tap{display:none}
 
   /* Layout */
-  .wrap{
-    max-width:860px;
-    margin:0 auto;
-    padding:18px 14px 80px;
-  }
+  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 110px}
   .topbar{
-    position:sticky;
-    top:10px;
-    z-index:10;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
+    position:sticky; top:10px; z-index:10;
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
     margin-top:10px;
+    flex-wrap:wrap;
   }
   .pill{
     display:inline-flex; align-items:center; gap:8px;
-    padding:10px 12px;
-    border-radius:999px;
+    padding:10px 12px; border-radius:999px;
     border:1px solid var(--line);
     background: rgba(0,0,0,.25);
     backdrop-filter: blur(10px);
@@ -119,21 +104,14 @@
   }
   .pill strong{color:var(--txt)}
   .pill button, .pill select{
-    border:0;
-    background:transparent;
-    color:var(--txt);
-    font-weight:900;
-    cursor:pointer;
-    font-size:12px;
-  }
-  .pill select{
-    padding:0;
+    border:0; background:transparent;
+    color:var(--txt); font-weight:900;
+    cursor:pointer; font-size:12px;
     outline:none;
-    -webkit-appearance:none;
-    appearance:none;
+    -webkit-tap-highlight-color:transparent;
   }
+  .pill select{appearance:none; -webkit-appearance:none}
 
-  /* Cards */
   .card{
     margin-top:14px;
     border-radius:26px;
@@ -143,16 +121,10 @@
     backdrop-filter: blur(12px);
     overflow:hidden;
   }
-  .hero{
-    padding:22px 18px 16px;
-    text-align:center;
-  }
+  .hero{padding:22px 18px 16px; text-align:center}
   .badge{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    padding:10px 12px;
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:10px; padding:10px 12px;
     border-radius:999px;
     border:1px solid rgba(255,255,255,.14);
     background: rgba(0,0,0,.18);
@@ -161,275 +133,222 @@
     font-size:12px;
   }
   h1{
-    margin:14px 0 8px;
-    font-size:34px;
-    letter-spacing:.4px;
-    color: transparent;
+    margin:14px 0 8px; font-size:34px; letter-spacing:.4px;
+    color:transparent;
     background: linear-gradient(135deg, var(--a1), var(--a2));
-    -webkit-background-clip:text;
-    background-clip:text;
+    -webkit-background-clip:text; background-clip:text;
   }
-  .names{
-    margin-top:8px;
-    font-size:20px;
-    line-height:1.35;
-    color: rgba(245,247,251,.92);
-  }
-  .subtitle{
-    margin-top:10px;
-    color: rgba(245,247,251,.78);
-    font-size:14px;
-    line-height:1.45;
-  }
+  .names{margin-top:8px; font-size:20px; line-height:1.35; color: rgba(245,247,251,.92)}
+  .subtitle{margin-top:10px; color: rgba(245,247,251,.78); font-size:14px; line-height:1.45}
   .divider{
-    width:72px;
-    height:2px;
-    margin:18px auto;
-    border-radius:3px;
+    width:72px; height:2px; margin:18px auto; border-radius:3px;
     background: linear-gradient(to right, var(--a1), var(--a2), var(--a3));
-    opacity:.95;
   }
 
   .grid{
-    padding:14px 16px 18px;
-    border-top:1px solid var(--line);
-    display:grid;
-    grid-template-columns:1fr;
-    gap:10px;
+    padding:14px 16px 18px; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:1fr; gap:10px;
   }
-  @media(min-width:720px){
-    .grid{grid-template-columns:1fr 1fr}
-  }
+  @media(min-width:720px){ .grid{grid-template-columns:1fr 1fr} }
   .item{
     border-radius:18px;
     border:1px solid rgba(255,255,255,.12);
     background: rgba(0,0,0,.20);
-    padding:12px 12px;
+    padding:12px;
   }
   .k{font-size:12px;color:rgba(245,247,251,.70); margin-bottom:4px}
   .v{font-size:15px;line-height:1.45;color:rgba(245,247,251,.93)}
-  .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+
+  .countWrap{padding:14px 16px 18px; border-top:1px solid var(--line)}
+  .countTitle{text-align:center; color:rgba(245,247,251,.82); font-size:13px; letter-spacing:1.5px; margin-bottom:10px}
+  .count{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+  @media(max-width:520px){ .count{grid-template-columns:repeat(2,1fr);} }
+  .box{
+    border-radius:18px; border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.20);
+    padding:12px 10px; text-align:center;
+  }
+  .num{font-size:22px; font-weight:900}
+  .lab{margin-top:4px; font-size:11px; color:rgba(245,247,251,.65); letter-spacing:1.2px}
 
   .actions{
-    padding:14px 16px 18px;
-    border-top:1px solid var(--line);
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+    padding:14px 16px 18px; border-top:1px solid var(--line);
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
   }
   @media(max-width:520px){ .actions{grid-template-columns:1fr;} }
   .btn{
-    border:0;
-    border-radius:18px;
+    border:0; border-radius:18px;
     padding:13px 14px;
-    font-weight:900;
-    font-size:15px;
+    font-weight:900; font-size:15px;
     cursor:pointer;
-    user-select:none;
-    -webkit-tap-highlight-color:transparent;
     background: rgba(0,0,0,.22);
     color:var(--txt);
     border:1px solid rgba(255,255,255,.12);
     display:flex; align-items:center; justify-content:center; gap:10px;
+    -webkit-tap-highlight-color:transparent;
   }
-  .btn.primary{
-    background: linear-gradient(135deg, var(--a1), var(--a2));
-    color:#111;
-    border:0;
-  }
-  .btn:active{transform: translateY(1px);}
+  .btn.primary{background: linear-gradient(135deg, var(--a1), var(--a2)); color:#111; border:0}
+  .btn:active{transform: translateY(1px)}
 
-  /* Countdown */
-  .countWrap{
-    padding:14px 16px 18px;
-    border-top:1px solid var(--line);
-  }
-  .countTitle{
-    text-align:center;
-    color:rgba(245,247,251,.82);
-    font-size:13px;
-    letter-spacing:1.5px;
-    margin-bottom:10px;
-  }
-  .count{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-  }
-  @media(max-width:520px){ .count{grid-template-columns:repeat(2,1fr);} }
-  .box{
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.20);
-    padding:12px 10px;
-    text-align:center;
-  }
-  .num{
-    font-size:22px;
-    font-weight:900;
-    color:rgba(245,247,251,.95);
-  }
-  .lab{
-    margin-top:4px;
-    font-size:11px;
-    color:rgba(245,247,251,.65);
-    letter-spacing:1.2px;
-  }
-
-  /* Gallery */
-  .gallery{
-    padding:14px 16px 18px;
-    border-top:1px solid var(--line);
-  }
-  .gallery h3{
-    margin:0 0 10px;
-    text-align:center;
-    font-size:14px;
-    letter-spacing:1.2px;
-    color:rgba(245,247,251,.82);
-  }
-  .ggrid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-  @media(min-width:720px){ .ggrid{grid-template-columns:repeat(4,1fr);} }
+  .gallery{padding:14px 16px 18px; border-top:1px solid var(--line)}
+  .gallery h3{margin:0 0 10px; text-align:center; font-size:14px; letter-spacing:1.2px; color:rgba(245,247,251,.82)}
+  .ggrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media(min-width:720px){ .ggrid{grid-template-columns:repeat(4,1fr)} }
   .gimg{
-    width:100%;
-    aspect-ratio: 1 / 1;
-    border-radius:18px;
-    object-fit:cover;
-    border:1px solid rgba(255,255,255,.12);
+    width:100%; aspect-ratio:1/1; border-radius:18px;
+    object-fit:cover; border:1px solid rgba(255,255,255,.12);
     background: rgba(255,255,255,.06);
     cursor:pointer;
   }
 
-  /* Lightbox */
-  .lightbox{
-    position:fixed; inset:0; z-index:60;
-    background: rgba(0,0,0,.78);
-    display:none; align-items:center; justify-content:center;
-    padding:16px;
-  }
+  .lightbox{position:fixed; inset:0; z-index:60; background: rgba(0,0,0,.78); display:none; align-items:center; justify-content:center; padding:16px}
   .lightbox img{
-    width:min(92vw, 720px);
-    max-height:82vh;
-    object-fit:contain;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.14);
+    width:min(92vw,720px); max-height:82vh; object-fit:contain;
+    border-radius:18px; border:1px solid rgba(255,255,255,.14);
     box-shadow: 0 30px 80px rgba(0,0,0,.65);
     background:#000;
   }
 
-  /* Floating */
   .fab{
-    position:fixed;
-    right:14px;
-    bottom:16px;
-    z-index:30;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
+    position:fixed; right:14px; bottom:16px; z-index:30;
+    display:flex; flex-direction:column; gap:10px;
   }
   .fab button{
-    width:54px; height:54px;
-    border-radius:18px;
+    width:54px; height:54px; border-radius:18px;
     border:1px solid rgba(255,255,255,.14);
     background: rgba(0,0,0,.28);
     color:var(--txt);
     backdrop-filter: blur(10px);
     box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    font-size:18px;
-    cursor:pointer;
+    font-size:18px; cursor:pointer;
     -webkit-tap-highlight-color:transparent;
   }
+
   .foot{
     margin-top:14px;
     text-align:center;
     color:rgba(245,247,251,.62);
     font-size:12px;
     line-height:1.5;
+    user-select:none;
+  }
+
+  /* Editor panel */
+  .editor{
+    position:fixed; inset:0; z-index:70;
+    background: rgba(0,0,0,.70);
+    display:none;
+    padding:16px;
+    overflow:auto;
+  }
+  .editor .panel{
+    width:min(680px, 100%);
+    margin:0 auto;
+    border-radius:22px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(15,18,26,.78);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 24px 80px rgba(0,0,0,.65);
+    padding:14px;
+  }
+  .editor h2{margin:6px 6px 10px; font-size:16px}
+  .frow{display:grid; grid-template-columns:1fr; gap:10px; padding:6px}
+  @media(min-width:720px){ .frow.two{grid-template-columns:1fr 1fr} }
+  .editor label{font-size:12px; color:rgba(245,247,251,.72); display:block; margin:0 0 6px}
+  .editor input, .editor textarea, .editor select{
+    width:100%;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.28);
+    color:var(--txt);
+    padding:12px 12px;
+    font-size:14px;
+    outline:none;
+  }
+  .editor textarea{min-height:78px; resize:vertical}
+  .editor .bar{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:6px;
+  }
+  @media(max-width:520px){ .editor .bar{grid-template-columns:1fr;} }
+  .editor .bar button{
+    border:0; border-radius:16px;
+    padding:12px 12px;
+    font-weight:900;
+    cursor:pointer;
+    font-size:14px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .editor .bar .save{background: linear-gradient(135deg, var(--a1), var(--a2)); color:#111}
+  .editor .bar .close{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
+  .note{padding:0 6px 10px; color:rgba(245,247,251,.72); font-size:12px; line-height:1.45}
+  .danger{
+    background: rgba(255,255,255,.10);
+    color: var(--txt);
+    border:1px solid rgba(255,255,255,.14);
   }
 </style>
 </head>
 
 <body>
 
-<!-- TAP INTRO (required for Android autoplay audio/video reliability) -->
 <div class="tap" id="tap">
   <div class="box">
     <h2>JEMPUTAN PERKAHWINAN</h2>
-    <p>Tekan butang di bawah untuk buka kad. (Ini juga aktifkan muzik & video dengan stabil di Android.)</p>
+    <p>Tekan untuk buka kad. (Ini juga aktifkan audio/video dengan stabil di Android.)</p>
     <button onclick="openInvite()">BUKA KAD</button>
   </div>
 </div>
 
-<!-- Doors -->
 <div class="door left"></div>
 <div class="door right"></div>
 
-<!-- Background Video -->
 <video class="bg" id="bgVideo" autoplay muted loop playsinline preload="metadata"></video>
 <div class="overlay"></div>
 
-<!-- Audio -->
 <audio id="bgm" loop preload="auto"></audio>
 
 <div class="wrap">
   <div class="topbar">
-    <div class="pill">
-      🕒 <strong id="clock">--:--</strong>
-      <span style="opacity:.6">•</span>
-      <span id="dayText"></span>
-    </div>
+    <div class="pill">🕒 <strong id="clock">--:--</strong> <span style="opacity:.6">•</span> <span id="dayText"></span></div>
 
-    <div class="pill">
-      🎨
-      <select id="themeSelect" aria-label="Tema">
+    <div class="pill">🎨
+      <select id="themeSelect">
         <option value="gold">Gold</option>
         <option value="rose">Rose Gold</option>
         <option value="white">White Elegant</option>
       </select>
     </div>
 
-    <div class="pill">
-      🔊 <button id="muteBtn" type="button">MUTE</button>
-    </div>
+    <div class="pill">🔊 <button id="muteBtn" type="button">MUTE</button></div>
+
+    <!-- ✅ EDIT button ready -->
+    <div class="pill">✏️ <button id="editBtn" type="button">EDIT</button></div>
   </div>
 
-  <!-- HERO -->
   <div class="card">
     <div class="hero">
       <div class="badge" id="badge">WALIMATULURUS</div>
       <h1 id="title">Jemputan Perkahwinan</h1>
+
       <div class="names">
         <div id="groom">Nama Pengantin Lelaki</div>
         <div style="opacity:.85;margin:6px 0">♥</div>
         <div id="bride">Nama Pengantin Perempuan</div>
       </div>
+
       <div class="divider"></div>
+
       <div class="subtitle" id="inviteText">
         Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.
       </div>
     </div>
 
-    <!-- DETAILS -->
     <div class="grid">
-      <div class="item">
-        <div class="k">📅 Tarikh</div>
-        <div class="v" id="eventDateText">31 Disember 2025</div>
-      </div>
-      <div class="item">
-        <div class="k">⏰ Masa</div>
-        <div class="v" id="eventTimeText">9:00 AM – 2:00 PM</div>
-      </div>
-      <div class="item" style="grid-column:1/-1">
-        <div class="k">📍 Lokasi</div>
-        <div class="v" id="venueText">Dewan Contoh, Pulau Pinang</div>
-      </div>
+      <div class="item"><div class="k">📅 Tarikh</div><div class="v" id="eventDateText">31 Disember 2025</div></div>
+      <div class="item"><div class="k">⏰ Masa</div><div class="v" id="eventTimeText">9:00 AM – 2:00 PM</div></div>
+      <div class="item" style="grid-column:1/-1"><div class="k">📍 Lokasi</div><div class="v" id="venueText">Dewan Contoh, Pulau Pinang</div></div>
     </div>
 
-    <!-- COUNTDOWN -->
     <div class="countWrap">
       <div class="countTitle">COUNTDOWN MAJLIS</div>
       <div class="count">
@@ -440,7 +359,6 @@
       </div>
     </div>
 
-    <!-- ACTIONS -->
     <div class="actions">
       <button class="btn primary" id="btnRSVP">💬 RSVP WhatsApp</button>
       <button class="btn" id="btnMaps">📍 Buka Maps</button>
@@ -448,145 +366,200 @@
       <button class="btn" id="btnShare">📤 Share / Copy Link</button>
     </div>
 
-    <!-- GALLERY -->
     <div class="gallery">
       <h3>GALERI KAMI</h3>
       <div class="ggrid" id="galleryGrid"></div>
     </div>
   </div>
 
-  <div class="foot">
+  <div class="foot" id="footerTap">
     Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.<br>
     © Premium Wedding Card
   </div>
 </div>
 
-<!-- Lightbox -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <img id="lightboxImg" alt="Gambar" />
 </div>
 
-<!-- Floating buttons -->
 <div class="fab">
   <button title="Scroll atas" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
   <button title="Scroll bawah" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">⬇️</button>
 </div>
 
+<!-- EDITOR -->
+<div class="editor" id="editor">
+  <div class="panel">
+    <h2>Mode Edit (Isi macam borang)</h2>
+    <div class="note">
+      ✅ Tekan <b>Simpan</b> → kad terus berubah. Data tersimpan dalam telefon (device).<br>
+      ⚠️ Jika nak guna untuk pembeli lain, paling mudah: buka EDIT, tukar info, kemudian "Save As" fail lain / upload ke folder lain.
+    </div>
+
+    <div class="frow two">
+      <div><label>Nama Pengantin Lelaki</label><input id="fGroom" /></div>
+      <div><label>Nama Pengantin Perempuan</label><input id="fBride" /></div>
+    </div>
+
+    <div class="frow">
+      <div><label>Tajuk</label><input id="fTitle" /></div>
+      <div><label>Ayat Jemputan</label><textarea id="fInviteText"></textarea></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>Tarikh (paparan)</label><input id="fDateText" placeholder="31 Disember 2025" /></div>
+      <div><label>Masa (paparan)</label><input id="fTimeText" placeholder="9:00 AM – 2:00 PM" /></div>
+    </div>
+
+    <div class="frow">
+      <div><label>Lokasi (paparan)</label><textarea id="fVenueText"></textarea></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>Start ISO (untuk countdown)</label><input id="fStartISO" placeholder="2025-12-31T09:00:00+08:00" /></div>
+      <div><label>End ISO (untuk calendar)</label><input id="fEndISO" placeholder="2025-12-31T14:00:00+08:00" /></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>No WhatsApp (format 6012xxxxxxx)</label><input id="fPhone" placeholder="60123456789" /></div>
+      <div><label>Teks RSVP</label><input id="fRsvpText" /></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>Maps Link (optional)</label><input id="fMapsLink" placeholder="https://maps.app.goo.gl/xxxx" /></div>
+      <div><label>Maps Search (jika tiada link)</label><input id="fMapsQuery" placeholder="Dewan Seri Mutiara, Pulau Pinang" /></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>Video MP4 URL (optional)</label><input id="fVideo" placeholder="https://.../video.mp4" /></div>
+      <div><label>Audio MP3 URL (optional)</label><input id="fAudio" placeholder="https://.../audio.mp3" /></div>
+    </div>
+
+    <div class="frow">
+      <div>
+        <label>Galeri (1 link per baris)</label>
+        <textarea id="fGallery" placeholder="https://.../1.jpg&#10;https://.../2.jpg"></textarea>
+      </div>
+    </div>
+
+    <div class="bar">
+      <button class="close" onclick="closeEditor()">Tutup</button>
+      <button class="danger" onclick="resetData()">Reset Data</button>
+      <button class="save" onclick="saveEditor()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* =========================
-   ✅ CONFIG (EDIT DI SINI SAHAJA)
-   ========================= */
-const CONFIG = {
-  badge: "WALIMATULURUS",
-  title: "Jemputan Perkahwinan",
-  groom: "Nama Pengantin Lelaki",
-  bride: "Nama Pengantin Perempuan",
-  inviteText: "Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
+  const STORAGE_KEY = "KK_PREMIUM_EDITOR_V1";
 
-  // Paparan
-  eventDateText: "31 Disember 2025",
-  eventTimeText: "9:00 AM – 2:00 PM",
-  venueText: "Dewan Contoh, Pulau Pinang",
+  const DEFAULTS = {
+    badge: "WALIMATULURUS",
+    title: "Jemputan Perkahwinan",
+    groom: "Nama Pengantin Lelaki",
+    bride: "Nama Pengantin Perempuan",
+    inviteText: "Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
+    eventDateText: "31 Disember 2025",
+    eventTimeText: "9:00 AM – 2:00 PM",
+    venueText: "Dewan Contoh, Pulau Pinang",
+    eventStartISO: "2025-12-31T09:00:00+08:00",
+    eventEndISO: "2025-12-31T14:00:00+08:00",
+    rsvpPhone: "60123456789",
+    rsvpText: "Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+    mapsLink: "",
+    mapsQuery: "Dewan Contoh, Pulau Pinang",
+    videoUrl: "",
+    audioUrl: "",
+    gallery: [
+      "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=70",
+      "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=900&q=70"
+    ]
+  };
 
-  // ✅ Tarikh sebenar untuk countdown & calendar (format ISO) — PENTING
-  // Contoh: 2025-12-31T09:00:00+08:00  (Malaysia +08:00)
-  eventStartISO: "2025-12-31T09:00:00+08:00",
-  eventEndISO:   "2025-12-31T14:00:00+08:00",
+  const $ = (id)=>document.getElementById(id);
 
-  // ✅ WhatsApp RSVP (tukar nombor)
-  rsvpPhone: "60123456789",
-  rsvpText: "Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+  let state = loadState();
+  let muted = false;
+  let cdTimer = null;
 
-  // ✅ Maps: boleh letak link Google Maps sebenar atau hanya alamat text (akan search)
-  mapsLink: "", // contoh: "https://maps.app.goo.gl/xxxxx" (kalau ada)
-  mapsQuery: "Dewan Contoh, Pulau Pinang",
-
-  // ✅ Media (OPTIONAL)
-  videoUrl: "VIDEO_URL.mp4",   // letak link mp4 direct, atau kosong "" untuk OFF
-  audioUrl: "AUDIO_URL.mp3",   // letak link mp3 direct, atau kosong "" untuk OFF
-
-  // ✅ Galeri (guna link gambar)
-  gallery: [
-    "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
-    "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
-    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=70",
-    "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=900&q=70"
-  ]
-};
-
-/* =========================
-   Helpers
-   ========================= */
-const $ = (id)=>document.getElementById(id);
-
-function setTheme(theme){
-  // gold / rose / white
-  if(theme === "rose"){
-    document.documentElement.style.setProperty("--a1", "#e2a7b5");
-    document.documentElement.style.setProperty("--a2", "#ffe2ea");
-    document.documentElement.style.setProperty("--a3", "#f1c6c6");
-  }else if(theme === "white"){
-    document.documentElement.style.setProperty("--bg", "#f6f7fb");
-    document.documentElement.style.setProperty("--glass", "rgba(255,255,255,.72)");
-    document.documentElement.style.setProperty("--line", "rgba(0,0,0,.10)");
-    document.documentElement.style.setProperty("--txt", "#0b0f14");
-    document.documentElement.style.setProperty("--muted", "rgba(11,15,20,.72)");
-    document.documentElement.style.setProperty("--a1", "#111827");
-    document.documentElement.style.setProperty("--a2", "#c7ccd8");
-    document.documentElement.style.setProperty("--a3", "#8fb3ff");
-  }else{
-    // default gold
-    document.documentElement.style.setProperty("--bg", "#050505");
-    document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
-    document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
-    document.documentElement.style.setProperty("--txt", "#f5f7fb");
-    document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
-    document.documentElement.style.setProperty("--a1", "#d6b46c");
-    document.documentElement.style.setProperty("--a2", "#f3e2b8");
-    document.documentElement.style.setProperty("--a3", "#b7c6ff");
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return {...DEFAULTS};
+      const obj = JSON.parse(raw);
+      return {...DEFAULTS, ...obj};
+    }catch(e){
+      return {...DEFAULTS};
+    }
   }
-  localStorage.setItem("kk_theme", theme);
-}
+  function persist(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
 
-function tickClock(){
-  const d = new Date();
-  const time = new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(d);
-  const day = new Intl.DateTimeFormat(undefined,{weekday:"long", year:"numeric", month:"short", day:"numeric"}).format(d);
-  $("clock").textContent = time;
-  $("dayText").textContent = day;
-}
+  function setTheme(theme){
+    if(theme === "rose"){
+      document.documentElement.style.setProperty("--a1", "#e2a7b5");
+      document.documentElement.style.setProperty("--a2", "#ffe2ea");
+      document.documentElement.style.setProperty("--a3", "#f1c6c6");
+      document.documentElement.style.setProperty("--bg", "#050505");
+      document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
+      document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
+      document.documentElement.style.setProperty("--txt", "#f5f7fb");
+      document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
+    }else if(theme === "white"){
+      document.documentElement.style.setProperty("--bg", "#f6f7fb");
+      document.documentElement.style.setProperty("--glass", "rgba(255,255,255,.72)");
+      document.documentElement.style.setProperty("--line", "rgba(0,0,0,.10)");
+      document.documentElement.style.setProperty("--txt", "#0b0f14");
+      document.documentElement.style.setProperty("--muted", "rgba(11,15,20,.72)");
+      document.documentElement.style.setProperty("--a1", "#111827");
+      document.documentElement.style.setProperty("--a2", "#c7ccd8");
+      document.documentElement.style.setProperty("--a3", "#8fb3ff");
+    }else{
+      document.documentElement.style.setProperty("--bg", "#050505");
+      document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
+      document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
+      document.documentElement.style.setProperty("--txt", "#f5f7fb");
+      document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
+      document.documentElement.style.setProperty("--a1", "#d6b46c");
+      document.documentElement.style.setProperty("--a2", "#f3e2b8");
+      document.documentElement.style.setProperty("--a3", "#b7c6ff");
+    }
+    localStorage.setItem("kk_theme", theme);
+  }
 
-function buildWhatsAppLink(){
-  const text = encodeURIComponent(CONFIG.rsvpText + " (" + CONFIG.groom + " & " + CONFIG.bride + ")");
-  return "https://wa.me/" + CONFIG.rsvpPhone + "?text=" + text;
-}
+  function tickClock(){
+    const d = new Date();
+    $("clock").textContent = new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(d);
+    $("dayText").textContent = new Intl.DateTimeFormat(undefined,{weekday:"long", year:"numeric", month:"short", day:"numeric"}).format(d);
+  }
 
-function buildMapsLink(){
-  if(CONFIG.mapsLink && CONFIG.mapsLink.trim()) return CONFIG.mapsLink.trim();
-  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.mapsQuery || CONFIG.venueText);
-}
+  function buildWhatsAppLink(){
+    const text = encodeURIComponent(state.rsvpText + " (" + state.groom + " & " + state.bride + ")");
+    return "https://wa.me/" + state.rsvpPhone + "?text=" + text;
+  }
+  function buildMapsLink(){
+    if(state.mapsLink && state.mapsLink.trim()) return state.mapsLink.trim();
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
+  }
 
-function toICSDate(dt){
-  // Convert to YYYYMMDDTHHMMSSZ in UTC
-  const d = new Date(dt);
-  const pad = (n)=>String(n).padStart(2,"0");
-  return d.getUTCFullYear() +
-    pad(d.getUTCMonth()+1) +
-    pad(d.getUTCDate()) + "T" +
-    pad(d.getUTCHours()) +
-    pad(d.getUTCMinutes()) +
-    pad(d.getUTCSeconds()) + "Z";
-}
+  function toICSDate(dt){
+    const d = new Date(dt);
+    const pad = (n)=>String(n).padStart(2,"0");
+    return d.getUTCFullYear() + pad(d.getUTCMonth()+1) + pad(d.getUTCDate()) + "T" +
+           pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + "Z";
+  }
+  function downloadICS(){
+    const dtStart = toICSDate(state.eventStartISO);
+    const dtEnd = toICSDate(state.eventEndISO);
+    const uid = "kk-" + Math.random().toString(16).slice(2) + "@invite";
+    const summary = `${state.groom} & ${state.bride} - Majlis Perkahwinan`;
+    const location = (state.venueText || "").replace(/\n/g," ");
+    const desc = (state.inviteText || "").replace(/\n/g," ");
 
-function downloadICS(){
-  const dtStart = toICSDate(CONFIG.eventStartISO);
-  const dtEnd = toICSDate(CONFIG.eventEndISO);
-  const uid = "kk-" + Math.random().toString(16).slice(2) + "@invite";
-  const summary = `${CONFIG.groom} & ${CONFIG.bride} - Majlis Perkahwinan`;
-  const location = (CONFIG.venueText || "").replace(/\n/g," ");
-  const desc = (CONFIG.inviteText || "").replace(/\n/g," ");
-
-  const ics =
+    const ics =
 `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//KadKahwin//MY//EN
@@ -603,174 +576,224 @@ DESCRIPTION:${desc}
 END:VEVENT
 END:VCALENDAR`;
 
-  const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "Majlis-Perkahwinan.ics";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function safeCopy(text){
-  return navigator.clipboard?.writeText(text).catch(() => {
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    document.execCommand("copy");
-    ta.remove();
-  });
-}
-
-function shareLink(){
-  const link = location.href;
-  if(navigator.share){
-    navigator.share({ title: document.title, url: link }).catch(()=>{});
-  }else{
-    safeCopy(link).then(()=>alert("Link sudah copy."));
-  }
-}
-
-function setupGallery(){
-  const grid = $("galleryGrid");
-  grid.innerHTML = "";
-  (CONFIG.gallery || []).forEach((src, idx)=>{
-    const img = document.createElement("img");
-    img.className = "gimg";
-    img.loading = "lazy";
-    img.src = src;
-    img.alt = "Gambar " + (idx+1);
-    img.addEventListener("click", ()=>openLightbox(src));
-    grid.appendChild(img);
-  });
-}
-function openLightbox(src){
-  $("lightboxImg").src = src;
-  $("lightbox").style.display = "flex";
-}
-function closeLightbox(){
-  $("lightbox").style.display = "none";
-}
-
-/* Countdown */
-function startCountdown(){
-  const target = new Date(CONFIG.eventStartISO).getTime();
-  const upd = ()=>{
-    const now = Date.now();
-    let diff = target - now;
-    if(diff < 0) diff = 0;
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-    $("cdD").textContent = String(d).padStart(2,"0");
-    $("cdH").textContent = String(h).padStart(2,"0");
-    $("cdM").textContent = String(m).padStart(2,"0");
-    $("cdS").textContent = String(s).padStart(2,"0");
-  };
-  upd();
-  setInterval(upd, 1000);
-}
-
-/* Media */
-let muted = false;
-function setVideo(url){
-  const v = $("bgVideo");
-  if(!url || url.trim()==="" || url.includes("VIDEO_URL")){
-    v.style.display = "none";
-    v.removeAttribute("src");
-    v.innerHTML = "";
-    return;
-  }
-  v.style.display = "block";
-  v.innerHTML = `<source src="${url}" type="video/mp4">`;
-  v.muted = true;
-  v.playsInline = true;
-
-  // try play when opened
-  const tryPlay = ()=>v.play().catch(()=>{});
-  v.addEventListener("loadedmetadata", tryPlay, {once:true});
-}
-function setAudio(url){
-  const a = $("bgm");
-  if(!url || url.trim()==="" || url.includes("AUDIO_URL")){
-    a.removeAttribute("src");
-    a.innerHTML = "";
-    return;
-  }
-  a.innerHTML = `<source src="${url}" type="audio/mpeg">`;
-}
-
-function toggleMute(){
-  const a = $("bgm");
-  muted = !muted;
-  a.muted = muted;
-  $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
-}
-
-/* Open invite */
-function openInvite(){
-  document.body.classList.add("open");
-
-  // Start media on user gesture (Android-friendly)
-  const v = $("bgVideo");
-  const a = $("bgm");
-  if(v && v.style.display !== "none") v.play().catch(()=>{});
-  if(a && a.querySelector("source")){
-    a.muted = muted;
-    a.play().catch(()=>{});
+    const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "Majlis-Perkahwinan.ics";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
   }
 
-  // allow scroll after open
-  document.body.style.overflowX = "hidden";
-  document.body.style.overflowY = "auto";
-}
-window.openInvite = openInvite;
-window.closeLightbox = closeLightbox;
+  function safeCopy(text){
+    return navigator.clipboard?.writeText(text).catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand("copy"); ta.remove();
+    });
+  }
+  function shareLink(){
+    const link = location.href;
+    if(navigator.share){
+      navigator.share({ title: document.title, url: link }).catch(()=>{});
+    }else{
+      safeCopy(link).then(()=>alert("Link sudah copy."));
+    }
+  }
 
-/* Init page */
-(function init(){
-  // Fill content
-  $("badge").textContent = CONFIG.badge;
-  $("title").textContent = CONFIG.title;
-  $("groom").textContent = CONFIG.groom;
-  $("bride").textContent = CONFIG.bride;
-  $("inviteText").textContent = CONFIG.inviteText;
-  $("eventDateText").textContent = CONFIG.eventDateText;
-  $("eventTimeText").textContent = CONFIG.eventTimeText;
-  $("venueText").textContent = CONFIG.venueText;
+  function setupGallery(){
+    const grid = $("galleryGrid");
+    grid.innerHTML = "";
+    (state.gallery || []).forEach((src, idx)=>{
+      const img = document.createElement("img");
+      img.className = "gimg";
+      img.loading = "lazy";
+      img.src = src;
+      img.alt = "Gambar " + (idx+1);
+      img.addEventListener("click", ()=>openLightbox(src));
+      grid.appendChild(img);
+    });
+  }
+  function openLightbox(src){
+    $("lightboxImg").src = src;
+    $("lightbox").style.display = "flex";
+  }
+  function closeLightbox(){
+    $("lightbox").style.display = "none";
+  }
+  window.closeLightbox = closeLightbox;
 
-  // Theme
-  const savedTheme = localStorage.getItem("kk_theme") || "gold";
-  $("themeSelect").value = savedTheme;
-  setTheme(savedTheme);
-  $("themeSelect").addEventListener("change", (e)=>setTheme(e.target.value));
+  function setVideo(url){
+    const v = $("bgVideo");
+    if(!url || !url.trim()){
+      v.style.display = "none";
+      v.innerHTML = "";
+      return;
+    }
+    v.style.display = "block";
+    v.innerHTML = `<source src="${url}" type="video/mp4">`;
+    v.muted = true; v.playsInline = true;
+    v.addEventListener("loadedmetadata", ()=>v.play().catch(()=>{}), {once:true});
+  }
+  function setAudio(url){
+    const a = $("bgm");
+    if(!url || !url.trim()){
+      a.innerHTML = "";
+      return;
+    }
+    a.innerHTML = `<source src="${url}" type="audio/mpeg">`;
+  }
 
-  // Buttons
-  $("btnRSVP").addEventListener("click", ()=>window.open(buildWhatsAppLink(), "_blank"));
-  $("btnMaps").addEventListener("click", ()=>window.open(buildMapsLink(), "_blank"));
-  $("btnCal").addEventListener("click", downloadICS);
-  $("btnShare").addEventListener("click", shareLink);
-  $("muteBtn").addEventListener("click", toggleMute);
+  function toggleMute(){
+    muted = !muted;
+    $("bgm").muted = muted;
+    $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
+  }
 
-  // Media
-  setVideo(CONFIG.videoUrl);
-  setAudio(CONFIG.audioUrl);
+  function applyState(){
+    $("badge").textContent = state.badge;
+    $("title").textContent = state.title;
+    $("groom").textContent = state.groom;
+    $("bride").textContent = state.bride;
+    $("inviteText").textContent = state.inviteText;
+    $("eventDateText").textContent = state.eventDateText;
+    $("eventTimeText").textContent = state.eventTimeText;
+    $("venueText").textContent = state.venueText;
 
-  // Gallery + countdown + clock
-  setupGallery();
-  startCountdown();
-  tickClock();
-  setInterval(tickClock, 10000);
+    $("btnRSVP").onclick = ()=>window.open(buildWhatsAppLink(), "_blank");
+    $("btnMaps").onclick = ()=>window.open(buildMapsLink(), "_blank");
+    $("btnCal").onclick = downloadICS;
+    $("btnShare").onclick = shareLink;
 
-  // Start in locked scroll (nice intro)
-  document.body.style.overflowY = "hidden";
-})();
+    setVideo(state.videoUrl);
+    setAudio(state.audioUrl);
+    setupGallery();
+
+    // Countdown
+    if(cdTimer) clearInterval(cdTimer);
+    const target = new Date(state.eventStartISO).getTime();
+    const upd = ()=>{
+      const now = Date.now();
+      let diff = target - now;
+      if(!isFinite(diff)) diff = 0;
+      if(diff < 0) diff = 0;
+      const d = Math.floor(diff/(1000*60*60*24));
+      const h = Math.floor((diff/(1000*60*60))%24);
+      const m = Math.floor((diff/(1000*60))%60);
+      const s = Math.floor((diff/1000)%60);
+      $("cdD").textContent = String(d).padStart(2,"0");
+      $("cdH").textContent = String(h).padStart(2,"0");
+      $("cdM").textContent = String(m).padStart(2,"0");
+      $("cdS").textContent = String(s).padStart(2,"0");
+    };
+    upd();
+    cdTimer = setInterval(upd, 1000);
+  }
+
+  /* Open invite (after tap) */
+  function openInvite(){
+    document.body.classList.add("open");
+    document.body.style.overflowY = "auto";
+    const v = $("bgVideo");
+    const a = $("bgm");
+    if(v && v.style.display !== "none") v.play().catch(()=>{});
+    if(a && a.querySelector("source")) { a.muted = muted; a.play().catch(()=>{}); }
+  }
+  window.openInvite = openInvite;
+
+  /* Editor */
+  function openEditor(){
+    $("fGroom").value = state.groom;
+    $("fBride").value = state.bride;
+    $("fTitle").value = state.title;
+    $("fInviteText").value = state.inviteText;
+    $("fDateText").value = state.eventDateText;
+    $("fTimeText").value = state.eventTimeText;
+    $("fVenueText").value = state.venueText;
+    $("fStartISO").value = state.eventStartISO;
+    $("fEndISO").value = state.eventEndISO;
+    $("fPhone").value = state.rsvpPhone;
+    $("fRsvpText").value = state.rsvpText;
+    $("fMapsLink").value = state.mapsLink;
+    $("fMapsQuery").value = state.mapsQuery;
+    $("fVideo").value = state.videoUrl;
+    $("fAudio").value = state.audioUrl;
+    $("fGallery").value = (state.gallery || []).join("\n");
+    $("editor").style.display = "block";
+  }
+  function closeEditor(){ $("editor").style.display = "none"; }
+  window.closeEditor = closeEditor;
+
+  function saveEditor(){
+    const startISO = $("fStartISO").value.trim();
+    const endISO = $("fEndISO").value.trim();
+    if(isNaN(new Date(startISO).getTime())){
+      alert("Start ISO tak sah. Contoh: 2025-12-31T09:00:00+08:00");
+      return;
+    }
+    if(isNaN(new Date(endISO).getTime())){
+      alert("End ISO tak sah. Contoh: 2025-12-31T14:00:00+08:00");
+      return;
+    }
+
+    state.groom = $("fGroom").value.trim() || state.groom;
+    state.bride = $("fBride").value.trim() || state.bride;
+    state.title = $("fTitle").value.trim() || state.title;
+    state.inviteText = $("fInviteText").value.trim() || state.inviteText;
+    state.eventDateText = $("fDateText").value.trim() || state.eventDateText;
+    state.eventTimeText = $("fTimeText").value.trim() || state.eventTimeText;
+    state.venueText = $("fVenueText").value.trim() || state.venueText;
+    state.eventStartISO = startISO;
+    state.eventEndISO = endISO;
+
+    state.rsvpPhone = $("fPhone").value.trim() || state.rsvpPhone;
+    state.rsvpText = $("fRsvpText").value.trim() || state.rsvpText;
+
+    state.mapsLink = $("fMapsLink").value.trim();
+    state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
+
+    state.videoUrl = $("fVideo").value.trim();
+    state.audioUrl = $("fAudio").value.trim();
+
+    const gLines = $("fGallery").value.split("\n").map(s=>s.trim()).filter(Boolean);
+    if(gLines.length) state.gallery = gLines;
+
+    persist();
+    applyState();
+    alert("✅ Disimpan. Kad sudah dikemaskini.");
+    closeEditor();
+  }
+  window.saveEditor = saveEditor;
+
+  function resetData(){
+    if(confirm("Reset semua data ke default?")){
+      localStorage.removeItem(STORAGE_KEY);
+      state = loadState();
+      applyState();
+      alert("✅ Reset siap.");
+      closeEditor();
+    }
+  }
+  window.resetData = resetData;
+
+  /* Init */
+  (function init(){
+    const savedTheme = localStorage.getItem("kk_theme") || "gold";
+    $("themeSelect").value = savedTheme;
+    setTheme(savedTheme);
+    $("themeSelect").addEventListener("change", (e)=>setTheme(e.target.value));
+    $("muteBtn").addEventListener("click", toggleMute);
+
+    // ✅ Edit button
+    $("editBtn").addEventListener("click", openEditor);
+
+    applyState();
+    tickClock();
+    setInterval(tickClock, 10000);
+
+    // keep scroll locked until open
+    document.body.style.overflowY = "hidden";
+  })();
 </script>
 
 </body>
