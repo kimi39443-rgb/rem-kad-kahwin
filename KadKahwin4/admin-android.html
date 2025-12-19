@@ -1,210 +1,253 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Android - R-E-M Kad Kahwin</title>
   <style>
-    :root{--bg:#0b0b0e;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--txt:rgba(255,255,255,.92);--muted:rgba(255,255,255,.70);--btn:rgba(255,255,255,.12);--accent:rgba(255,205,88,.95)}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:#fff;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{max-width:760px;margin:0 auto;padding:14px 12px 130px}
-    .hero{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .h1{font-size:18px;font-weight:950;margin:0}
-    .sub{margin:6px 0 0;opacity:.8;line-height:1.5;font-size:13px}
-    .chip{padding:10px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid var(--line);font-weight:900}
-    .card{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
-    .title{font-weight:950;font-size:16px;margin:0 0 10px}
-    label{display:block;font-size:12px;opacity:.75;margin:10px 2px 6px}
-    input,select,textarea{
-      width:100%;padding:12px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);color:#fff;outline:none;font-weight:700
+    :root{
+      --bg:#0b0b0c;
+      --glass: rgba(255,255,255,.09);
+      --stroke: rgba(255,255,255,.14);
+      --text:#f2f2f2;
+      --muted: rgba(255,255,255,.76);
+      --accent:#e7d5a1;
+      --accent2:#9ab2ff;
+      --danger:#a34d4d;
+      --shadow: 0 24px 70px rgba(0,0,0,.45);
+      --radius: 18px;
     }
-    textarea{min-height:90px;resize:vertical}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    .btnRow{position:fixed;left:0;right:0;bottom:0;padding:10px 10px 18px;background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0));display:flex;justify-content:center}
-    .btnInner{width:min(760px,100%);display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-    button{
-      padding:14px 12px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
-      background:var(--btn);color:#fff;font-weight:950;font-size:15px
+    *{ box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    html,body{ height:100%; margin:0; background:var(--bg); color:var(--text); }
+    .wrap{ max-width: 820px; margin:0 auto; padding: 18px 14px 30px; }
+
+    .header{
+      background: var(--glass);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    button.primary{background:var(--accent);color:#1a1200;border-color:rgba(255,255,255,.18)}
-    button:active{transform:scale(.99)}
-    .smallRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .out{margin-top:10px;padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;word-break:break-all}
-    .hint{font-size:12px;opacity:.7;line-height:1.5;margin-top:8px}
-    .warn{margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(255,180,60,.14);border:1px solid rgba(255,180,60,.22);font-size:13px;line-height:1.5}
+    .headerTop{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .hTitle{ margin:0; font-size:20px; letter-spacing:.2px; }
+    .hSub{ margin:6px 0 0; color:var(--muted); font-size:13px; line-height:1.45; }
+
+    .pillRow{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    .pill{
+      padding:10px 12px; border-radius:999px;
+      background: rgba(255,255,255,.10);
+      border:1px solid var(--stroke);
+      font-weight:800; font-size:12px;
+    }
+
+    .grid{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+    .card{
+      background: var(--glass);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      padding: 14px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .card h3{ margin:0 0 10px; font-size:16px; }
+    label{ display:block; font-size:12px; opacity:.78; margin:12px 0 6px; }
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.30);
+      color: var(--text);
+      outline: none;
+      font-size: 14px;
+    }
+    textarea{ min-height: 90px; resize: vertical; }
+    .row2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width:520px){ .row2{ grid-template-columns: 1fr; } }
+
+    .btnRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .btn{
+      padding: 14px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.12);
+      color: var(--text);
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .btnPrimary{
+      border:none;
+      background: linear-gradient(90deg, rgba(231,213,161,.95), rgba(154,178,255,.92));
+      color:#131313;
+    }
+    .btnDanger{
+      background: rgba(163,77,77,.25);
+      border:1px solid rgba(163,77,77,.45);
+    }
+    .out{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.35);
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .mini{
+      font-size: 12px;
+      opacity:.8;
+      margin-top:8px;
+      line-height:1.4;
+    }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <div class="hero">
-    <div>
-      <p class="h1">ADMIN ANDROID — R-E-M Kad Kahwin</p>
-      <p class="sub">Isi maklumat → <b>Simpan</b> → <b>Generate</b> → <b>Copy</b> link untuk tetamu. (Paling stabil guna link yang ada <b>?d=</b>).</p>
-    </div>
-    <div class="chip" id="statusChip">STATUS: OK</div>
-  </div>
-
-  <div class="card">
-    <p class="title">Mod Sistem</p>
-    <label>Mod</label>
-    <select id="mode">
-      <option value="stable">STABIL (tetamu wajib link Generate)</option>
-      <option value="sale">JUALAN (copy 1–5 + template WhatsApp)</option>
-      <option value="personal">SENDIRI GUNA (boleh buka invite.html terus)</option>
-    </select>
-
-    <div class="grid">
+  <div class="header">
+    <div class="headerTop">
       <div>
-        <label>Video Background</label>
-        <select id="videoOn">
-          <option value="true">ON</option>
-          <option value="false">OFF</option>
-        </select>
+        <h1 class="hTitle">Admin Android — R-E-M Kad Kahwin</h1>
+        <p class="hSub">
+          Isi maklumat → tekan <b>Simpan</b> → tekan <b>Generate</b> → <b>Copy</b> link untuk tetamu.<br>
+          *Data admin simpan dalam telefon (localStorage). Tetamu akan dapat data melalui link (?d=...).
+        </p>
       </div>
-      <div>
-        <label>VIP Lock</label>
-        <select id="vipOn">
-          <option value="false">OFF</option>
-          <option value="true">ON</option>
-        </select>
-      </div>
+      <div class="pill">STABLE</div>
     </div>
 
-    <div class="grid">
-      <div>
-        <label>Kod VIP (jika VIP ON)</label>
-        <input id="vipCode" placeholder="Contoh: VIP123" />
-      </div>
-      <div>
-        <label>Expired (optional) format: 2025-12-31 23:59</label>
-        <input id="expiredAt" placeholder="YYYY-MM-DD HH:MM" />
-      </div>
-    </div>
-
-    <label>Notis bawah</label>
-    <input id="notice" placeholder="Notis: Dilarang guna/jual..." />
-  </div>
-
-  <div class="card">
-    <p class="title">Maklumat Paparan</p>
-    <div class="grid">
-      <div>
-        <label>Top Title</label>
-        <input id="topTitle" />
-      </div>
-      <div>
-        <label>Top Subtitle</label>
-        <input id="topSub" />
-      </div>
-    </div>
-
-    <div class="grid">
-      <div>
-        <label>Badge</label>
-        <input id="badge" />
-      </div>
-      <div>
-        <label>Tajuk</label>
-        <input id="title" />
-      </div>
-    </div>
-
-    <label>Mesej Jemputan</label>
-    <textarea id="message"></textarea>
-
-    <label>Nama Pengantin</label>
-    <input id="couple" />
-
-    <div class="grid">
-      <div>
-        <label>Tarikh (DD/MM/YYYY)</label>
-        <input id="date" placeholder="01/12/2025" />
-      </div>
-      <div>
-        <label>Masa (contoh 9.00am – 2.00pm)</label>
-        <input id="time" placeholder="9.00am – 2.00pm" />
-      </div>
-    </div>
-
-    <label>Tempat / Dewan</label>
-    <input id="venue" />
-
-    <label>Alamat ringkas</label>
-    <input id="address" />
-
-    <div class="grid">
-      <div>
-        <label>Link Google Maps</label>
-        <input id="maps" placeholder="https://maps.google.com/..." />
-      </div>
-      <div>
-        <label>Link WhatsApp RSVP</label>
-        <input id="rsvp" placeholder="https://wa.me/60..." />
-      </div>
+    <div class="pillRow">
+      <div class="pill" id="statusPill">STATUS: OK</div>
     </div>
   </div>
 
-  <div class="card">
-    <p class="title">Generate Link</p>
+  <div class="grid">
+    <div class="card">
+      <h3>Setup Asas</h3>
 
-    <label>Base URL invite.html (auto)</label>
-    <input id="baseUrl" />
+      <label>Base URL invite.html (WAJIB)</label>
+      <input id="baseUrl" placeholder="https://.../KadKahwin4/invite.html"/>
 
-    <div class="smallRow" style="margin-top:10px">
-      <button id="btnGenerate" class="primary">🔁 Generate</button>
-      <button id="btnCopy">📋 Copy Link</button>
+      <div class="mini">
+        Contoh: <b>https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html</b>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label>Nama Tetamu (chip)</label>
+          <input id="guest" placeholder="Tetamu / Encik Ali / Keluarga..."/>
+        </div>
+        <div>
+          <label>Badge</label>
+          <input id="badge" placeholder="WEDDING INVITATION / MAJLIS PERKAHWINAN"/>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label>Top Title</label>
+          <input id="topTitle" placeholder="Kad Kahwin Digital"/>
+        </div>
+        <div>
+          <label>Top Subtitle</label>
+          <input id="topSubtitle" placeholder="Jemputan Rasmi"/>
+        </div>
+      </div>
+
+      <label>Tajuk</label>
+      <input id="title" placeholder="Walimatul Urus"/>
+
+      <label>Nama Pengantin</label>
+      <input id="couple" placeholder="Karim & Masni"/>
+
+      <label>Ucapan Jemputan</label>
+      <textarea id="message" placeholder="Dengan penuh kesyukuran..."></textarea>
+
+      <div class="row2">
+        <div>
+          <label>Tarikh (format 01/12/2025)</label>
+          <input id="date" placeholder="01/12/2025"/>
+        </div>
+        <div>
+          <label>Masa (format 9.00am – 2.00pm)</label>
+          <input id="time" placeholder="9.00am – 2.00pm"/>
+        </div>
+      </div>
+
+      <label>Tempat / Dewan</label>
+      <input id="venue" placeholder="Dewan Serbaguna"/>
+
+      <label>Alamat Ringkas</label>
+      <input id="address" placeholder="Alamat ringkas majlis di sini"/>
+
+      <label>Link Google Maps</label>
+      <input id="maps" placeholder="https://maps.google.com/..."/>
+
+      <label>Link WhatsApp RSVP</label>
+      <input id="rsvp" placeholder="https://wa.me/60..."/>
+
+      <label>Notis</label>
+      <input id="notice" placeholder="Notis: Dilarang guna/jual..."/>
+
+      <label>Aturcara (ringkas)</label>
+      <input id="agenda" placeholder="Ketibaan tetamu · Jamuan · Bersurai"/>
+
+      <label>Video Background</label>
+      <select id="videoOn">
+        <option value="true">ON</option>
+        <option value="false">OFF</option>
+      </select>
+
+      <label>VIP Lock</label>
+      <select id="vipOn">
+        <option value="false">OFF</option>
+        <option value="true">ON</option>
+      </select>
+
+      <label>Kod VIP (jika VIP ON)</label>
+      <input id="vipCode" placeholder="VIP123"/>
+
+      <div class="btnRow">
+        <button class="btn btnPrimary" id="btnSave">💾 Simpan</button>
+        <button class="btn" id="btnGenerate">♻️ Generate</button>
+      </div>
+
+      <div class="btnRow">
+        <button class="btn" id="btnCopy">📋 Copy Link</button>
+        <button class="btn btnDanger" id="btnReset">Reset</button>
+      </div>
+
+      <div class="out" id="outLink">Link akan keluar sini…</div>
+      <div class="mini">Tip: Lepas Generate, buka link tu untuk test macam tetamu.</div>
     </div>
-
-    <div class="smallRow" style="margin-top:10px">
-      <button id="btnCopy15">📦 Copy 1–5</button>
-      <button id="btnBatch">👥 Batch</button>
-    </div>
-
-    <div class="out" id="outLink">—</div>
-    <div class="hint" id="hintText"></div>
-    <div class="warn" id="warn" style="display:none"></div>
   </div>
 
-  <div class="card">
-    <p class="title">Backup</p>
-    <div class="smallRow">
-      <button id="btnExport">Export JSON</button>
-      <button id="btnImport">Import JSON</button>
-    </div>
-    <input type="file" id="file" accept="application/json" style="display:none" />
-    <div class="hint">Data admin disimpan dalam telefon (localStorage). Untuk tetamu, gunakan link Generate.</div>
-  </div>
-
-</div>
-
-<div class="btnRow">
-  <div class="btnInner">
-    <button id="btnSave" class="primary">💾 Simpan</button>
-    <button id="btnOpenInvite">👁️ Buka Invite</button>
-    <button id="btnReset">🧹 Reset</button>
-  </div>
 </div>
 
 <script>
-/* ========= CONFIG ========= */
-const STORE_KEY = "KADKAHWIN_DATA_V2";
+/* ========= STABLE ADMIN ========= */
+const KEY = "KADKAHWIN_ADMIN_STABLE_V1";
 
-/* ========= DEFAULT ========= */
-const DEFAULT_DATA = {
-  mode:"stable",
-  videoOn:true,
-  vipOn:false,
-  vipCode:"VIP123",
-  expiredAt:"",
+const DEFAULT = {
+  baseUrl: "https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html",
   topTitle:"Kad Kahwin Digital",
-  topSub:"Jemputan Rasmi",
+  topSubtitle:"Jemputan Rasmi",
   badge:"WEDDING INVITATION",
+  guest:"Tetamu",
   title:"Walimatul Urus",
-  message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
   couple:"Adam & Hawa",
   date:"01/12/2025",
   time:"9.00am – 2.00pm",
@@ -212,194 +255,149 @@ const DEFAULT_DATA = {
   address:"Alamat ringkas majlis di sini",
   maps:"https://maps.google.com/",
   rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
-  notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik."
+  message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
+  notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik.",
+  agenda:"Ketibaan tetamu · Jamuan · Bersurai",
+  videoOn:true,
+  vipOn:false,
+  vipCode:"VIP123",
+  expired:"2025-12-31 23:59"
 };
 
-const $ = (id)=>document.getElementById(id);
-const FIELDS = ["mode","videoOn","vipOn","vipCode","expiredAt","notice","topTitle","topSub","badge","title","message","couple","date","time","venue","address","maps","rsvp"];
-
-function safeParse(raw){ try{return JSON.parse(raw);}catch(e){return null;} }
-
-/* base url */
-function calcBaseUrl(){
-  // admin-android.html & invite.html dalam folder sama
-  const u = new URL(location.href);
-  u.pathname = u.pathname.replace(/\/[^\/]*$/, "/invite.html");
-  u.search = ""; u.hash = "";
-  return u.toString();
-}
-
-/* base64url encode json (stable) */
-function b64urlEncode(obj){
-  const json = JSON.stringify(obj);
-  const bytes = encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (_,p)=>String.fromCharCode('0x'+p));
-  const b64 = btoa(bytes).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  return b64;
-}
-
-/* load/save */
-function loadData(){
-  const saved = safeParse(localStorage.getItem(STORE_KEY));
-  return Object.assign({}, DEFAULT_DATA, (saved||{}));
-}
-function collectData(){
-  const d = {};
-  for(const k of FIELDS){
-    let v = $(k).value;
-    if(k==="videoOn" || k==="vipOn") v = (v==="true");
-    d[k]=v;
-  }
-  return d;
-}
-function fillForm(d){
-  for(const k of FIELDS){
-    if(k==="videoOn" || k==="vipOn"){
-      $(k).value = String(!!d[k]);
-    }else{
-      $(k).value = (d[k] ?? "");
-    }
-  }
-}
-
-function showWarn(msg){
-  const w = $("warn");
-  w.style.display="block";
-  w.textContent = msg;
-}
-function hideWarn(){ $("warn").style.display="none"; $("warn").textContent=""; }
-
-function save(){
-  hideWarn();
-  const d = collectData();
-  localStorage.setItem(STORE_KEY, JSON.stringify(d));
-  $("statusChip").textContent = "STATUS: SAVED";
-  setTimeout(()=>$("statusChip").textContent="STATUS: OK", 900);
-  // auto update base url
-  $("baseUrl").value = calcBaseUrl();
-}
-function resetAll(){
-  if(!confirm("Reset semua data admin?")) return;
-  localStorage.removeItem(STORE_KEY);
-  fillForm(DEFAULT_DATA);
-  $("outLink").textContent="—";
-  $("hintText").textContent="";
-  save();
-}
-
-function genLink(guestName="Tetamu"){
-  hideWarn();
-  const base = ($("baseUrl").value||"").trim();
-  if(!base.includes("invite.html")){
-    showWarn("Base URL tidak betul. Pastikan berakhir dengan /invite.html");
-    return "";
-  }
-  const d = collectData();
-  // tetamu tak perlu localStorage → data dalam URL
-  const payload = Object.assign({}, d);
-  const token = b64urlEncode(payload);
-
-  const url = new URL(base);
-  url.searchParams.set("to", guestName);
-  url.searchParams.set("d", token);
-  return url.toString();
-}
-
-async function copyText(txt){
+function $(id){ return document.getElementById(id); }
+function load(){
   try{
-    await navigator.clipboard.writeText(txt);
-    alert("Disalin.");
-  }catch(e){
-    prompt("Copy manual:", txt);
+    const raw = localStorage.getItem(KEY);
+    return raw ? Object.assign({}, DEFAULT, JSON.parse(raw)) : DEFAULT;
+  }catch(e){ return DEFAULT; }
+}
+function save(data){
+  localStorage.setItem(KEY, JSON.stringify(data));
+}
+function b64encodeUnicode(str){
+  // unicode safe
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function buildLink(data){
+  const base = (data.baseUrl||"").trim();
+  if(!base.includes("invite.html")){
+    return { ok:false, link:"Base URL mesti guna invite.html" };
   }
+  const payload = {
+    topTitle: data.topTitle,
+    topSubtitle: data.topSubtitle,
+    badge: data.badge,
+    guest: data.guest,
+    title: data.title,
+    couple: data.couple,
+    date: data.date,
+    time: data.time,
+    venue: data.venue,
+    address: data.address,
+    maps: data.maps,
+    rsvp: data.rsvp,
+    message: data.message,
+    notice: data.notice,
+    agenda: data.agenda,
+    videoOn: !!data.videoOn,
+    vipOn: !!data.vipOn,
+    vipCode: data.vipCode,
+    expired: data.expired
+  };
+  const json = JSON.stringify(payload);
+  const d = encodeURIComponent(b64encodeUnicode(json));
+  const joiner = base.includes("?") ? "&" : "?";
+  return { ok:true, link: base + joiner + "d=" + d };
 }
 
-function waTemplate(link, guest="Tetamu"){
-  return `Assalamualaikum ${guest}.\n\nJemputan Majlis: ${link}\n\nTerima kasih.`;
+function fillForm(d){
+  $("baseUrl").value = d.baseUrl || "";
+  $("topTitle").value = d.topTitle || "";
+  $("topSubtitle").value = d.topSubtitle || "";
+  $("badge").value = d.badge || "";
+  $("guest").value = d.guest || "";
+  $("title").value = d.title || "";
+  $("couple").value = d.couple || "";
+  $("message").value = d.message || "";
+  $("date").value = d.date || "";
+  $("time").value = d.time || "";
+  $("venue").value = d.venue || "";
+  $("address").value = d.address || "";
+  $("maps").value = d.maps || "";
+  $("rsvp").value = d.rsvp || "";
+  $("notice").value = d.notice || "";
+  $("agenda").value = d.agenda || "";
+  $("videoOn").value = String(!!d.videoOn);
+  $("vipOn").value = String(!!d.vipOn);
+  $("vipCode").value = d.vipCode || "";
 }
 
-/* boot */
-(function init(){
-  $("baseUrl").value = calcBaseUrl();
-  fillForm(loadData());
-  $("statusChip").textContent="STATUS: OK";
-})();
+function readForm(){
+  return {
+    baseUrl: $("baseUrl").value.trim(),
+    topTitle: $("topTitle").value.trim(),
+    topSubtitle: $("topSubtitle").value.trim(),
+    badge: $("badge").value.trim(),
+    guest: $("guest").value.trim(),
+    title: $("title").value.trim(),
+    couple: $("couple").value.trim(),
+    message: $("message").value.trim(),
+    date: $("date").value.trim(),
+    time: $("time").value.trim(),
+    venue: $("venue").value.trim(),
+    address: $("address").value.trim(),
+    maps: $("maps").value.trim(),
+    rsvp: $("rsvp").value.trim(),
+    notice: $("notice").value.trim(),
+    agenda: $("agenda").value.trim(),
+    videoOn: $("videoOn").value === "true",
+    vipOn: $("vipOn").value === "true",
+    vipCode: $("vipCode").value.trim(),
+    expired: DEFAULT.expired
+  };
+}
 
-/* actions */
-$("btnSave").onclick = save;
+function setOut(text){
+  $("outLink").textContent = text;
+}
 
-$("btnOpenInvite").onclick = ()=>{
-  // buka invite guna link generate (tetamu)
-  const link = genLink("Tetamu");
-  if(!link) return;
-  window.open(link, "_blank");
+let current = load();
+fillForm(current);
+setOut("Tekan Generate untuk keluarkan link tetamu.");
+
+$("btnSave").onclick = ()=>{
+  current = readForm();
+  save(current);
+  $("statusPill").textContent = "STATUS: SAVED";
+  setTimeout(()=> $("statusPill").textContent = "STATUS: OK", 1200);
 };
-
-$("btnReset").onclick = resetAll;
 
 $("btnGenerate").onclick = ()=>{
-  const link = genLink("Tetamu");
-  if(!link) return;
-  $("outLink").textContent = link;
-
-  const mode = $("mode").value;
-  if(mode==="sale"){
-    $("hintText").textContent = "Jualan: guna Copy 1–5 atau Batch untuk jana ramai tetamu. Link ini stabil (data dalam URL).";
-  }else if(mode==="personal"){
-    $("hintText").textContent = "Sendiri guna: anda juga boleh buka invite.html tanpa ?d= (ambil data localStorage). Tetamu tetap disaran guna link Generate.";
-  }else{
-    $("hintText").textContent = "Stabil: hantar link ini kepada tetamu (ada ?d=).";
-  }
+  current = readForm();
+  save(current);
+  const res = buildLink(current);
+  if(!res.ok){ alert(res.link); return; }
+  setOut(res.link);
 };
 
 $("btnCopy").onclick = async ()=>{
-  const link = $("outLink").textContent.trim();
-  if(!link || link==="—") return alert("Tekan Generate dulu.");
-  await copyText(link);
-};
-
-$("btnCopy15").onclick = async ()=>{
-  const baseNames = ["Tetamu 1","Tetamu 2","Tetamu 3","Tetamu 4","Tetamu 5"];
-  let out = "";
-  for(const n of baseNames){
-    const link = genLink(n);
-    out += `${n}: ${link}\n\n`;
+  const text = $("outLink").textContent.trim();
+  if(!text || text.includes("Tekan Generate")){ alert("Tekan Generate dulu."); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    alert("Link sudah disalin.");
+  }catch(e){
+    alert("Tak boleh auto-copy. Tekan & tahan untuk copy:\n\n"+text);
   }
-  await copyText(out.trim());
 };
 
-$("btnBatch").onclick = async ()=>{
-  const raw = prompt("Masukkan nama tetamu (satu nama setiap baris). Contoh:\nAli\nSiti\nPak Long", "Ali\nSiti\nPak Long");
-  if(!raw) return;
-  const names = raw.split("\n").map(s=>s.trim()).filter(Boolean).slice(0,120);
-  let out = "";
-  for(const n of names){
-    const link = genLink(n);
-    out += `${n}: ${link}\n`;
-  }
-  await copyText(out.trim());
+$("btnReset").onclick = ()=>{
+  if(!confirm("Reset semua data admin dalam telefon ini?")) return;
+  localStorage.removeItem(KEY);
+  current = DEFAULT;
+  fillForm(current);
+  setOut("Reset selesai. Tekan Generate.");
 };
-
-$("btnExport").onclick = ()=>{
-  const d = collectData();
-  const blob = new Blob([JSON.stringify(d,null,2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "kadkahwin-data.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
-};
-
-$("btnImport").onclick = ()=> $("file").click();
-
-$("file").addEventListener("change", async (e)=>{
-  const f = e.target.files?.[0]; if(!f) return;
-  const txt = await f.text();
-  const data = safeParse(txt);
-  if(!data){ alert("Fail JSON tidak sah."); return; }
-  const merged = Object.assign({}, DEFAULT_DATA, data);
-  fillForm(merged);
-  save();
-});
 </script>
 </body>
 </html>
