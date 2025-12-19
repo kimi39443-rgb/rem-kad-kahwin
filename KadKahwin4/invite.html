@@ -1,329 +1,777 @@
 <!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Kad Kahwin</title>
-  <style>
-    :root{
-      --bg:#070a10; --line:rgba(255,255,255,.12);
-      --txt:#eef3f7; --muted:rgba(238,243,247,.78);
-      --accent:#a8c2ff; --radius:22px;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background: var(--bg);
-      color:var(--txt);
-      min-height:100svh;
-      overflow-x:hidden;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Jemputan Perkahwinan</title>
 
-    .bg{
-      position:fixed; inset:0;
-      z-index:-2;
-      background: radial-gradient(1000px 600px at 20% 0%, #1d2a3c 0%, #070a10 60%, #070a10 100%);
-    }
-    video#bgVideo{
-      position:absolute; inset:0;
-      width:100%;
-      height:100%;
-      object-fit:cover;               /* ✅ fix video separuh */
-      transform: translateZ(0);
-      filter: saturate(1.05) contrast(1.05) brightness(.9);
-      display:none;
-    }
-    .shade{
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.75));
-      z-index:1;
-    }
+<style>
+  :root{
+    --bg:#050505;
+    --glass:rgba(0,0,0,.55);
+    --line:rgba(255,255,255,.14);
+    --txt:#f5f7fb;
+    --muted:rgba(245,247,251,.78);
+    --shadow:0 28px 70px rgba(0,0,0,.65);
 
-    .wrap{max-width:820px; margin:0 auto; padding:18px 14px 44px; position:relative; z-index:2}
-    .card{
-      margin-top:14px;
-      border-radius: var(--radius);
-      border:1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 50px rgba(0,0,0,.45);
-      overflow:hidden;
-    }
-    .hero{padding:18px 16px 14px}
-    .badge{
-      display:inline-flex; gap:8px; align-items:center;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background: rgba(0,0,0,.22);
-      color:var(--muted);
-      font-size:12px;
-    }
-    h1{margin:12px 0 6px; font-size:28px}
-    .names{font-size:18px; color:var(--muted); line-height:1.35}
-    .sec{padding:14px 16px; border-top:1px solid var(--line); display:grid; gap:10px}
-    .item{
-      padding:12px 12px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.22);
-    }
-    .k{font-size:12px; color:rgba(238,243,247,.72); margin-bottom:4px}
-    .v{font-size:15px; line-height:1.35}
-    .btnrow{display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px 16px 16px; border-top:1px solid var(--line)}
-    @media(max-width:520px){ .btnrow{grid-template-columns:1fr;} }
-    .btn{
-      border:0; border-radius:18px;
-      padding:12px 14px;
-      font-weight:800;
-      font-size:15px;
-      cursor:pointer;
-      user-select:none;
-      -webkit-tap-highlight-color:transparent;
-      background: rgba(0,0,0,.28);
-      color:var(--txt);
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .btn.primary{background: linear-gradient(135deg, #b7c6ff, #8fb3ff); color:#0b0f14; border:0}
-    .btn:active{transform:translateY(1px)}
-    .foot{margin-top:12px; text-align:center; color:rgba(238,243,247,.65); font-size:12px; line-height:1.5}
+    /* Theme defaults (Gold) */
+    --a1:#d6b46c;
+    --a2:#f3e2b8;
+    --a3:#b7c6ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
+    background:var(--bg);
+    color:var(--txt);
+    min-height:100svh;
+    overflow-x:hidden;
+  }
 
-    .modal{
-      position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-      background: rgba(0,0,0,.62); z-index:10; padding:18px 14px;
-    }
-    .modal .box{
-      width:min(520px, 100%);
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(15,18,26,.72);
-      backdrop-filter: blur(14px);
-      box-shadow:0 24px 70px rgba(0,0,0,.6);
-      padding:16px;
-    }
-    .modal h2{margin:0 0 6px}
-    .modal p{margin:0 0 12px; color:rgba(238,243,247,.75); font-size:13px; line-height:1.45}
-    .modal input{
-      width:100%;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.30);
-      color:var(--txt);
-      padding:12px 12px;
-      font-size:16px;
-      outline:none;
-    }
-    .modal .row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
-    @media(max-width:520px){ .modal .row{grid-template-columns:1fr;} }
+  /* Background video */
+  video.bg{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-4;
+    display:none;
+  }
+  .overlay{
+    position:fixed;
+    inset:0;
+    z-index:-3;
+    background: radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%),
+                linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.88));
+  }
 
-    .expired{display:none; text-align:center; padding:26px 16px}
-    .expired h1{font-size:22px; margin:0 0 6px}
-    .expired p{margin:0; color:rgba(238,243,247,.75); line-height:1.45}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-  </style>
+  /* Door intro */
+  .tap{
+    position:fixed; inset:0; z-index:50;
+    display:flex; align-items:center; justify-content:center;
+    background:#000; color:#fff;
+    text-align:center; padding:18px;
+  }
+  .tap .box{
+    width:min(440px, 92vw);
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.45);
+    border-radius:22px;
+    padding:18px 16px;
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+  }
+  .tap h2{margin:0 0 6px; font-size:18px; letter-spacing:1px}
+  .tap p{margin:0 0 14px; color:rgba(255,255,255,.78); font-size:13px; line-height:1.45}
+  .tap button{
+    width:100%;
+    border:0; border-radius:16px;
+    padding:12px 14px;
+    font-weight:900;
+    letter-spacing:.8px;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    color:#111;
+    font-size:15px;
+  }
+
+  .door{
+    position:fixed; top:0; height:100%; width:50%;
+    background: linear-gradient(135deg, rgba(30,30,30,.95), rgba(0,0,0,.98));
+    z-index:40;
+    transition: transform 1.55s ease;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .door.left{left:0; border-right:0}
+  .door.right{right:0; border-left:0}
+  body.open .door.left{transform: translateX(-103%)}
+  body.open .door.right{transform: translateX(103%)}
+  body.open .tap{display:none}
+
+  /* Layout */
+  .wrap{
+    max-width:860px;
+    margin:0 auto;
+    padding:18px 14px 80px;
+  }
+  .topbar{
+    position:sticky;
+    top:10px;
+    z-index:10;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:10px;
+  }
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 12px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background: rgba(0,0,0,.25);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    color: var(--muted);
+    font-size:12px;
+  }
+  .pill strong{color:var(--txt)}
+  .pill button, .pill select{
+    border:0;
+    background:transparent;
+    color:var(--txt);
+    font-weight:900;
+    cursor:pointer;
+    font-size:12px;
+  }
+  .pill select{
+    padding:0;
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+
+  /* Cards */
+  .card{
+    margin-top:14px;
+    border-radius:26px;
+    border:1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+    overflow:hidden;
+  }
+  .hero{
+    padding:22px 18px 16px;
+    text-align:center;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:10px 12px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(245,247,251,.80);
+    letter-spacing:3px;
+    font-size:12px;
+  }
+  h1{
+    margin:14px 0 8px;
+    font-size:34px;
+    letter-spacing:.4px;
+    color: transparent;
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    -webkit-background-clip:text;
+    background-clip:text;
+  }
+  .names{
+    margin-top:8px;
+    font-size:20px;
+    line-height:1.35;
+    color: rgba(245,247,251,.92);
+  }
+  .subtitle{
+    margin-top:10px;
+    color: rgba(245,247,251,.78);
+    font-size:14px;
+    line-height:1.45;
+  }
+  .divider{
+    width:72px;
+    height:2px;
+    margin:18px auto;
+    border-radius:3px;
+    background: linear-gradient(to right, var(--a1), var(--a2), var(--a3));
+    opacity:.95;
+  }
+
+  .grid{
+    padding:14px 16px 18px;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  @media(min-width:720px){
+    .grid{grid-template-columns:1fr 1fr}
+  }
+  .item{
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.20);
+    padding:12px 12px;
+  }
+  .k{font-size:12px;color:rgba(245,247,251,.70); margin-bottom:4px}
+  .v{font-size:15px;line-height:1.45;color:rgba(245,247,251,.93)}
+  .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+
+  .actions{
+    padding:14px 16px 18px;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media(max-width:520px){ .actions{grid-template-columns:1fr;} }
+  .btn{
+    border:0;
+    border-radius:18px;
+    padding:13px 14px;
+    font-weight:900;
+    font-size:15px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+    background: rgba(0,0,0,.22);
+    color:var(--txt);
+    border:1px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .btn.primary{
+    background: linear-gradient(135deg, var(--a1), var(--a2));
+    color:#111;
+    border:0;
+  }
+  .btn:active{transform: translateY(1px);}
+
+  /* Countdown */
+  .countWrap{
+    padding:14px 16px 18px;
+    border-top:1px solid var(--line);
+  }
+  .countTitle{
+    text-align:center;
+    color:rgba(245,247,251,.82);
+    font-size:13px;
+    letter-spacing:1.5px;
+    margin-bottom:10px;
+  }
+  .count{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  @media(max-width:520px){ .count{grid-template-columns:repeat(2,1fr);} }
+  .box{
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.20);
+    padding:12px 10px;
+    text-align:center;
+  }
+  .num{
+    font-size:22px;
+    font-weight:900;
+    color:rgba(245,247,251,.95);
+  }
+  .lab{
+    margin-top:4px;
+    font-size:11px;
+    color:rgba(245,247,251,.65);
+    letter-spacing:1.2px;
+  }
+
+  /* Gallery */
+  .gallery{
+    padding:14px 16px 18px;
+    border-top:1px solid var(--line);
+  }
+  .gallery h3{
+    margin:0 0 10px;
+    text-align:center;
+    font-size:14px;
+    letter-spacing:1.2px;
+    color:rgba(245,247,251,.82);
+  }
+  .ggrid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media(min-width:720px){ .ggrid{grid-template-columns:repeat(4,1fr);} }
+  .gimg{
+    width:100%;
+    aspect-ratio: 1 / 1;
+    border-radius:18px;
+    object-fit:cover;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    cursor:pointer;
+  }
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed; inset:0; z-index:60;
+    background: rgba(0,0,0,.78);
+    display:none; align-items:center; justify-content:center;
+    padding:16px;
+  }
+  .lightbox img{
+    width:min(92vw, 720px);
+    max-height:82vh;
+    object-fit:contain;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 30px 80px rgba(0,0,0,.65);
+    background:#000;
+  }
+
+  /* Floating */
+  .fab{
+    position:fixed;
+    right:14px;
+    bottom:16px;
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .fab button{
+    width:54px; height:54px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.28);
+    color:var(--txt);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    font-size:18px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .foot{
+    margin-top:14px;
+    text-align:center;
+    color:rgba(245,247,251,.62);
+    font-size:12px;
+    line-height:1.5;
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="bg">
-    <video id="bgVideo" playsinline muted loop preload="metadata"></video>
-    <div class="shade"></div>
+<!-- TAP INTRO (required for Android autoplay audio/video reliability) -->
+<div class="tap" id="tap">
+  <div class="box">
+    <h2>JEMPUTAN PERKAHWINAN</h2>
+    <p>Tekan butang di bawah untuk buka kad. (Ini juga aktifkan muzik & video dengan stabil di Android.)</p>
+    <button onclick="openInvite()">BUKA KAD</button>
+  </div>
+</div>
+
+<!-- Doors -->
+<div class="door left"></div>
+<div class="door right"></div>
+
+<!-- Background Video -->
+<video class="bg" id="bgVideo" autoplay muted loop playsinline preload="metadata"></video>
+<div class="overlay"></div>
+
+<!-- Audio -->
+<audio id="bgm" loop preload="auto"></audio>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="pill">
+      🕒 <strong id="clock">--:--</strong>
+      <span style="opacity:.6">•</span>
+      <span id="dayText"></span>
+    </div>
+
+    <div class="pill">
+      🎨
+      <select id="themeSelect" aria-label="Tema">
+        <option value="gold">Gold</option>
+        <option value="rose">Rose Gold</option>
+        <option value="white">White Elegant</option>
+      </select>
+    </div>
+
+    <div class="pill">
+      🔊 <button id="muteBtn" type="button">MUTE</button>
+    </div>
   </div>
 
-  <div class="wrap">
-
-    <div class="card" id="mainCard" style="display:none">
-      <div class="hero">
-        <div class="badge">💍 Kad Kahwin Digital • <span id="badgeTime" class="mono"></span></div>
-        <h1 id="title">Jemputan Majlis Perkahwinan</h1>
-        <div class="names"><b id="groom">Nama Pengantin Lelaki</b> &nbsp;♥&nbsp; <b id="bride">Nama Pengantin Perempuan</b></div>
+  <!-- HERO -->
+  <div class="card">
+    <div class="hero">
+      <div class="badge" id="badge">WALIMATULURUS</div>
+      <h1 id="title">Jemputan Perkahwinan</h1>
+      <div class="names">
+        <div id="groom">Nama Pengantin Lelaki</div>
+        <div style="opacity:.85;margin:6px 0">♥</div>
+        <div id="bride">Nama Pengantin Perempuan</div>
       </div>
-
-      <div class="sec">
-        <div class="item"><div class="k">Tarikh</div><div class="v" id="eventDate">—</div></div>
-        <div class="item"><div class="k">Masa</div><div class="v" id="eventTime">—</div></div>
-        <div class="item"><div class="k">Lokasi</div><div class="v" id="venue">—</div></div>
-      </div>
-
-      <div class="btnrow">
-        <button class="btn primary" id="openMaps">📍 Buka Maps</button>
-        <button class="btn" id="share">📤 Share / Copy Link</button>
+      <div class="divider"></div>
+      <div class="subtitle" id="inviteText">
+        Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.
       </div>
     </div>
 
-    <div class="card expired" id="expiredCard">
-      <div class="hero">
-        <div class="badge">⏳ Akses Tamat</div>
-        <h1>Link ini sudah tamat tempoh</h1>
-        <p>Sila hubungi pihak admin / pemilik jemputan untuk aktifkan semula.</p>
-        <p style="margin-top:10px" class="mono" id="expInfo"></p>
+    <!-- DETAILS -->
+    <div class="grid">
+      <div class="item">
+        <div class="k">📅 Tarikh</div>
+        <div class="v" id="eventDateText">31 Disember 2025</div>
+      </div>
+      <div class="item">
+        <div class="k">⏰ Masa</div>
+        <div class="v" id="eventTimeText">9:00 AM – 2:00 PM</div>
+      </div>
+      <div class="item" style="grid-column:1/-1">
+        <div class="k">📍 Lokasi</div>
+        <div class="v" id="venueText">Dewan Contoh, Pulau Pinang</div>
       </div>
     </div>
 
-    <div class="foot">Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.</div>
-  </div>
-
-  <div class="modal" id="vipModal">
-    <div class="box">
-      <h2>VIP Lock</h2>
-      <p>Masukkan kod VIP untuk buka kad ini.</p>
-      <input id="vipInput" placeholder="Contoh: VIP123" />
-      <div class="row">
-        <button class="btn" id="vipCancel">Tutup</button>
-        <button class="btn primary" id="vipOk">Buka</button>
+    <!-- COUNTDOWN -->
+    <div class="countWrap">
+      <div class="countTitle">COUNTDOWN MAJLIS</div>
+      <div class="count">
+        <div class="box"><div class="num" id="cdD">--</div><div class="lab">HARI</div></div>
+        <div class="box"><div class="num" id="cdH">--</div><div class="lab">JAM</div></div>
+        <div class="box"><div class="num" id="cdM">--</div><div class="lab">MINIT</div></div>
+        <div class="box"><div class="num" id="cdS">--</div><div class="lab">SAAT</div></div>
       </div>
-      <p id="vipMsg" style="margin-top:10px;color:#ffb3b3;display:none"></p>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="actions">
+      <button class="btn primary" id="btnRSVP">💬 RSVP WhatsApp</button>
+      <button class="btn" id="btnMaps">📍 Buka Maps</button>
+      <button class="btn" id="btnCal">📅 Add to Calendar</button>
+      <button class="btn" id="btnShare">📤 Share / Copy Link</button>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="gallery">
+      <h3>GALERI KAMI</h3>
+      <div class="ggrid" id="galleryGrid"></div>
     </div>
   </div>
+
+  <div class="foot">
+    Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.<br>
+    © Premium Wedding Card
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" alt="Gambar" />
+</div>
+
+<!-- Floating buttons -->
+<div class="fab">
+  <button title="Scroll atas" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+  <button title="Scroll bawah" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">⬇️</button>
+</div>
 
 <script>
-(() => {
-  const $ = (id) => document.getElementById(id);
+/* =========================
+   ✅ CONFIG (EDIT DI SINI SAHAJA)
+   ========================= */
+const CONFIG = {
+  badge: "WALIMATULURUS",
+  title: "Jemputan Perkahwinan",
+  groom: "Nama Pengantin Lelaki",
+  bride: "Nama Pengantin Perempuan",
+  inviteText: "Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
 
-  function nowBadge(){
-    const fmt = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute:"2-digit" });
-    $("badgeTime").textContent = fmt.format(new Date());
+  // Paparan
+  eventDateText: "31 Disember 2025",
+  eventTimeText: "9:00 AM – 2:00 PM",
+  venueText: "Dewan Contoh, Pulau Pinang",
+
+  // ✅ Tarikh sebenar untuk countdown & calendar (format ISO) — PENTING
+  // Contoh: 2025-12-31T09:00:00+08:00  (Malaysia +08:00)
+  eventStartISO: "2025-12-31T09:00:00+08:00",
+  eventEndISO:   "2025-12-31T14:00:00+08:00",
+
+  // ✅ WhatsApp RSVP (tukar nombor)
+  rsvpPhone: "60123456789",
+  rsvpText: "Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+
+  // ✅ Maps: boleh letak link Google Maps sebenar atau hanya alamat text (akan search)
+  mapsLink: "", // contoh: "https://maps.app.goo.gl/xxxxx" (kalau ada)
+  mapsQuery: "Dewan Contoh, Pulau Pinang",
+
+  // ✅ Media (OPTIONAL)
+  videoUrl: "VIDEO_URL.mp4",   // letak link mp4 direct, atau kosong "" untuk OFF
+  audioUrl: "AUDIO_URL.mp3",   // letak link mp3 direct, atau kosong "" untuk OFF
+
+  // ✅ Galeri (guna link gambar)
+  gallery: [
+    "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
+    "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
+    "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=70",
+    "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=900&q=70"
+  ]
+};
+
+/* =========================
+   Helpers
+   ========================= */
+const $ = (id)=>document.getElementById(id);
+
+function setTheme(theme){
+  // gold / rose / white
+  if(theme === "rose"){
+    document.documentElement.style.setProperty("--a1", "#e2a7b5");
+    document.documentElement.style.setProperty("--a2", "#ffe2ea");
+    document.documentElement.style.setProperty("--a3", "#f1c6c6");
+  }else if(theme === "white"){
+    document.documentElement.style.setProperty("--bg", "#f6f7fb");
+    document.documentElement.style.setProperty("--glass", "rgba(255,255,255,.72)");
+    document.documentElement.style.setProperty("--line", "rgba(0,0,0,.10)");
+    document.documentElement.style.setProperty("--txt", "#0b0f14");
+    document.documentElement.style.setProperty("--muted", "rgba(11,15,20,.72)");
+    document.documentElement.style.setProperty("--a1", "#111827");
+    document.documentElement.style.setProperty("--a2", "#c7ccd8");
+    document.documentElement.style.setProperty("--a3", "#8fb3ff");
+  }else{
+    // default gold
+    document.documentElement.style.setProperty("--bg", "#050505");
+    document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
+    document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
+    document.documentElement.style.setProperty("--txt", "#f5f7fb");
+    document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
+    document.documentElement.style.setProperty("--a1", "#d6b46c");
+    document.documentElement.style.setProperty("--a2", "#f3e2b8");
+    document.documentElement.style.setProperty("--a3", "#b7c6ff");
   }
-  function getParam(name){
-    const u = new URL(location.href);
-    return u.searchParams.get(name);
+  localStorage.setItem("kk_theme", theme);
+}
+
+function tickClock(){
+  const d = new Date();
+  const time = new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(d);
+  const day = new Intl.DateTimeFormat(undefined,{weekday:"long", year:"numeric", month:"short", day:"numeric"}).format(d);
+  $("clock").textContent = time;
+  $("dayText").textContent = day;
+}
+
+function buildWhatsAppLink(){
+  const text = encodeURIComponent(CONFIG.rsvpText + " (" + CONFIG.groom + " & " + CONFIG.bride + ")");
+  return "https://wa.me/" + CONFIG.rsvpPhone + "?text=" + text;
+}
+
+function buildMapsLink(){
+  if(CONFIG.mapsLink && CONFIG.mapsLink.trim()) return CONFIG.mapsLink.trim();
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(CONFIG.mapsQuery || CONFIG.venueText);
+}
+
+function toICSDate(dt){
+  // Convert to YYYYMMDDTHHMMSSZ in UTC
+  const d = new Date(dt);
+  const pad = (n)=>String(n).padStart(2,"0");
+  return d.getUTCFullYear() +
+    pad(d.getUTCMonth()+1) +
+    pad(d.getUTCDate()) + "T" +
+    pad(d.getUTCHours()) +
+    pad(d.getUTCMinutes()) +
+    pad(d.getUTCSeconds()) + "Z";
+}
+
+function downloadICS(){
+  const dtStart = toICSDate(CONFIG.eventStartISO);
+  const dtEnd = toICSDate(CONFIG.eventEndISO);
+  const uid = "kk-" + Math.random().toString(16).slice(2) + "@invite";
+  const summary = `${CONFIG.groom} & ${CONFIG.bride} - Majlis Perkahwinan`;
+  const location = (CONFIG.venueText || "").replace(/\n/g," ");
+  const desc = (CONFIG.inviteText || "").replace(/\n/g," ");
+
+  const ics =
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//KadKahwin//MY//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${toICSDate(new Date())}
+DTSTART:${dtStart}
+DTEND:${dtEnd}
+SUMMARY:${summary}
+LOCATION:${location}
+DESCRIPTION:${desc}
+END:VEVENT
+END:VCALENDAR`;
+
+  const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Majlis-Perkahwinan.ics";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function safeCopy(text){
+  return navigator.clipboard?.writeText(text).catch(() => {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  });
+}
+
+function shareLink(){
+  const link = location.href;
+  if(navigator.share){
+    navigator.share({ title: document.title, url: link }).catch(()=>{});
+  }else{
+    safeCopy(link).then(()=>alert("Link sudah copy."));
   }
-  function base64UrlDecode(b64url){
-    const s = (b64url || "").replace(/-/g, "+").replace(/_/g, "/");
-    const pad = s.length % 4 ? "=".repeat(4 - (s.length % 4)) : "";
-    const bin = atob(s + pad);
-    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
+}
+
+function setupGallery(){
+  const grid = $("galleryGrid");
+  grid.innerHTML = "";
+  (CONFIG.gallery || []).forEach((src, idx)=>{
+    const img = document.createElement("img");
+    img.className = "gimg";
+    img.loading = "lazy";
+    img.src = src;
+    img.alt = "Gambar " + (idx+1);
+    img.addEventListener("click", ()=>openLightbox(src));
+    grid.appendChild(img);
+  });
+}
+function openLightbox(src){
+  $("lightboxImg").src = src;
+  $("lightbox").style.display = "flex";
+}
+function closeLightbox(){
+  $("lightbox").style.display = "none";
+}
+
+/* Countdown */
+function startCountdown(){
+  const target = new Date(CONFIG.eventStartISO).getTime();
+  const upd = ()=>{
+    const now = Date.now();
+    let diff = target - now;
+    if(diff < 0) diff = 0;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    $("cdD").textContent = String(d).padStart(2,"0");
+    $("cdH").textContent = String(h).padStart(2,"0");
+    $("cdM").textContent = String(m).padStart(2,"0");
+    $("cdS").textContent = String(s).padStart(2,"0");
+  };
+  upd();
+  setInterval(upd, 1000);
+}
+
+/* Media */
+let muted = false;
+function setVideo(url){
+  const v = $("bgVideo");
+  if(!url || url.trim()==="" || url.includes("VIDEO_URL")){
+    v.style.display = "none";
+    v.removeAttribute("src");
+    v.innerHTML = "";
+    return;
   }
-  function safeCopy(text){
-    return navigator.clipboard?.writeText(text).catch(() => {
-      const ta = document.createElement("textarea");
-      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
-      document.body.appendChild(ta);
-      ta.focus(); ta.select();
-      document.execCommand("copy");
-      ta.remove();
-    });
+  v.style.display = "block";
+  v.innerHTML = `<source src="${url}" type="video/mp4">`;
+  v.muted = true;
+  v.playsInline = true;
+
+  // try play when opened
+  const tryPlay = ()=>v.play().catch(()=>{});
+  v.addEventListener("loadedmetadata", tryPlay, {once:true});
+}
+function setAudio(url){
+  const a = $("bgm");
+  if(!url || url.trim()==="" || url.includes("AUDIO_URL")){
+    a.removeAttribute("src");
+    a.innerHTML = "";
+    return;
   }
+  a.innerHTML = `<source src="${url}" type="audio/mpeg">`;
+}
 
-  function setVideo(videoOn, src){
-    const v = $("bgVideo");
-    if(!videoOn || !src){
-      v.removeAttribute("src");
-      v.style.display = "none";
-      return;
-    }
-    v.style.display = "block";
-    v.src = src;
-    v.muted = true;
-    v.playsInline = true;
+function toggleMute(){
+  const a = $("bgm");
+  muted = !muted;
+  a.muted = muted;
+  $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
+}
 
-    const tryPlay = () => v.play().catch(()=>{});
-    v.addEventListener("loadedmetadata", tryPlay, { once:true });
-    window.addEventListener("touchstart", tryPlay, { once:true, passive:true });
-  }
+/* Open invite */
+function openInvite(){
+  document.body.classList.add("open");
 
-  function showExpired(expMs){
-    $("expiredCard").style.display = "block";
-    $("mainCard").style.display = "none";
-
-    if(expMs){
-      const dt = new Date(expMs);
-      const fmt = new Intl.DateTimeFormat(undefined, {
-        day:"2-digit", month:"2-digit", year:"numeric",
-        hour:"numeric", minute:"2-digit"
-      });
-      $("expInfo").textContent = "Expired: " + fmt.format(dt);
-    } else {
-      $("expInfo").textContent = "";
-    }
-  }
-
-  function mustVip(p){
-    return p?.vipOn === 1 && !!p?.vipCode;
-  }
-
-  function openVip(payload, onOk){
-    const modal = $("vipModal");
-    const input = $("vipInput");
-    const msg = $("vipMsg");
-    msg.style.display = "none";
-    input.value = "";
-    modal.style.display = "flex";
-    setTimeout(()=>input.focus(), 50);
-
-    const close = () => { modal.style.display = "none"; };
-
-    $("vipCancel").onclick = close;
-    $("vipOk").onclick = () => {
-      const val = (input.value || "").trim();
-      if(val === payload.vipCode){
-        close();
-        onOk();
-      }else{
-        msg.textContent = "Kod salah. Cuba lagi.";
-        msg.style.display = "block";
-      }
-    };
-  }
-
-  function fill(p){
-    $("title").textContent = p.title || "Jemputan Majlis Perkahwinan";
-    $("groom").textContent = p.groom || "Nama Pengantin Lelaki";
-    $("bride").textContent = p.bride || "Nama Pengantin Perempuan";
-    $("eventDate").textContent = p.eventDate || "—";
-    $("eventTime").textContent = p.eventTime || "—";
-    $("venue").textContent = p.venue || "—";
-
-    $("mainCard").style.display = "block";
-    $("expiredCard").style.display = "none";
-
-    $("share").onclick = async () => {
-      const link = location.href;
-      try{
-        if(navigator.share){
-          await navigator.share({ title: document.title, url: link });
-        }else{
-          await safeCopy(link);
-          alert("Link sudah copy.");
-        }
-      }catch(e){
-        await safeCopy(link).catch(()=>{});
-      }
-    };
-
-    $("openMaps").onclick = () => {
-      const q = encodeURIComponent(p.venue || "");
-      if(!q){ alert("Lokasi belum diisi."); return; }
-      window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
-    };
-
-    setVideo(p.videoOn === 1, p.videoSrc);
+  // Start media on user gesture (Android-friendly)
+  const v = $("bgVideo");
+  const a = $("bgm");
+  if(v && v.style.display !== "none") v.play().catch(()=>{});
+  if(a && a.querySelector("source")){
+    a.muted = muted;
+    a.play().catch(()=>{});
   }
 
-  // MAIN
-  nowBadge();
+  // allow scroll after open
+  document.body.style.overflowX = "hidden";
+  document.body.style.overflowY = "auto";
+}
+window.openInvite = openInvite;
+window.closeLightbox = closeLightbox;
 
-  const d = getParam("d");
-  if(!d){ showExpired(null); return; }
+/* Init page */
+(function init(){
+  // Fill content
+  $("badge").textContent = CONFIG.badge;
+  $("title").textContent = CONFIG.title;
+  $("groom").textContent = CONFIG.groom;
+  $("bride").textContent = CONFIG.bride;
+  $("inviteText").textContent = CONFIG.inviteText;
+  $("eventDateText").textContent = CONFIG.eventDateText;
+  $("eventTimeText").textContent = CONFIG.eventTimeText;
+  $("venueText").textContent = CONFIG.venueText;
 
-  let p;
-  try{ p = JSON.parse(base64UrlDecode(d)); }
-  catch(e){ showExpired(null); return; }
+  // Theme
+  const savedTheme = localStorage.getItem("kk_theme") || "gold";
+  $("themeSelect").value = savedTheme;
+  setTheme(savedTheme);
+  $("themeSelect").addEventListener("change", (e)=>setTheme(e.target.value));
 
-  // ✅ Expired check fixed:
-  // - hanya aktif kalau expOn=1 dan expMs ada nombor
-  if(p.expOn === 1 && typeof p.expMs === "number" && p.expMs){
-    if(Date.now() > p.expMs){
-      showExpired(p.expMs);
-      return;
-    }
-  }
+  // Buttons
+  $("btnRSVP").addEventListener("click", ()=>window.open(buildWhatsAppLink(), "_blank"));
+  $("btnMaps").addEventListener("click", ()=>window.open(buildMapsLink(), "_blank"));
+  $("btnCal").addEventListener("click", downloadICS);
+  $("btnShare").addEventListener("click", shareLink);
+  $("muteBtn").addEventListener("click", toggleMute);
 
-  const unlock = () => fill(p);
+  // Media
+  setVideo(CONFIG.videoUrl);
+  setAudio(CONFIG.audioUrl);
 
-  if(mustVip(p)) openVip(p, unlock);
-  else unlock();
+  // Gallery + countdown + clock
+  setupGallery();
+  startCountdown();
+  tickClock();
+  setInterval(tickClock, 10000);
+
+  // Start in locked scroll (nice intro)
+  document.body.style.overflowY = "hidden";
 })();
 </script>
+
 </body>
 </html>
