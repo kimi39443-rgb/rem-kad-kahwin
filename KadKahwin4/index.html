@@ -1,95 +1,37 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Kad Kahwin Digital</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{min-height:100vh;background:#000;color:#fff;overflow:hidden}
-    #bgVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;background:#000}
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:-1}
+    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{margin:0;min-height:100vh;background:#000;color:#fff;overflow:hidden}
+    #bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+    .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:-1}
     .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-    .card{
-      width:min(520px,100%);
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:22px;
-      padding:26px 22px;
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 20px 60px rgba(0,0,0,.45);
-      text-align:center;
-    }
-    .badge{display:inline-block;padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.95;margin-bottom:12px}
-    h1{font-size:30px;line-height:1.15;margin:8px 0}
-    p{opacity:.9;line-height:1.55;margin:10px 0 18px}
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:12px 20px;border-radius:999px;border:none;
-      background:#fff;color:#000;font-weight:800;cursor:pointer;
-      transition:transform .12s ease,opacity .12s ease;
-      min-width:200px;
-    }
-    .btn:active{transform:scale(.98)}
-    .btn:hover{opacity:.95}
-    /* Tap-to-play layer */
-    #tapToPlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.78);z-index:10}
-    .tapCard{width:min(520px,100%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:20px 16px;text-align:center;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-    .tapTitle{font-size:18px;font-weight:900;margin-bottom:6px}
-    .tapDesc{font-size:13px;opacity:.85;line-height:1.55;margin-bottom:12px}
-    .tapBtn{padding:12px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.14);color:#fff;font-weight:900;cursor:pointer}
-    .tapBtn:active{transform:scale(.98)}
+    .card{width:min(520px,100%);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);
+      border-radius:22px;padding:22px;text-align:center;backdrop-filter:blur(12px)}
+    h1{margin:0 0 6px;font-size:30px}
+    p{margin:0 0 14px;opacity:.85;line-height:1.5}
+    button{width:100%;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.16);
+      background:#fff;color:#000;font-weight:900;cursor:pointer}
   </style>
 </head>
 <body>
-
-  <video id="bgVideo" muted loop playsinline preload="auto">
-    <source src="assets/bg.mp4" type="video/mp4" />
+  <video id="bg" muted loop playsinline preload="auto">
+    <source src="assets/bg.mp4" type="video/mp4">
   </video>
-  <div class="overlay"></div>
-
-  <div id="tapToPlay">
-    <div class="tapCard">
-      <div class="tapTitle">Ketik untuk mula</div>
-      <div class="tapDesc">Untuk Chrome/Android, video hanya boleh mula selepas 1 sentuhan.</div>
-      <button class="tapBtn" id="tapBtn">Mulakan</button>
-    </div>
-  </div>
-
+  <div class="ov"></div>
   <div class="wrap">
     <div class="card">
-      <div class="badge">Wedding Invitation</div>
       <h1>Walimatul Urus</h1>
-      <p>Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis.</p>
-      <button class="btn" onclick="location.href='invite.html'">Lihat Jemputan</button>
+      <p>Dengan penuh kesyukuran kami menjemput anda hadir</p>
+      <button onclick="location.href='invite.html'">Lihat Jemputan</button>
     </div>
   </div>
-
   <script>
-    const v = document.getElementById("bgVideo");
-    const tapLayer = document.getElementById("tapToPlay");
-    const tapBtn = document.getElementById("tapBtn");
-
-    async function tryPlay(){
-      try{
-        v.muted = true;
-        await v.play();
-        tapLayer.style.display = "none";
-        return true;
-      }catch(e){
-        return false;
-      }
-    }
-    window.addEventListener("load", () => { tryPlay(); });
-    tapBtn.addEventListener("click", async () => {
-      const ok = await tryPlay();
-      if(!ok) alert("Browser masih sekat autoplay. Refresh dan ketik sekali lagi.");
-    });
-    document.addEventListener("visibilitychange", async () => {
-      if(document.hidden){ try{ v.pause(); }catch(e){} }
-      else { try{ await v.play(); }catch(e){} }
-    });
+    (async()=>{ try{ const v=document.getElementById('bg'); v.muted=true; await v.play(); }catch(e){} })();
   </script>
 </body>
 </html>
