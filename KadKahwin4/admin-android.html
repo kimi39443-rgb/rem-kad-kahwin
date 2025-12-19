@@ -2,801 +2,889 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Admin Android • R-E-M</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Admin Android • R-E-M Kad Kahwin</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    :root{ color-scheme: dark; }
-    body{ background:#050505; }
-    .glass{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); }
-    .btn{ padding:.9rem 1rem; border-radius:1.05rem; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); }
-    .btn:hover{ background:rgba(255,255,255,.10); }
-    .btnPrimary{ background:rgba(255,255,255,.92); color:#111; border-color:rgba(255,255,255,.0); font-weight:900; }
-    .btnPrimary:hover{ background:#fff; }
-    .btnDanger{ background:rgba(239,68,68,.16); border-color:rgba(239,68,68,.35); }
-    .btnDanger:hover{ background:rgba(239,68,68,.22); }
-    .btnOk{ background:rgba(34,197,94,.16); border-color:rgba(34,197,94,.35); }
-    .btnOk:hover{ background:rgba(34,197,94,.22); }
-    .field{ width:100%; padding:.95rem 1rem; border-radius:1.05rem; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); outline:none; }
-    .label{ font-size:11px; letter-spacing:.22em; text-transform:uppercase; opacity:.6; margin-bottom:.35rem; }
-    .hr{ border-top:1px solid rgba(255,255,255,.10); }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .muted{ opacity:.6; }
+    :root{
+      --bg1:#070707; --bg2:#000;
+      --card: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+      --text: #fff;
+      --accent: #d4af37;
+      --radius: 22px;
+    }
+    body{
+      margin:0; color:var(--text);
+      background:
+        radial-gradient(900px 520px at 20% 10%, rgba(255,255,255,.07), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+      padding-bottom: 108px; /* ruang sticky bar */
+    }
+    .glass{
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+      position: relative;
+      overflow: hidden;
+    }
+    .chip{ border:1px solid var(--stroke); background: rgba(0,0,0,.25); }
+    .input{
+      width:100%;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      padding: 12px 14px;
+      background: rgba(0,0,0,.25);
+      outline:none;
+      color: white;
+    }
+    .ta{
+      width:100%;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      padding: 12px 14px;
+      background: rgba(0,0,0,.25);
+      outline:none;
+      color: white;
+      min-height: 92px;
+      resize: vertical;
+    }
+    .btn{
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      padding: 12px 14px;
+      background: rgba(0,0,0,.22);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      font-weight: 800;
+    }
+    .btn:active{ transform: scale(.99); }
+    .btnPrimary{
+      background: var(--accent);
+      color: #0b0b0b;
+      border-color: rgba(255,255,255,.18);
+      font-weight: 900;
+    }
+    .btnDanger{
+      background: rgba(239,68,68,.22);
+      border-color: rgba(239,68,68,.35);
+    }
+    .btnOk{
+      background: rgba(34,197,94,.18);
+      border-color: rgba(34,197,94,.25);
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+    .small{ font-size: 12px; opacity:.7; }
+    .rowCard{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      background: rgba(0,0,0,.20);
+      padding: 10px;
+    }
+    .toggle{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius: 18px;
+      padding: 12px 14px;
+    }
+    .switch{
+      width: 58px; height: 32px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      position: relative;
+      flex: 0 0 auto;
+    }
+    .switch::after{
+      content:"";
+      position:absolute; top:3px; left:3px;
+      width: 26px; height: 26px; border-radius: 999px;
+      background: rgba(255,255,255,.85);
+      transition: .18s ease;
+    }
+    .switch.on{
+      background: color-mix(in srgb, var(--accent) 30%, rgba(255,255,255,.08));
+      border-color: color-mix(in srgb, var(--accent) 35%, rgba(255,255,255,.14));
+    }
+    .switch.on::after{ left: 29px; background: #0b0b0b; }
+    a.link{
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(255,255,255,.25);
+      word-break: break-all;
+    }
+
+    /* Sticky Bar Android */
     .stickyBar{
-      position: sticky;
+      position: fixed;
+      left: 0; right: 0;
       bottom: 0;
-      z-index: 30;
-      background: linear-gradient(to top, rgba(0,0,0,.85), rgba(0,0,0,0));
-      padding: 12px 0 0;
-      margin-top: 14px;
+      z-index: 999;
+      padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.72));
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .stickyInner{
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .stickyGrid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stickyGrid3{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* batch textarea */
+    .batchTA{
+      min-height: 170px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.45;
     }
     .pill{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 10px 12px;
       border-radius: 999px;
-      padding: .55rem .9rem;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
       font-size: 12px;
-      letter-spacing: .16em;
-      text-transform: uppercase;
+      font-weight: 800;
     }
   </style>
 </head>
 
-<body class="min-h-screen p-3 sm:p-4">
-  <div class="max-w-[1100px] mx-auto space-y-3">
+<body class="p-4 max-w-[760px] mx-auto space-y-4">
 
-    <!-- HEADER -->
-    <div class="glass rounded-3xl p-4 sm:p-5 flex items-start justify-between gap-3">
+  <div class="glass p-5 space-y-2">
+    <div class="flex items-center justify-between gap-2">
       <div>
-        <div class="text-xl font-extrabold">Admin Panel (Android)</div>
-        <div class="text-white/60 text-sm">Edit pelanggan → auto link → copy Versi 1–5 → VIP lock.</div>
-        <div class="flex flex-wrap gap-2 mt-3">
-          <span id="pillLogin" class="pill">STATUS: -</span>
-          <span id="pillVip" class="pill">VIP: -</span>
-        </div>
+        <div class="text-xs tracking-[.35em] uppercase opacity-70">Admin Android</div>
+        <div class="text-2xl font-extrabold">R-E-M Kad Kahwin</div>
       </div>
+      <div class="chip text-xs px-3 py-2 rounded-full">Batch + Expired</div>
+    </div>
+    <div class="text-sm text-white/70 leading-relaxed">
+      Isi maklumat → tekan <b>Generate</b> → copy link bagi tetamu.
+      Ada <b>Batch</b> untuk jana ramai tetamu sekali.
+    </div>
+  </div>
 
-      <div class="flex gap-2">
-        <button id="btnChangePass" class="btn">Tukar Admin</button>
-        <button id="btnLogout" class="btn">Logout</button>
+  <!-- 1) Base URL + Pakej -->
+  <div class="glass p-5 space-y-4">
+    <div class="text-lg font-extrabold">Setup Asas</div>
+
+    <div>
+      <div class="text-sm text-white/70 mb-1">Base URL invite.html (WAJIB)</div>
+      <input id="fBase" class="input" placeholder="https://.../KadKahwin4/invite.html" />
+      <div class="small mt-1">
+        Contoh: <span class="mono">https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html</span>
       </div>
     </div>
 
-    <!-- LOGIN -->
-    <div id="loginCard" class="glass rounded-3xl p-5 space-y-3 hidden">
-      <div class="text-lg font-extrabold">Masuk Admin</div>
-      <input id="passInput" type="password" class="field" placeholder="Password admin" />
-      <button id="btnLogin" class="btnPrimary w-full">Masuk</button>
-      <div id="loginMsg" class="text-sm text-red-300"></div>
-      <div class="text-xs text-white/50">
-        Default password (kali pertama): <span class="mono">123456</span>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">Pakej</div>
+        <select id="fPkg" class="input">
+          <option value="basic">Basic (Versi 1)</option>
+          <option value="vip" selected>VIP (Versi 1–3)</option>
+          <option value="pro">Pro (Versi 1–5)</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="text-sm text-white/70 mb-1">Versi Utama</div>
+        <select id="fVer" class="input">
+          <option value="1">Versi 1</option>
+          <option value="2">Versi 2</option>
+          <option value="3">Versi 3</option>
+          <option value="4">Versi 4</option>
+          <option value="5">Versi 5</option>
+        </select>
+        <div class="small mt-1">Versi akan auto lock ikut pakej.</div>
+      </div>
+
+      <div>
+        <div class="text-sm text-white/70 mb-1">Expired Date</div>
+        <input id="fExpire" class="input" placeholder="2025-12-31 23:59" />
+        <div class="small mt-1">Format: <span class="mono">YYYY-MM-DD HH:mm</span> (Malaysia)</div>
       </div>
     </div>
 
-    <!-- APP -->
-    <div id="app" class="glass rounded-3xl p-4 sm:p-5 hidden">
-      <div class="grid lg:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="rowCard">
+        <div class="font-extrabold">Harga (RM)</div>
+        <input id="fPrice" class="input mt-2" placeholder="79" />
+      </div>
+      <div class="rowCard">
+        <div class="font-extrabold">Tempoh (hari)</div>
+        <input id="fDays" class="input mt-2" placeholder="30" />
+      </div>
+      <div class="rowCard">
+        <div class="font-extrabold">Auto-set expired</div>
+        <button id="btnAutoExpire" class="btn btnOk w-full mt-2">Set Expired = Hari Ini + Tempoh</button>
+        <div class="small mt-2">Berguna kalau jual langganan.</div>
+      </div>
+    </div>
 
-        <!-- LEFT -->
-        <div class="space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <div class="label">Pelanggan</div>
-              <div class="text-lg font-extrabold">Senarai</div>
-            </div>
-            <div class="flex gap-2">
-              <button id="btnNew" class="btn">+ Baru</button>
-              <button id="btnRename" class="btn">Rename</button>
-              <button id="btnDelete" class="btn btnDanger">Padam</button>
-            </div>
+    <div class="flex gap-2 flex-wrap">
+      <span class="pill">✅ Auto Lock bila expired</span>
+      <span class="pill">✅ Copy 1–5</span>
+      <span class="pill">✅ Batch tetamu</span>
+    </div>
+  </div>
+
+  <!-- 2) Maklumat Majlis -->
+  <div class="glass p-5 space-y-4">
+    <div class="flex items-center justify-between gap-2">
+      <div class="text-lg font-extrabold">Maklumat Jemputan</div>
+      <button id="btnReset" class="btn btnDanger">Reset</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">Tajuk</div>
+        <input id="fTitle" class="input" placeholder="Walimatul Urus" />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Nama Pengantin</div>
+        <input id="fCouple" class="input" placeholder="Karim & Masni" />
+      </div>
+
+      <div>
+        <div class="text-sm text-white/70 mb-1">Tarikh (dd/mm/yyyy)</div>
+        <input id="fDate" class="input" placeholder="01/12/2025" />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Masa</div>
+        <input id="fTime" class="input" placeholder="9.00am – 2.00pm" />
+      </div>
+
+      <div>
+        <div class="text-sm text-white/70 mb-1">Tempat / Dewan</div>
+        <input id="fVenue" class="input" placeholder="Dewan Serbaguna" />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Alamat</div>
+        <input id="fAddress" class="input" placeholder="Alamat ringkas majlis" />
+      </div>
+    </div>
+
+    <div>
+      <div class="text-sm text-white/70 mb-1">Ayat Jemputan</div>
+      <textarea id="fMessage" class="ta" placeholder="Dengan penuh kesyukuran..."></textarea>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">WhatsApp RSVP (60...)</div>
+        <input id="fWA" class="input mono" placeholder="60123456789" />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Google Maps Link</div>
+        <input id="fMaps" class="input" placeholder="https://maps.google.com/..." />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Waze Link (optional)</div>
+        <input id="fWaze" class="input" placeholder="https://waze.com/..." />
+      </div>
+    </div>
+  </div>
+
+  <!-- 3) Tema Premium -->
+  <div class="glass p-5 space-y-4">
+    <div class="text-lg font-extrabold">Tema Premium</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">Mood</div>
+        <select id="fMood" class="input">
+          <option value="aurora">Aurora Silk</option>
+          <option value="gold">Gold Foil Luxe</option>
+          <option value="galaxy">Starfield Galaxy</option>
+          <option value="bokeh">Bokeh Romance</option>
+          <option value="islamic">Islamic Emerald</option>
+          <option value="marble">Royal Marble</option>
+        </select>
+      </div>
+
+      <div>
+        <div class="text-sm text-white/70 mb-1">Accent Color</div>
+        <input id="fAccent" type="color" class="input" style="height:48px" value="#d4af37" />
+      </div>
+
+      <div class="space-y-2">
+        <div class="toggle">
+          <div>
+            <div class="font-extrabold">Video Background</div>
+            <div class="small">Fail: <span class="mono">assets/bg.mp4</span></div>
           </div>
-
-          <select id="customerSelect" class="field"></select>
-
-          <div class="hr"></div>
-
-          <div class="label">Backup</div>
-          <div class="flex flex-wrap gap-2">
-            <button id="btnExport" class="btn">Export JSON</button>
-            <label class="btn cursor-pointer">
-              Import JSON
-              <input id="importFile" type="file" accept="application/json" class="hidden">
-            </label>
-            <button id="btnResetAll" class="btn btnDanger">Reset Semua</button>
-          </div>
-
-          <div class="text-xs text-white/45">
-            Data simpan dalam <span class="mono">localStorage</span> (device ini). Kalau buka phone lain, data tak ikut.
-          </div>
-
-          <div class="hr"></div>
-
-          <!-- VIP -->
-          <div class="space-y-2">
-            <div class="label">VIP Lock</div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <button id="btnVipLock" class="btn btnDanger">VIP: Lock</button>
-              <button id="btnVipUnlock" class="btn btnOk">VIP: Unlock</button>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2">
-              <button id="btnChangeVip" class="btn">Tukar VIP Code</button>
-              <button id="btnShowVip" class="btn">Lihat VIP Code</button>
-            </div>
-
-            <div class="text-xs text-white/50">
-              Bila VIP lock ON, tetamu kena masuk kod VIP di jemputan.
-            </div>
-          </div>
-
+          <div id="swVideo" class="switch"></div>
         </div>
-
-        <!-- RIGHT -->
-        <div class="space-y-3">
-
+        <div class="toggle">
           <div>
-            <div class="label">Maklumat Majlis</div>
-            <div class="text-lg font-extrabold">Edit</div>
+            <div class="font-extrabold">Photo Background</div>
+            <div class="small">Fail: <span class="mono">assets/p1.jpg..l3.jpg</span></div>
           </div>
-
-          <!-- Base URL -->
-          <div class="space-y-2">
-            <div class="flex items-center justify-between gap-2">
-              <div>
-                <div class="label">Base URL</div>
-                <div class="text-xs text-white/45">Auto detect folder KadKahwin4. Boleh OFF jika perlu.</div>
-              </div>
-              <button id="btnAutoBase" class="btn">AutoBase: ON</button>
-            </div>
-            <input id="baseUrl" class="field mono" placeholder="Auto: https://.../KadKahwin4/" />
-          </div>
-
-          <!-- Main -->
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <div class="label">Nama Pengantin</div>
-              <input id="names" class="field" placeholder="Karim & Masni" />
-            </div>
-            <div>
-              <div class="label">WhatsApp (60...)</div>
-              <input id="wa" class="field mono" placeholder="601111661303" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <div class="label">Tarikh</div>
-              <input id="date" class="field" placeholder="01/12/2025" />
-            </div>
-            <div>
-              <div class="label">Masa</div>
-              <input id="time" class="field" placeholder="9.00am – 2.00pm" />
-            </div>
-          </div>
-
-          <div>
-            <div class="label">Tempat</div>
-            <input id="location" class="field" placeholder="Dewan Serbaguna" />
-          </div>
-
-          <div>
-            <div class="label">Alamat</div>
-            <input id="address" class="field" placeholder="Alamat ringkas majlis di sini" />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <div class="label">Google Maps URL</div>
-              <input id="maps" class="field mono" placeholder="https://maps.google.com/..." />
-            </div>
-            <div>
-              <div class="label">Music URL (optional)</div>
-              <input id="music" class="field mono" placeholder="https://.../song.mp3" />
-            </div>
-          </div>
-
-          <!-- Big Sticky Save -->
-          <div class="stickyBar">
-            <div class="grid grid-cols-2 gap-2">
-              <button id="btnSave" class="btnPrimary w-full">Simpan</button>
-              <button id="btnOpenInvite" class="btn w-full">Preview</button>
-            </div>
-          </div>
-
-          <div class="hr"></div>
-
-          <!-- NORMAL 1–5 LINKS -->
-          <div>
-            <div class="label">Jana 5 Link Versi (Normal)</div>
-            <div id="links" class="space-y-2"></div>
-          </div>
-
-          <!-- PERSONAL TO/FROM -->
-          <div class="hr"></div>
-
-          <div class="space-y-2">
-            <div class="label">Personal Link (To/From)</div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <div class="label">To (Nama Tetamu)</div>
-                <input id="toName" class="field" placeholder="Contoh: Ali Bin Abu" />
-              </div>
-              <div>
-                <div class="label">From (Daripada)</div>
-                <input id="fromName" class="field" placeholder="Contoh: Karim & Masni" />
-              </div>
-            </div>
-
-            <div class="text-xs text-white/45">
-              Link akan jadi: <span class="mono">invite.html?...&to=...&from=...</span>
-            </div>
-
-            <div class="label pt-2">Copy Link 1–5 (To+From)</div>
-            <div id="personalLinks" class="space-y-2"></div>
-          </div>
-
+          <div id="swPhoto" class="switch"></div>
         </div>
       </div>
     </div>
 
-    <div class="text-center text-xs text-white/35 select-none">
-      © R-E-M Digital Invitation • Admin Android
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">Photo Template</div>
+        <select id="fPhotoKey" class="input">
+          <option value="p1">Portrait • p1.jpg</option>
+          <option value="p2">Portrait • p2.jpg</option>
+          <option value="p3">Portrait • p3.jpg</option>
+          <option value="l1">Landscape • l1.jpg</option>
+          <option value="l2">Landscape • l2.jpg</option>
+          <option value="l3">Landscape • l3.jpg</option>
+        </select>
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Orientation</div>
+        <select id="fOri" class="input">
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </div>
     </div>
 
+    <div>
+      <div class="text-sm text-white/70 mb-1">Music URL (optional)</div>
+      <input id="fMusic" class="input" placeholder="https://.../music.mp3" />
+    </div>
+  </div>
+
+  <!-- 4) Personalize -->
+  <div class="glass p-5 space-y-4">
+    <div class="text-lg font-extrabold">Personalize Link (Optional)</div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <div class="text-sm text-white/70 mb-1">From (cth: Keluarga Karim)</div>
+        <input id="fFrom" class="input" placeholder="Keluarga Karim" />
+      </div>
+      <div>
+        <div class="text-sm text-white/70 mb-1">Nama Tetamu (auto isi RSVP)</div>
+        <input id="fGuest" class="input" placeholder="Encik Ali" />
+      </div>
+    </div>
+
+    <div class="rowCard">
+      <div class="font-extrabold mb-2">Batch Tetamu (1 baris = 1 tetamu)</div>
+      <div class="small mb-2">Format: <span class="mono">Nama Tetamu | From</span> (From optional)</div>
+      <textarea id="batchTA" class="ta batchTA" placeholder="Encik Ali | Keluarga Karim&#10;Puan Siti | Keluarga Masni&#10;Ahmad"></textarea>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+        <button id="btnMakeBatch" class="btn btnOk">Jana Link Batch</button>
+        <button id="btnCopyBatch" class="btn btnPrimary">Copy Semua Link Batch</button>
+      </div>
+
+      <div class="small mt-3">Output:</div>
+      <textarea id="batchOut" class="ta batchTA" readonly placeholder="Link batch akan keluar di sini..."></textarea>
+    </div>
+  </div>
+
+  <!-- 5) OUTPUT -->
+  <div class="glass p-5 space-y-3">
+    <div class="flex items-center justify-between gap-2">
+      <div class="text-lg font-extrabold">Link Utama</div>
+      <div class="chip text-xs px-3 py-2 rounded-full">Auto Generate</div>
+    </div>
+
+    <div class="rowCard">
+      <div class="small mb-2">Link untuk tetamu:</div>
+      <a id="outLink" class="link" href="#" target="_blank">—</a>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <button id="btnCopy" class="btn btnPrimary">Copy Link</button>
+      <button id="btnPreview" class="btn">Preview</button>
+    </div>
+
+    <div class="rowCard">
+      <div class="font-extrabold mb-2">Copy 1–5 (Versi)</div>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+        <button class="btn" data-copyver="1">Copy V1</button>
+        <button class="btn" data-copyver="2">Copy V2</button>
+        <button class="btn" data-copyver="3">Copy V3</button>
+        <button class="btn" data-copyver="4">Copy V4</button>
+        <button class="btn" data-copyver="5">Copy V5</button>
+      </div>
+      <button id="btnCopyAllVers" class="btn btnOk w-full mt-2">Copy Semua (V1–V5)</button>
+      <textarea id="allVersOut" class="ta batchTA mt-2" readonly placeholder="Link V1–V5 akan keluar di sini..."></textarea>
+    </div>
+
+    <div class="small">
+      ⚠️ Expired: Bila masa tamat, jemputan akan auto lock (kena update <b>invite.html patch</b> bawah).
+    </div>
+  </div>
+
+  <!-- Sticky bar -->
+  <div class="stickyBar">
+    <div class="stickyInner glass p-3 rounded-[22px]">
+      <div class="stickyGrid">
+        <button id="btnSave" class="btn btnPrimary">💾 Simpan</button>
+        <button id="btnRegen" class="btn">🔁 Generate</button>
+      </div>
+      <div class="stickyGrid3 mt-2">
+        <button id="btnQuickCopy" class="btn">📋 Copy</button>
+        <button id="btnQuickV" class="btn">📦 Copy 1–5</button>
+        <button id="btnQuickBatch" class="btn">👥 Batch</button>
+      </div>
+      <div class="small mt-2 opacity-60">Data auto simpan dalam telefon (Android friendly).</div>
+    </div>
   </div>
 
 <script>
 /* =========================
-   STORAGE KEYS
+   STORAGE
 ========================= */
-const LS_PASS      = "REM_ADMIN_PASS_V1";
-const LS_OK        = "REM_ADMIN_OK_V1";
-const LS_CUSTOMERS = "REM_CUSTOMERS_V2";
-const LS_AUTOBASE  = "REM_AUTO_BASE_V1";
+const KEY = "REM_ADMIN_ANDROID_V3";
 
-const LS_VIP_ON    = "REM_VIP_ON_V1";
-const LS_VIP_PASS  = "REM_VIP_PASS_V1";
+const DEFAULT = {
+  base:"",
+  pkg:"vip",
+  v:1,
 
-/* =========================
-   DEFAULTS ONCE
-========================= */
-if(!localStorage.getItem(LS_PASS)) localStorage.setItem(LS_PASS, "123456");
-if(!localStorage.getItem(LS_VIP_PASS)) localStorage.setItem(LS_VIP_PASS, "VIP123");
-if(!localStorage.getItem(LS_VIP_ON)) localStorage.setItem(LS_VIP_ON, "0");
-if(!localStorage.getItem(LS_AUTOBASE)) localStorage.setItem(LS_AUTOBASE, "1");
+  // jualan/langganan
+  price:"79",
+  days:"30",
+  expire:"", // "YYYY-MM-DD HH:mm"
 
-/* =========================
-   HELPERS
-========================= */
+  title:"Walimatul Urus",
+  couple:"Karim & Masni",
+  date:"01/12/2025",
+  time:"9.00am – 2.00pm",
+  venue:"Dewan Serbaguna",
+  address:"",
+  message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis.",
+
+  wa:"60123456789",
+  maps:"",
+  waze:"",
+  music:"",
+
+  theme:"aurora",
+  accent:"#d4af37",
+  videoOn:false,
+  photoOn:false,
+  photoKey:"p1",
+  ori:"portrait",
+
+  from:"",
+  guest:"",
+  batchText:""
+};
+
 const $ = (id)=>document.getElementById(id);
 
-function toast(msg){ alert(msg); }
+function onlyDigits(s){ return (s||"").toString().replace(/[^\d]/g,""); }
+function safeParse(raw){ try{ return JSON.parse(raw); }catch(e){ return null; } }
+function load(){
+  const raw = localStorage.getItem(KEY);
+  const d = raw ? safeParse(raw) : null;
+  return { ...DEFAULT, ...(d||{}) };
+}
+function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
 
-function getBaseUrlAuto(){
-  // admin-android.html dalam folder KadKahwin4/
-  const url = new URL(location.href);
-  url.hash = ""; url.search = "";
-  url.pathname = url.pathname.replace(/\/[^\/]*$/, "/");
-  return url.toString();
-}
+let DATA = load();
 
-function loadCustomers(){
-  try{ return JSON.parse(localStorage.getItem(LS_CUSTOMERS) || "[]"); }
-  catch(e){ return []; }
+/* =========================
+   SWITCH
+========================= */
+function setSwitch(el, on){
+  el.classList.toggle("on", !!on);
+  el.dataset.on = on ? "1" : "0";
 }
-function saveCustomers(list){
-  localStorage.setItem(LS_CUSTOMERS, JSON.stringify(list));
-}
-
-function uid(){
-  return "C" + Math.random().toString(16).slice(2,10) + Date.now().toString(16);
-}
-
-function slugify(s){
-  return (s || "")
-    .toLowerCase()
-    .replace(/&/g,"and")
-    .replace(/[^a-z0-9]+/g,"-")
-    .replace(/^-+|-+$/g,"")
-    .slice(0,40) || "pelanggan";
-}
-function uniqueSlug(base, list){
-  let s = slugify(base);
-  let i = 2;
-  const exists = (x)=>list.some(c=> (c.slug||"") === x);
-  while(exists(s)) { s = slugify(base) + "-" + i; i++; }
-  return s;
+function getSwitch(el){ return el.dataset.on === "1"; }
+function bindSwitch(id){
+  const el = $(id);
+  el.addEventListener("click", ()=>{
+    const now = !getSwitch(el);
+    setSwitch(el, now);
+    // rule: video ON => photo OFF
+    if(id==="swVideo" && now){
+      setSwitch($("swPhoto"), false);
+    }
+    regenAll();
+  });
 }
 
-function currentForm(){
+/* =========================
+   ENCODE
+========================= */
+function b64urlEncode(obj){
+  const json = JSON.stringify(obj);
+  const b64 = btoa(unescape(encodeURIComponent(json)));
+  return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+}
+
+/* =========================
+   PKG LOCK
+========================= */
+function pkgAllowed(pkg){
+  const p = (pkg||"vip").toLowerCase();
+  if(p==="basic") return [1];
+  if(p==="vip") return [1,2,3];
+  return [1,2,3,4,5];
+}
+function clampVerByPkg(){
+  const allowed = pkgAllowed($("fPkg").value);
+  const v = parseInt($("fVer").value||"1",10);
+  if(!allowed.includes(v)) $("fVer").value = String(allowed[0]);
+  [...$("fVer").options].forEach(opt=>{
+    const n = parseInt(opt.value,10);
+    opt.disabled = !allowed.includes(n);
+    opt.textContent = "Versi " + n + (opt.disabled ? " (Lock)" : "");
+  });
+}
+
+/* =========================
+   EXPIRE HANDLING
+========================= */
+function nowLocalYMDHM(){
+  const d = new Date();
+  const pad = (n)=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function addDaysToNow(days){
+  const d = new Date();
+  d.setDate(d.getDate() + (parseInt(days||"0",10)||0));
+  const pad = (n)=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} 23:59`;
+}
+
+/* =========================
+   UI
+========================= */
+function fillUI(){
+  $("fBase").value = DATA.base || "";
+  $("fPkg").value = DATA.pkg || "vip";
+  $("fVer").value = String(DATA.v||1);
+
+  $("fPrice").value = DATA.price || "";
+  $("fDays").value = DATA.days || "";
+  $("fExpire").value = DATA.expire || "";
+
+  $("fTitle").value = DATA.title || "";
+  $("fCouple").value = DATA.couple || "";
+  $("fDate").value = DATA.date || "";
+  $("fTime").value = DATA.time || "";
+  $("fVenue").value = DATA.venue || "";
+  $("fAddress").value = DATA.address || "";
+  $("fMessage").value = DATA.message || "";
+
+  $("fWA").value = DATA.wa || "";
+  $("fMaps").value = DATA.maps || "";
+  $("fWaze").value = DATA.waze || "";
+  $("fMusic").value = DATA.music || "";
+
+  $("fMood").value = DATA.theme || "aurora";
+  $("fAccent").value = DATA.accent || "#d4af37";
+
+  setSwitch($("swVideo"), !!DATA.videoOn);
+  setSwitch($("swPhoto"), !!DATA.photoOn);
+  $("fPhotoKey").value = DATA.photoKey || "p1";
+  $("fOri").value = DATA.ori || "portrait";
+
+  $("fFrom").value = DATA.from || "";
+  $("fGuest").value = DATA.guest || "";
+
+  $("batchTA").value = DATA.batchText || "";
+
+  clampVerByPkg();
+  regenAll();
+}
+
+function readUI(){
+  DATA.base = ($("fBase").value||"").trim();
+  DATA.pkg  = ($("fPkg").value||"vip").toLowerCase();
+  DATA.v    = parseInt($("fVer").value||"1",10) || 1;
+
+  DATA.price = ($("fPrice").value||"").trim();
+  DATA.days  = ($("fDays").value||"").trim();
+  DATA.expire= ($("fExpire").value||"").trim();
+
+  DATA.title = ($("fTitle").value||"").trim();
+  DATA.couple= ($("fCouple").value||"").trim();
+  DATA.date  = ($("fDate").value||"").trim();
+  DATA.time  = ($("fTime").value||"").trim();
+  DATA.venue = ($("fVenue").value||"").trim();
+  DATA.address = ($("fAddress").value||"").trim();
+  DATA.message = ($("fMessage").value||"").trim();
+
+  DATA.wa = onlyDigits($("fWA").value||"");
+  DATA.maps = ($("fMaps").value||"").trim();
+  DATA.waze = ($("fWaze").value||"").trim();
+  DATA.music= ($("fMusic").value||"").trim();
+
+  DATA.theme= ($("fMood").value||"aurora").toLowerCase();
+  DATA.accent=($("fAccent").value||"#d4af37").trim();
+
+  DATA.videoOn = getSwitch($("swVideo"));
+  DATA.photoOn = getSwitch($("swPhoto"));
+  DATA.photoKey= ($("fPhotoKey").value||"p1").trim();
+  DATA.ori     = ($("fOri").value||"portrait").trim();
+
+  DATA.from = ($("fFrom").value||"").trim();
+  DATA.guest= ($("fGuest").value||"").trim();
+
+  DATA.batchText = ($("batchTA").value||"").trim();
+}
+
+/* =========================
+   BUILD LINK
+========================= */
+function buildPayload(){
+  readUI();
+  clampVerByPkg();
+  DATA.v = parseInt($("fVer").value||"1",10) || 1;
+
   return {
-    baseUrl: ($("baseUrl").value || "").trim(),
-    names: ($("names").value || "").trim(),
-    wa: ($("wa").value || "").trim().replace(/\s+/g,""),
-    date: ($("date").value || "").trim(),
-    time: ($("time").value || "").trim(),
-    location: ($("location").value || "").trim(),
-    address: ($("address").value || "").trim(),
-    maps: ($("maps").value || "").trim(),
-    music: ($("music").value || "").trim(),
+    title: DATA.title,
+    message: DATA.message,
+    couple: DATA.couple,
+    date: DATA.date,
+    time: DATA.time,
+    venue: DATA.venue,
+    address: DATA.address,
 
-    // VIP flags shared to invite via payload
-    vipOn: (localStorage.getItem(LS_VIP_ON) === "1") ? 1 : 0,
-    vipPass: localStorage.getItem(LS_VIP_PASS) || "VIP123",
+    wa: DATA.wa,
+    maps: DATA.maps,
+    waze: DATA.waze,
+    music: DATA.music,
+
+    pkg: DATA.pkg,
+    theme: DATA.theme,
+    accent: DATA.accent,
+
+    videoOn: !!DATA.videoOn,
+    photoOn: !!DATA.photoOn,
+    photoKey: DATA.photoKey,
+    ori: DATA.ori,
+
+    // jualan/langganan
+    price: DATA.price,
+    days: DATA.days,
+    expire: DATA.expire
   };
 }
 
-function fillForm(c){
-  $("baseUrl").value  = c.baseUrl || getBaseUrlAuto();
-  $("names").value    = c.names || "";
-  $("wa").value       = c.wa || "";
-  $("date").value     = c.date || "";
-  $("time").value     = c.time || "";
-  $("location").value = c.location || "";
-  $("address").value  = c.address || "";
-  $("maps").value     = c.maps || "";
-  $("music").value    = c.music || "";
-}
+function buildUrl(ver, guestName="", fromName=""){
+  const base = (DATA.base||"").trim();
+  if(!base) return "";
 
-function renderSelect(list, selectedId){
-  const sel = $("customerSelect");
-  sel.innerHTML = "";
-  if(list.length === 0){
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "Tiada pelanggan (klik + Baru)";
-    sel.appendChild(opt);
-    sel.disabled = true;
-    return;
-  }
-  sel.disabled = false;
-  for(const c of list){
-    const opt = document.createElement("option");
-    opt.value = c.id;
-    opt.textContent = (c.label || c.names || c.slug || c.id);
-    sel.appendChild(opt);
-  }
-  sel.value = selectedId || list[0].id;
-}
+  const payload = buildPayload();
+  const data = b64urlEncode(payload);
 
-function encodePayload(obj){
-  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-}
+  const url = new URL(base);
+  url.searchParams.set("data", data);
+  url.searchParams.set("pkg", payload.pkg || "vip");
+  url.searchParams.set("v", String(ver));
 
-function buildInviteUrl(version, data){
-  const baseAuto = getBaseUrlAuto();
-  const autoOn = (localStorage.getItem(LS_AUTOBASE) === "1");
-  const base = (autoOn ? baseAuto : (data.baseUrl || baseAuto)).replace(/\/?$/, "/");
+  // theme in url (optional)
+  if(payload.theme) url.searchParams.set("m", payload.theme);
+  if(payload.accent && payload.accent.startsWith("#")) url.searchParams.set("a", payload.accent.replace("#",""));
 
-  const payload = encodePayload(data);
-  const url = new URL(`${base}invite.html?v=${version}&c=${encodeURIComponent(payload)}`);
+  // video/photo
+  url.searchParams.set("video", payload.videoOn ? "1":"0");
+  url.searchParams.set("photo", payload.photoOn ? "1":"0");
+  if(payload.photoKey) url.searchParams.set("img", payload.photoKey);
+  if(payload.ori) url.searchParams.set("ori", payload.ori);
+
+  // personalize
+  const g = (guestName || DATA.guest || "").trim();
+  const f = (fromName || DATA.from || "").trim();
+  if(g) url.searchParams.set("g", g); else url.searchParams.delete("g");
+  if(f) url.searchParams.set("from", f); else url.searchParams.delete("from");
+
   return url.toString();
 }
 
+function regenMain(){
+  const link = buildUrl(DATA.v);
+  $("outLink").textContent = link ? link : "— (Isi Base URL dulu)";
+  $("outLink").href = link ? link : "#";
+}
+
+function regenAllVers(){
+  // jana V1-5 (ikut lock? — kita jana semua tapi nanti invite lock ikut pkg)
+  const lines = [];
+  for(let v=1; v<=5; v++){
+    lines.push(`V${v}: ${buildUrl(v)}`);
+  }
+  $("allVersOut").value = lines.join("\n\n");
+}
+
+function regenAll(){
+  readUI();
+  save(DATA);
+  regenMain();
+  regenAllVers();
+}
+
+/* =========================
+   COPY
+========================= */
 async function copyText(text){
   try{
     await navigator.clipboard.writeText(text);
-    toast("✅ Copy berjaya");
+    return true;
   }catch(e){
     const ta = document.createElement("textarea");
-    ta.value = text; document.body.appendChild(ta);
-    ta.select(); document.execCommand("copy");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
     ta.remove();
-    toast("✅ Copy berjaya");
-  }
-}
-
-/* ===== Normal Links 1–5 ===== */
-function renderLinks(data){
-  const wrap = $("links");
-  wrap.innerHTML = "";
-
-  for(let v=1; v<=5; v++){
-    const url = buildInviteUrl(v, data);
-
-    const card = document.createElement("div");
-    card.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
-
-    const left = document.createElement("div");
-    left.className = "min-w-0";
-    left.innerHTML = `<div class="text-sm font-semibold">Versi ${v}</div>
-                      <div class="text-xs text-white/55 mono truncate">${url}</div>`;
-
-    const right = document.createElement("div");
-    right.className = "flex gap-2 shrink-0";
-
-    const btnCopy = document.createElement("button");
-    btnCopy.className = "btn";
-    btnCopy.textContent = "Copy";
-    btnCopy.onclick = ()=>copyText(url);
-
-    const btnOpen = document.createElement("button");
-    btnOpen.className = "btn";
-    btnOpen.textContent = "Buka";
-    btnOpen.onclick = ()=>window.open(url, "_blank");
-
-    right.appendChild(btnCopy);
-    right.appendChild(btnOpen);
-
-    card.appendChild(left);
-    card.appendChild(right);
-    wrap.appendChild(card);
-  }
-}
-
-/* ===== Personal Links 1–5 (To+From) ===== */
-function buildPersonalUrl(version, data){
-  const url = new URL(buildInviteUrl(version, data));
-  const toV = ($("toName")?.value || "").trim();
-  const fromV = ($("fromName")?.value || "").trim();
-  if(toV) url.searchParams.set("to", toV);
-  if(fromV) url.searchParams.set("from", fromV);
-  return url.toString();
-}
-
-function renderPersonalLinks(data){
-  const wrap = $("personalLinks");
-  if(!wrap) return;
-  wrap.innerHTML = "";
-
-  for(let v=1; v<=5; v++){
-    const url = buildPersonalUrl(v, data);
-
-    const row = document.createElement("div");
-    row.className = "glass rounded-2xl p-3 flex items-center justify-between gap-2";
-
-    const left = document.createElement("div");
-    left.className = "min-w-0";
-    left.innerHTML = `<div class="text-sm font-semibold">Versi ${v} (To+From)</div>
-                      <div class="text-xs text-white/55 mono truncate">${url}</div>`;
-
-    const right = document.createElement("div");
-    right.className = "flex gap-2 shrink-0";
-
-    const btnCopy = document.createElement("button");
-    btnCopy.className = "btn";
-    btnCopy.textContent = "Copy";
-    btnCopy.onclick = ()=>copyText(url);
-
-    const btnOpen = document.createElement("button");
-    btnOpen.className = "btn";
-    btnOpen.textContent = "Buka";
-    btnOpen.onclick = ()=>window.open(url, "_blank");
-
-    right.appendChild(btnCopy);
-    right.appendChild(btnOpen);
-
-    row.appendChild(left);
-    row.appendChild(right);
-    wrap.appendChild(row);
+    return true;
   }
 }
 
 /* =========================
-   LOGIN
+   BATCH
 ========================= */
-function showLogin(){
-  $("loginCard").classList.remove("hidden");
-  $("app").classList.add("hidden");
-  $("pillLogin").textContent = "STATUS: LOGIN";
-}
-function showApp(){
-  $("loginCard").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("pillLogin").textContent = "STATUS: OK";
-}
-
-function doLogin(pass){
-  const real = localStorage.getItem(LS_PASS);
-  if(pass !== real){
-    $("loginMsg").textContent = "Password salah.";
-    return false;
+function makeBatch(){
+  const raw = ($("batchTA").value||"").trim();
+  if(!raw){
+    $("batchOut").value = "";
+    return;
   }
-  localStorage.setItem(LS_OK, "1");
-  $("loginMsg").textContent = "";
-  return true;
-}
+  const rows = raw.split("\n").map(x=>x.trim()).filter(Boolean);
+  const out = [];
 
-function requireLogin(){
-  if(localStorage.getItem(LS_OK) === "1") return true;
-  showLogin();
-  return false;
-}
+  // guna versi utama (pilih)
+  const mainVer = parseInt($("fVer").value||"1",10) || 1;
 
-/* =========================
-   MAIN APP
-========================= */
-let LIST = [];
-let CURRENT_ID = "";
+  rows.forEach((line, idx)=>{
+    const parts = line.split("|").map(x=>x.trim());
+    const name = parts[0] || "";
+    const from = parts[1] || "";
+    const url = buildUrl(mainVer, name, from);
+    if(url) out.push(`${idx+1}. ${name}${from?` (From: ${from})`:""}\n${url}`);
+  });
 
-function refreshPills(){
-  const vipOn = localStorage.getItem(LS_VIP_ON) === "1";
-  $("pillVip").textContent = "VIP: " + (vipOn ? "LOCK" : "UNLOCK");
-}
-
-function refresh(){
-  LIST = loadCustomers();
-
-  if(!LIST.length){
-    const def = {
-      id: uid(),
-      label: "Default",
-      slug: "default",
-      baseUrl: getBaseUrlAuto(),
-      names: "Karim & Masni",
-      wa: "601111661303",
-      date: "01/12/2025",
-      time: "9.00am – 2.00pm",
-      location: "Dewan Serbaguna",
-      address: "Alamat ringkas majlis di sini",
-      maps: "",
-      music: ""
-    };
-    LIST = [def];
-    saveCustomers(LIST);
-  }
-
-  if(!CURRENT_ID || !LIST.some(x=>x.id===CURRENT_ID)){
-    CURRENT_ID = LIST[0].id;
-  }
-
-  renderSelect(LIST, CURRENT_ID);
-  const c = LIST.find(x=>x.id===CURRENT_ID) || LIST[0];
-
-  // AutoBase UI
-  const autoOn = (localStorage.getItem(LS_AUTOBASE) === "1");
-  $("btnAutoBase").textContent = "AutoBase: " + (autoOn ? "ON" : "OFF");
-  $("baseUrl").disabled = autoOn;
-  $("baseUrl").classList.toggle("opacity-60", autoOn);
-  $("baseUrl").value = autoOn ? getBaseUrlAuto() : (c.baseUrl || getBaseUrlAuto());
-
-  fillForm({ ...c, baseUrl: $("baseUrl").value });
-
-  const data = currentForm();
-  renderLinks(data);
-  renderPersonalLinks(data);
-  refreshPills();
-}
-
-function saveCurrent(){
-  const data = currentForm();
-  if(!data.names) return toast("Isi Nama Pengantin dulu.");
-  if(!data.wa) return toast("Isi nombor WhatsApp (contoh: 60123456789).");
-
-  const idx = LIST.findIndex(x=>x.id===CURRENT_ID);
-  const label = (data.names || "Pelanggan").slice(0,32);
-
-  const slugBase = label;
-  const old = (idx>=0 ? LIST[idx] : null);
-  const slug = old?.slug || uniqueSlug(slugBase, LIST);
-
-  const saved = { ...data, id: CURRENT_ID, label, slug };
-  if(idx>=0) LIST[idx] = saved;
-  else LIST.unshift(saved);
-
-  // if AutoBase ON, don't store manual base
-  if(localStorage.getItem(LS_AUTOBASE) === "1"){
-    LIST[idx>=0?idx:0].baseUrl = getBaseUrlAuto();
-  }
-
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Disimpan");
-}
-
-function newCustomer(){
-  const data = currentForm();
-  const label = "Pelanggan Baru";
-  const fresh = {
-    ...data,
-    id: uid(),
-    label,
-    slug: uniqueSlug(label, LIST),
-    baseUrl: getBaseUrlAuto()
-  };
-  LIST.unshift(fresh);
-  saveCustomers(LIST);
-  CURRENT_ID = fresh.id;
-  refresh();
-  toast("✅ Pelanggan baru dibuat");
-}
-
-function renameCustomer(){
-  const c = LIST.find(x=>x.id===CURRENT_ID);
-  if(!c) return;
-  const name = prompt("Nama label baru:", c.label || "");
-  if(!name) return;
-  c.label = name.slice(0,32);
-  if(!c.slug || c.slug.startsWith("pelanggan")){
-    c.slug = uniqueSlug(c.label, LIST.filter(x=>x.id!==CURRENT_ID));
-  }
-  saveCustomers(LIST);
-  refresh();
-  toast("✅ Rename siap");
-}
-
-function deleteCustomer(){
-  if(LIST.length<=1) return toast("Tak boleh padam yang terakhir.");
-  const ok = confirm("Padam pelanggan ini?");
-  if(!ok) return;
-  LIST = LIST.filter(x=>x.id!==CURRENT_ID);
-  saveCustomers(LIST);
-  CURRENT_ID = LIST[0].id;
-  refresh();
-  toast("✅ Dipadam");
-}
-
-function exportJson(){
-  const data = JSON.stringify(loadCustomers(), null, 2);
-  const blob = new Blob([data], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "rem_customers_backup.json";
-  a.click();
-}
-
-async function importJson(file){
-  if(!file) return;
-  const text = await file.text();
-  try{
-    const arr = JSON.parse(text);
-    if(!Array.isArray(arr)) throw new Error("not array");
-    saveCustomers(arr);
-    CURRENT_ID = arr[0]?.id || "";
-    refresh();
-    toast("✅ Import berjaya");
-  }catch(e){
-    toast("❌ File JSON tidak sah");
-  }
-}
-
-function resetAll(){
-  const ok = confirm("Reset semua data pelanggan + logout? (tidak boleh undo)");
-  if(!ok) return;
-  localStorage.removeItem(LS_CUSTOMERS);
-  localStorage.removeItem(LS_OK);
-  toast("✅ Reset siap");
-  location.href = "./index.html";
-}
-
-/* =========================
-   PASSWORDS + VIP
-========================= */
-function changeAdminPassword(){
-  const oldP = prompt("Password admin lama:");
-  if(oldP !== localStorage.getItem(LS_PASS)){
-    return toast("Password lama salah");
-  }
-  const newP = prompt("Password admin baru (min 6):");
-  if(!newP || newP.length < 6) return toast("Password baru terlalu pendek");
-  localStorage.setItem(LS_PASS, newP);
-  toast("✅ Admin password ditukar");
-}
-
-function changeVipPassword(){
-  const oldP = prompt("VIP code lama:");
-  if(oldP !== (localStorage.getItem(LS_VIP_PASS)||"")){
-    return toast("VIP code lama salah");
-  }
-  const newP = prompt("VIP code baru (min 4):");
-  if(!newP || newP.length < 4) return toast("VIP code terlalu pendek");
-  localStorage.setItem(LS_VIP_PASS, newP);
-  toast("✅ VIP code ditukar");
-  refresh();
-}
-
-function showVipCode(){
-  const code = localStorage.getItem(LS_VIP_PASS) || "VIP123";
-  alert("VIP CODE: " + code);
-}
-
-function vipLock(){
-  localStorage.setItem(LS_VIP_ON, "1");
-  toast("✅ VIP Lock ON");
-  refresh();
-}
-function vipUnlock(){
-  localStorage.setItem(LS_VIP_ON, "0");
-  toast("✅ VIP Lock OFF");
-  refresh();
-}
-
-function logout(){
-  localStorage.removeItem(LS_OK);
-  toast("Logout");
-  location.href = "./index.html";
-}
-
-/* =========================
-   AutoBase toggle
-========================= */
-function toggleAutoBase(){
-  const cur = localStorage.getItem(LS_AUTOBASE) === "1";
-  localStorage.setItem(LS_AUTOBASE, cur ? "0" : "1");
-  refresh();
-  toast("✅ AutoBase: " + (!cur ? "ON" : "OFF"));
+  $("batchOut").value = out.join("\n\n");
 }
 
 /* =========================
    EVENTS
 ========================= */
-$("btnLogin").onclick = ()=>{
-  const pass = $("passInput").value || "";
-  if(doLogin(pass)){
-    showApp();
-    refresh();
-  }
-};
+[
+  "fBase","fPkg","fVer","fExpire","fPrice","fDays",
+  "fTitle","fCouple","fDate","fTime","fVenue","fAddress","fMessage",
+  "fWA","fMaps","fWaze","fMusic",
+  "fMood","fAccent","fPhotoKey","fOri",
+  "fFrom","fGuest"
+].forEach(id=>{
+  $(id).addEventListener("input", regenAll);
+  $(id).addEventListener("change", regenAll);
+});
 
-$("btnLogout").onclick = logout;
-$("btnChangePass").onclick = changeAdminPassword;
+$("fPkg").addEventListener("change", ()=>{
+  clampVerByPkg();
+  regenAll();
+});
 
-$("btnVipLock").onclick = vipLock;
-$("btnVipUnlock").onclick = vipUnlock;
-$("btnChangeVip").onclick = changeVipPassword;
-$("btnShowVip").onclick = showVipCode;
+bindSwitch("swVideo");
+bindSwitch("swPhoto");
 
-$("btnAutoBase").onclick = toggleAutoBase;
+$("btnAutoExpire").addEventListener("click", ()=>{
+  const days = parseInt($("fDays").value||"0",10) || 0;
+  $("fExpire").value = days>0 ? addDaysToNow(days) : nowLocalYMDHM();
+  regenAll();
+});
 
-$("customerSelect").onchange = ()=>{
-  CURRENT_ID = $("customerSelect").value;
-  refresh();
-};
+$("btnReset").addEventListener("click", ()=>{
+  if(!confirm("Reset semua data admin?")) return;
+  localStorage.removeItem(KEY);
+  DATA = load();
+  fillUI();
+});
 
-$("btnSave").onclick = saveCurrent;
-$("btnNew").onclick = newCustomer;
-$("btnRename").onclick = renameCustomer;
-$("btnDelete").onclick = deleteCustomer;
+$("btnSave").addEventListener("click", ()=>{
+  readUI(); save(DATA);
+  const old = $("btnSave").textContent;
+  $("btnSave").textContent = "✅ Saved";
+  setTimeout(()=> $("btnSave").textContent = old, 900);
+});
 
-$("btnOpenInvite").onclick = ()=>{
-  const url = buildInviteUrl(1, currentForm());
-  window.open(url, "_blank");
-};
+$("btnRegen").addEventListener("click", regenAll);
 
-$("btnExport").onclick = exportJson;
+$("btnCopy").addEventListener("click", async ()=>{
+  const link = $("outLink").href;
+  if(!link || link==="#"){ alert("Isi Base URL dulu."); return; }
+  await copyText(link);
+  $("btnCopy").textContent = "Copied!";
+  setTimeout(()=> $("btnCopy").textContent = "Copy Link", 900);
+});
 
-$("importFile").onchange = async (e)=>{
-  const file = e.target.files[0];
-  await importJson(file);
-  e.target.value = "";
-};
+$("btnPreview").addEventListener("click", ()=>{
+  const link = $("outLink").href;
+  if(!link || link==="#"){ alert("Isi Base URL dulu."); return; }
+  window.open(link, "_blank");
+});
 
-$("btnResetAll").onclick = resetAll;
-
-// live update links bila edit
-["baseUrl","names","wa","date","time","location","address","maps","music"].forEach(id=>{
-  const el = $(id);
-  if(!el) return;
-  el.addEventListener("input", ()=>{
-    const data = currentForm();
-    renderLinks(data);
-    renderPersonalLinks(data);
+document.querySelectorAll("button[data-copyver]").forEach(btn=>{
+  btn.addEventListener("click", async ()=>{
+    const ver = parseInt(btn.getAttribute("data-copyver"),10);
+    const url = buildUrl(ver);
+    await copyText(url);
+    const old = btn.textContent;
+    btn.textContent = "✅";
+    setTimeout(()=> btn.textContent = old, 700);
   });
 });
 
-// live update personal links bila edit To/From
-["toName","fromName"].forEach(id=>{
-  const el = $(id);
-  if(!el) return;
-  el.addEventListener("input", ()=>{
-    renderPersonalLinks(currentForm());
-  });
+$("btnCopyAllVers").addEventListener("click", async ()=>{
+  regenAllVers();
+  const txt = $("allVersOut").value || "";
+  if(!txt){ alert("Isi Base URL dulu."); return; }
+  await copyText(txt);
+  $("btnCopyAllVers").textContent = "✅ Copied";
+  setTimeout(()=> $("btnCopyAllVers").textContent = "Copy Semua (V1–V5)", 900);
 });
 
-/* =========================
-   BOOT
-========================= */
-$("baseUrl").value = getBaseUrlAuto();
+$("btnMakeBatch").addEventListener("click", ()=>{
+  makeBatch();
+  const old = $("btnMakeBatch").textContent;
+  $("btnMakeBatch").textContent = "✅ Siap";
+  setTimeout(()=> $("btnMakeBatch").textContent = old, 900);
+});
 
-if(requireLogin()){
-  showApp();
-  refresh();
-} else {
-  // login UI shown
-}
+$("btnCopyBatch").addEventListener("click", async ()=>{
+  makeBatch();
+  const txt = $("batchOut").value || "";
+  if(!txt){ alert("Isi batch dulu."); return; }
+  await copyText(txt);
+  $("btnCopyBatch").textContent = "✅ Copied";
+  setTimeout(()=> $("btnCopyBatch").textContent = "Copy Semua Link Batch", 900);
+});
+
+// Quick buttons (sticky)
+$("btnQuickCopy").addEventListener("click", ()=> $("btnCopy").click());
+$("btnQuickV").addEventListener("click", ()=> $("btnCopyAllVers").click());
+$("btnQuickBatch").addEventListener("click", ()=>{
+  // scroll to batch
+  document.getElementById("batchTA").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+// Boot
+fillUI();
 </script>
+
 </body>
 </html>
