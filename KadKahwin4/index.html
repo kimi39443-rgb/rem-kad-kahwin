@@ -1,37 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Kad Kahwin Digital</title>
   <style>
-    *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{margin:0;min-height:100vh;background:#000;color:#fff;overflow:hidden}
-    #bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-    .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:-1}
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
-    .card{width:min(520px,100%);background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);
-      border-radius:22px;padding:22px;text-align:center;backdrop-filter:blur(12px)}
-    h1{margin:0 0 6px;font-size:30px}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b0e;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .box{width:min(520px,92vw);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:18px 16px}
+    h1{margin:0 0 6px;font-size:20px}
     p{margin:0 0 14px;opacity:.85;line-height:1.5}
-    button{width:100%;padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.16);
-      background:#fff;color:#000;font-weight:900;cursor:pointer}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    a{flex:1;min-width:180px;text-decoration:none;color:#fff;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);padding:12px 14px;border-radius:14px;text-align:center;font-weight:700}
+    a:active{transform:scale(.99)}
   </style>
 </head>
 <body>
-  <video id="bg" muted loop playsinline preload="auto">
-    <source src="assets/bg.mp4" type="video/mp4">
-  </video>
-  <div class="ov"></div>
-  <div class="wrap">
-    <div class="card">
-      <h1>Walimatul Urus</h1>
-      <p>Dengan penuh kesyukuran kami menjemput anda hadir</p>
-      <button onclick="location.href='invite.html'">Lihat Jemputan</button>
+  <div class="box">
+    <h1>R-E-M Kad Kahwin</h1>
+    <p>Pilih halaman. Untuk tetamu, gunakan link yang ada <b>?d=</b> (link Generate).</p>
+    <div class="row">
+      <a href="invite.html">Buka Invite (ujian)</a>
+      <a href="admin-android.html">Admin Android</a>
     </div>
   </div>
-  <script>
-    (async()=>{ try{ const v=document.getElementById('bg'); v.muted=true; await v.play(); }catch(e){} })();
-  </script>
 </body>
 </html>
