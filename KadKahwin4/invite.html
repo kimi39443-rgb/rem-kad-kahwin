@@ -1,635 +1,629 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jemputan</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Jemputan Digital</title>
+
+  <!-- QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root{
-      --accent:#d6b36a; /* gold default */
-      --bg:#0b0b0c;
-      --glass:rgba(255,255,255,.10);
-      --border:rgba(255,255,255,.14);
-      --text:#ffffff;
-      --muted:rgba(255,255,255,.80);
-      --shadow:rgba(0,0,0,.45);
+      --bg1:#070707; --bg2:#000;
+      --card: rgba(255,255,255,.07);
+      --stroke: rgba(255,255,255,.14);
+      --text: #fff;
+      --muted: rgba(255,255,255,.72);
+      --accent: #d4af37;
+      --radius: 26px;
+      --glow: 0 0 18px var(--accent), 0 0 42px rgba(255,255,255,.10);
+
+      --motion: 1;
+      --video-on: 1;
+      --video-opacity: .34;
+      --overlay-dim: .58;
     }
-    *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    body{min-height:100vh;background:var(--bg);color:var(--text);overflow-x:hidden}
-    #bgVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3;background:#000;display:none}
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:-2}
-    .topbar{
-      position:sticky;top:0;z-index:5;
-      padding:12px 14px;
-      display:flex;gap:12px;align-items:center;justify-content:space-between;
-      background:linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,0));
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
+
+    @media (prefers-reduced-motion: reduce){
+      :root{ --motion: 0; }
     }
-    .brand{display:flex;flex-direction:column;gap:2px}
-    .brand b{font-size:18px;letter-spacing:.2px}
-    .brand span{opacity:.75;font-size:12px}
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:10px 12px;border-radius:999px;
-      background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);
-      box-shadow:0 10px 26px rgba(0,0,0,.25);
-      font-size:12px;opacity:.95;
+
+    *{ box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body{ margin:0; color:var(--text); min-height:100vh; background: linear-gradient(180deg, var(--bg1), var(--bg2)); overflow-x:hidden; }
+
+    .wrap{ position:relative; min-height:100vh; overflow:hidden; }
+    .layer{ position:absolute; inset:0; pointer-events:none; }
+
+    /* VIDEO */
+    #bgVideo{
+      width:100%; height:100%;
+      object-fit:cover;
+      opacity: calc(var(--video-on) * var(--video-opacity));
+      filter: saturate(1.05) contrast(1.03);
+      transform: scale(1.05);
+      z-index:1;
+      background:#000;
     }
-    .container{width:min(860px,100%);margin:0 auto;padding:16px}
-    .hero{
-      margin-top:8px;
-      background:var(--glass);
-      border:1px solid var(--border);
-      border-radius:26px;
-      padding:18px;
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 20px 70px var(--shadow);
-      position:relative;
+    .dim{ z-index:2; background: rgba(0,0,0,var(--overlay-dim)); }
+
+    /* PREMIUM BACKGROUND */
+    .aurora{
+      z-index:3;
+      opacity:.85;
+      filter: blur(20px) saturate(1.12);
+      background:
+        radial-gradient(900px 520px at 10% 20%, color-mix(in srgb, var(--accent) 35%, transparent), transparent 62%),
+        radial-gradient(720px 520px at 90% 15%, rgba(34,197,94,.14), transparent 64%),
+        radial-gradient(980px 620px at 50% 90%, rgba(251,113,133,.12), transparent 66%);
+      animation: aur 16s ease-in-out infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes aur{ 0%,100%{filter:blur(20px) saturate(1.12)} 50%{filter:blur(22px) saturate(1.18)} }
+
+    .stars{
+      z-index:4;
+      opacity:.28;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.65), transparent 55%),
+        radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(1px 1px at 70% 30%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,.55), transparent 55%),
+        radial-gradient(2px 2px at 25% 35%, rgba(255,255,255,.40), transparent 60%),
+        radial-gradient(2px 2px at 78% 62%, rgba(255,255,255,.40), transparent 60%);
+      animation: drift 18s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes drift{ from{transform:translate3d(0,0,0)} to{transform:translate3d(-3%,2%,0)} }
+
+    .shimmer{
+      z-index:5;
+      opacity:.18;
+      mix-blend-mode: overlay;
+      background: linear-gradient(110deg,
+        transparent 0%,
+        rgba(255,255,255,.10) 30%,
+        rgba(255,255,255,.22) 45%,
+        rgba(255,255,255,.10) 60%,
+        transparent 100%);
+      animation: shim 4.5s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    @keyframes shim{ from{transform:translateX(-120%)} to{transform:translateX(120%)} }
+
+    /* CARD */
+    .container{ position:relative; z-index:10; max-width:580px; margin:0 auto; padding:14px; }
+    .glass{
+      background: var(--card);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
       overflow:hidden;
     }
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:8px 12px;border-radius:999px;
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.16);
-      font-size:12px;letter-spacing:1px;text-transform:uppercase;opacity:.95;
+
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+    .chip{
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.25);
+      border-radius:999px;
+      padding:10px 12px;
+      font-size:11px;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      opacity:.9;
     }
-    h1{font-size:40px;line-height:1.05;margin:14px 0 8px;font-weight:900}
-    .msg{opacity:.9;line-height:1.55;font-size:15px;margin:10px 0 16px}
-    .couple{
-      margin:10px 0 18px;
-      padding:14px 14px;border-radius:18px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      font-size:28px;font-weight:900;letter-spacing:.4px;text-align:center;
-    }
-    .actions{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 6px}
     .btn{
-      flex:1 1 180px;
-      display:inline-flex;align-items:center;justify-content:center;gap:8px;
-      padding:12px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.10);color:#fff;
-      font-weight:900;cursor:pointer;
-      transition:transform .12s ease, opacity .12s ease, background .12s ease;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      padding: 12px 14px;
+      background: rgba(0,0,0,.22);
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
     }
-    .btn:active{transform:scale(.98)}
-    .btnPrimary{background:var(--accent);color:#1b1b1b;border:none}
-    .btnPrimary:hover{opacity:.95}
-    .grid{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:repeat(12,1fr);
-      gap:12px;
+    .btn:active{ transform: scale(.98); }
+    .btnPrimary{
+      background: var(--accent);
+      color: #0b0b0b;
+      border-color: rgba(255,255,255,.18);
+      box-shadow: var(--glow);
     }
-    .card{
-      grid-column:span 12;
-      background:var(--glass);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:16px;
-      backdrop-filter:blur(12px);
-      -webkit-backdrop-filter:blur(12px);
-      box-shadow:0 18px 60px var(--shadow);
+    .input{
+      width:100%;
+      border-radius: 16px;
+      border:1px solid var(--stroke);
+      padding: 12px 14px;
+      background: rgba(0,0,0,.25);
+      outline:none;
+      color:#fff;
     }
-    @media(min-width:740px){
-      .card.half{grid-column:span 6}
+    .muted{ color: var(--muted); }
+    .title{ font-size: 34px; line-height:1.1; font-weight: 950; }
+    .sub{ letter-spacing:.35em; text-transform:uppercase; font-size:11px; opacity:.75; }
+    .hr{ border-top:1px solid rgba(255,255,255,.10); }
+
+    /* Gate (Tap to start) */
+    .gate{
+      position: fixed; inset:0;
+      z-index: 50;
+      display:flex; align-items:center; justify-content:center;
+      padding: 20px;
+      background: rgba(0,0,0,.72);
     }
-    .card h2{font-size:18px;margin-bottom:10px}
-    .kv{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:start}
-    .k{opacity:.75;font-size:13px}
-    .v{font-weight:800}
-    .sub{opacity:.85;font-size:13px;line-height:1.5;margin-top:4px}
-    .countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
-    .cdBox{
-      padding:14px 10px;border-radius:18px;background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);text-align:center;
-    }
-    .cdNum{font-size:26px;font-weight:1000;letter-spacing:1px}
-    .cdLbl{font-size:12px;opacity:.75;margin-top:2px}
-    .tabs{
-      position:fixed;left:0;right:0;bottom:0;z-index:10;
-      padding:10px 10px 14px;
-      background:linear-gradient(to top, rgba(0,0,0,.75), rgba(0,0,0,0));
-      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    }
-    .tabBar{
-      width:min(860px,100%);margin:0 auto;
-      display:flex;gap:10px;overflow:auto;padding-bottom:4px;
-    }
-    .tab{
-      flex:0 0 auto;
-      padding:12px 14px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.10);
-      color:#fff;font-weight:900;cursor:pointer;
-    }
-    .tab.active{background:var(--accent);color:#1b1b1b;border:none}
-    .section{display:none}
-    .section.active{display:block}
-    .vipLock{
-      position:fixed;inset:0;z-index:50;
-      display:none;align-items:center;justify-content:center;padding:18px;
-      background:rgba(0,0,0,.78);
-      backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-    }
-    .vipCard{
-      width:min(560px,100%);border-radius:22px;padding:18px;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow:0 20px 70px rgba(0,0,0,.55);
+    .gateCard{
+      width:min(520px,100%);
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       text-align:center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
     }
-    .vipCard h3{font-size:20px;margin:6px 0 8px}
-    .vipCard p{opacity:.85;font-size:13px;line-height:1.55;margin-bottom:12px}
-    .vipInput{
-      width:100%;padding:12px 14px;border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(0,0,0,.30);color:#fff;outline:none;
-      margin-bottom:10px;
+    .gateTitle{ font-size:18px; font-weight:900; margin-bottom:6px; }
+    .gateDesc{ font-size:13px; opacity:.85; line-height:1.5; margin-bottom:12px; }
+
+    /* VIP Lock Gate */
+    .vipBack{
+      position: fixed; inset:0;
+      z-index: 60;
+      display:none;
+      align-items:center; justify-content:center;
+      padding: 20px;
+      background: rgba(0,0,0,.78);
     }
-    .miniRow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-    .note{opacity:.75;font-size:12px;line-height:1.5;margin-top:10px}
-    .photoWrap{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .photo{
-      width:84px;height:84px;border-radius:18px;overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.18);
+
+    .qrWrap{
+      display:inline-block;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,.18);
+      padding: 12px;
     }
-    .photo img{width:100%;height:100%;object-fit:cover;display:block}
-    .tiny{font-size:12px;opacity:.8}
-    a.link{color:#fff;text-decoration:none;border-bottom:1px dashed rgba(255,255,255,.35)}
+
+    /* Watermark tap admin */
+    .wm-wrap{ position: fixed; inset:0; pointer-events:none; z-index: 40; opacity:.14; mix-blend-mode: overlay; }
+    .wm{ position:absolute; left:-20%; top:30%; width:140%; transform:rotate(-18deg); display:flex; flex-direction:column; gap:18px; }
+    .wm-row{
+      display:flex; gap:26px; white-space:nowrap;
+      font-weight:900; letter-spacing:.35em; text-transform:uppercase; font-size:12px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 0 10px rgba(0,0,0,.35);
+      animation: wmMove 18s linear infinite;
+      animation-play-state: var(--motion)==1 ? running : paused;
+    }
+    .wm-row:nth-child(2){ animation-duration: 22s; opacity:.85; }
+    .wm-row:nth-child(3){ animation-duration: 26s; opacity:.70; }
+    @keyframes wmMove{ from{ transform: translateX(-6%);} to{ transform: translateX(6%);} }
+
+    .footTap{ padding-top:14px; font-size:12px; opacity:.45; text-align:center; }
+    .linkTiny{ color:#fff; opacity:.7; text-decoration: underline; text-decoration-color: rgba(255,255,255,.25); }
+
+    /* Responsive */
+    @media (max-width:380px){
+      .title{ font-size: 30px; }
+    }
   </style>
 </head>
 
 <body>
-  <video id="bgVideo" muted loop playsinline preload="auto">
-    <source src="assets/bg.mp4" type="video/mp4" />
-  </video>
-  <div class="overlay"></div>
+  <div class="wrap" id="wrap">
 
-  <!-- VIP LOCK -->
-  <div class="vipLock" id="vipLock">
-    <div class="vipCard">
-      <div class="badge">VIP Only</div>
-      <h3>Jemputan ini memerlukan kod VIP</h3>
-      <p>Sila masukkan kod yang diberi. (Kod diset dalam admin panel)</p>
-      <input class="vipInput" id="vipCodeInput" placeholder="Contoh: VIP123" />
-      <div class="miniRow">
-        <button class="btn btnPrimary" id="vipUnlockBtn">Buka Jemputan</button>
-        <button class="btn" id="vipGoHomeBtn">Kembali</button>
+    <!-- VIDEO -->
+    <video id="bgVideo" class="layer" muted loop playsinline preload="metadata">
+      <!-- Letak video anda di KadKahwin4/assets/bg.mp4 -->
+      <source src="./assets/bg.mp4" type="video/mp4" />
+    </video>
+
+    <div class="layer dim"></div>
+    <div class="layer aurora"></div>
+    <div class="layer stars"></div>
+    <div class="layer shimmer"></div>
+
+    <!-- WATERMARK -->
+    <div class="wm-wrap" id="wmWrap">
+      <div class="wm">
+        <div class="wm-row" id="wm1"></div>
+        <div class="wm-row" id="wm2"></div>
+        <div class="wm-row" id="wm3"></div>
       </div>
-      <div class="note">Tip: kod VIP boleh dihantar kepada tetamu melalui WhatsApp.</div>
-    </div>
-  </div>
-
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="brand">
-      <b id="topTitle">Kad Kahwin Digital</b>
-      <span id="topSubtitle">Jemputan Rasmi</span>
-    </div>
-    <div class="pill" id="guestPill">👤 Tetamu</div>
-  </div>
-
-  <div class="container">
-
-    <!-- HERO -->
-    <div class="hero">
-      <div class="badge" id="badgeText">WEDDING INVITATION</div>
-
-      <div class="photoWrap" style="margin-top:10px">
-        <div class="photo" id="photoBox" style="display:none"><img id="photoImg" alt="Foto" /></div>
-        <div>
-          <div class="tiny" id="salutationText">Yth. Dato’/Datin/Tuan/Puan/Encik/Cik</div>
-          <div class="tiny" id="guestNameText" style="font-weight:900;margin-top:2px">Tetamu</div>
-        </div>
-      </div>
-
-      <h1 id="invTitle">Walimatul Urus</h1>
-      <div class="msg" id="invMsg">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
-      <div class="couple" id="invCouple">Adam &amp; Hawa</div>
-
-      <div class="actions">
-        <button class="btn btnPrimary" id="btnRsvp">✉️ RSVP Sekarang</button>
-        <button class="btn" id="btnMaps">📍 Lihat Lokasi</button>
-        <button class="btn" id="btnCalendar">🗓️ Add to Calendar</button>
-        <button class="btn" id="btnShare">🔗 Share</button>
-      </div>
-
-      <div class="note" id="copyrightNote"></div>
     </div>
 
-    <!-- SECTIONS -->
-    <div class="grid" style="padding-bottom:110px">
-      <div class="card section active" id="secUtama">
-        <h2>Maklumat Majlis</h2>
-        <div class="kv">
-          <div class="k" id="lblDate">Tarikh</div><div class="v" id="invDate">01/12/2025</div>
-          <div class="k" id="lblTime">Masa</div><div class="v" id="invTime">9.00am – 2.00pm</div>
-          <div class="k" id="lblVenue">Tempat</div><div class="v" id="invVenue">Dewan Serbaguna</div>
-          <div class="k" id="lblAddr">Alamat</div><div class="v" id="invAddr">Alamat ringkas majlis di sini</div>
-        </div>
-
-        <div style="margin-top:14px">
-          <h2 id="cdTitle">Countdown ke hari majlis</h2>
-          <div class="countdown">
-            <div class="cdBox"><div class="cdNum" id="cdD">0</div><div class="cdLbl" id="cdLblD">HARI</div></div>
-            <div class="cdBox"><div class="cdNum" id="cdH">00</div><div class="cdLbl" id="cdLblH">JAM</div></div>
-            <div class="cdBox"><div class="cdNum" id="cdM">00</div><div class="cdLbl" id="cdLblM">MINIT</div></div>
-            <div class="cdBox"><div class="cdNum" id="cdS">00</div><div class="cdLbl" id="cdLblS">SAAT</div></div>
+    <div class="container">
+      <div class="glass" style="padding:18px;">
+        <div class="row">
+          <div class="row" style="gap:8px;">
+            <span class="chip" id="chipPkg">PRO</span>
+            <span class="chip" id="chipVer">V1</span>
+            <span class="chip" id="chipToFrom">—</span>
           </div>
-          <div class="sub" id="cdHint"></div>
-        </div>
-      </div>
 
-      <div class="card section" id="secMaklumat">
-        <h2>Butiran Tambahan</h2>
-        <div class="sub" id="extraInfo">Sila semak butiran di admin panel untuk tambah info seperti nama ibu bapa, dresscode, hadiah, parkir dan lain-lain.</div>
-        <div style="margin-top:10px" class="sub">
-          🎨 Tema: <b id="themeName">Gold</b><br/>
-          🎬 Video: <b id="videoStatus">OFF</b><br/>
-          🔒 VIP: <b id="vipStatus">OFF</b><br/>
-          🌐 Bahasa: <b id="langStatus">BM</b>
+          <select id="verPicker" class="chip" style="background:transparent; color:#fff;">
+            <option value="1">Versi 1</option>
+            <option value="2">Versi 2</option>
+            <option value="3">Versi 3</option>
+            <option value="4">Versi 4</option>
+            <option value="5">Versi 5</option>
+          </select>
         </div>
-      </div>
 
-      <div class="card section" id="secAturcara">
-        <h2>Aturcara</h2>
-        <div class="sub" id="scheduleText">Contoh: 11:00 pagi - Ketibaan tetamu • 12:30 tgh - Ketibaan pengantin • 2:00 ptg - Majlis tamat</div>
-      </div>
-
-      <div class="card section" id="secGaleri">
-        <h2>Galeri</h2>
-        <div class="sub" id="galleryText">Letak link album Google Drive/Instagram, atau senarai gambar dalam admin panel.</div>
-      </div>
-
-      <div class="card section" id="secRSVP">
-        <h2>RSVP (Ringkas)</h2>
-        <div class="sub" id="rsvpGuide">Klik “RSVP Sekarang” untuk WhatsApp. Anda juga boleh rekod kiraan di bawah.</div>
-        <div class="actions" style="margin-top:12px">
-          <button class="btn btnPrimary" id="btnHadlr">✅ Saya Hadir</button>
-          <button class="btn" id="btnTdkHadir">❌ Tidak Hadir</button>
-          <button class="btn" id="btnResetRsvp">♻️ Reset Kiraan</button>
+        <div style="padding-top:14px; text-align:center;">
+          <div class="sub" id="invTitle">Walimatul Urus</div>
+          <div class="title" id="invCouple">Adam & Hawa</div>
+          <div class="muted" id="invMsg" style="margin-top:8px; line-height:1.55;">
+            Dengan penuh kesyukuran, kami menjemput anda hadir.
+          </div>
         </div>
-        <div class="sub" style="margin-top:10px">
-          Kiraan (device ini): Hadir = <b id="rsvpYes">0</b> • Tidak hadir = <b id="rsvpNo">0</b>
+
+        <div class="hr" style="margin:16px 0;"></div>
+
+        <div style="display:grid; gap:8px; font-size:14px;">
+          <div>📅 <span id="invDate">01/12/2025</span></div>
+          <div>🕚 <span id="invTime">9.00am – 2.00pm</span></div>
+          <div>📍 <span id="invVenue">Dewan Serbaguna</span></div>
+          <div class="muted" id="invAddr">Alamat ringkas majlis di sini</div>
         </div>
-        <div class="note">*Kiraan ini simpan dalam phone/browser sahaja (localStorage).</div>
+
+        <div class="hr" style="margin:16px 0;"></div>
+
+        <div style="display:grid; gap:10px;">
+          <input id="guest" class="input" placeholder="Nama tetamu (untuk RSVP)" />
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button class="btn btnPrimary" id="btnHadir">Hadir</button>
+            <button class="btn" id="btnTidak">Tidak Hadir</button>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <button class="btn" id="btnCopy">Copy Link</button>
+            <button class="btn" id="btnMaps" style="display:none;">Buka Maps</button>
+          </div>
+        </div>
+
+        <div style="padding-top:14px; text-align:center;">
+          <div class="qrWrap"><div id="qrcode"></div></div>
+          <div class="muted" style="margin-top:10px; font-size:12px;">
+            Scan QR untuk buka jemputan.
+          </div>
+        </div>
+
+        <div class="footTap">
+          <button id="wmTap" type="button" class="linkTiny">© R-E-M Digital Invitation</button>
+          <a id="adminLink" class="linkTiny" href="./admin-android.html" style="display:none; margin-left:10px;">Admin</a>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- BOTTOM TABS -->
-  <div class="tabs">
-    <div class="tabBar">
-      <button class="tab active" data-tab="Utama">Utama</button>
-      <button class="tab" data-tab="Maklumat">Maklumat</button>
-      <button class="tab" data-tab="Aturcara">Aturcara</button>
-      <button class="tab" data-tab="Galeri">Galeri</button>
-      <button class="tab" data-tab="RSVP">RSVP</button>
+    <!-- Tap-to-start Gate (Android/Chrome autoplay safe) -->
+    <div id="gate" class="gate">
+      <div class="gateCard">
+        <div class="gateTitle" id="gTitle">Ketik untuk mula</div>
+        <div class="gateDesc" id="gDesc">
+          Untuk Chrome/Android, video & audio perlukan 1 sentuhan untuk mula.
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
+          <button class="btn btnPrimary" id="btnEnter">Buka</button>
+          <button class="btn" id="btnMotion">Motion: ON</button>
+        </div>
+        <div class="muted" style="margin-top:10px; font-size:12px;">
+          Jika video tiada, pastikan fail <span class="mono">assets/bg.mp4</span> wujud.
+        </div>
+      </div>
     </div>
+
+    <!-- VIP Lock Gate -->
+    <div id="vipBack" class="vipBack">
+      <div class="gateCard">
+        <div class="gateTitle">VIP / Family</div>
+        <div class="gateDesc">Masukkan VIP code untuk buka jemputan.</div>
+        <input id="vipInput" class="input" placeholder="VIP code" />
+        <button class="btn btnPrimary" id="btnVipGo" style="width:100%; margin-top:10px;">Unlock</button>
+        <div id="vipMsg" class="muted" style="margin-top:10px; font-size:12px; color:#ffb4b4;"></div>
+      </div>
+    </div>
+
   </div>
 
-  <script>
-    // =========================
-    // STORAGE + DEFAULT DATA
-    // =========================
-    const KEY = "KADKAHWIN_DATA_V10";
-    const RSVP_KEY = "KADKAHWIN_RSVP_V1";
+<script>
+/* =========================
+   DEFAULT DATA (fallback)
+========================= */
+const DEFAULT_DATA = {
+  title:"Walimatul Urus",
+  couple:"Adam & Hawa",
+  date:"01/12/2025",
+  time:"9.00am – 2.00pm",
+  venue:"Dewan Serbaguna",
+  address:"Alamat ringkas majlis di sini",
+  maps:"https://maps.google.com/",
+  wa:"601111661303",
+  message:"Dengan penuh kesyukuran, kami menjemput anda hadir.",
+  music:"",
+  vipOn: 0,
+  vipPass: "VIP123",
+  pkg: "pro"
+};
 
-    const DEFAULT_DATA = {
-      // Language: "ms" or "en"
-      lang: "ms",
+const qs = new URLSearchParams(location.search);
+let v = parseInt(qs.get("v") || "1", 10);
+if(isNaN(v) || v < 1 || v > 5) v = 1;
 
-      // Theme: gold / rose / emerald / midnight
-      theme: "gold",
+/* =========================
+   Decode payload c= from admin
+========================= */
+function decodePayload(c){
+  try{
+    const json = decodeURIComponent(escape(atob(c)));
+    return JSON.parse(json);
+  }catch(e){ return null; }
+}
 
-      // Video background
-      videoOn: false,
+/* priority: c=payload > localStorage > default */
+function loadData(){
+  // payload
+  const c = qs.get("c");
+  if(c){
+    const obj = decodePayload(c);
+    if(obj && typeof obj === "object") return obj;
+  }
+  // local fallback (optional)
+  try{
+    const raw = localStorage.getItem("KADKAHWIN_DATA_V1");
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return DEFAULT_DATA;
+}
 
-      // VIP lock
-      vipOn: false,
-      vipCode: "VIP123",
+const d = { ...DEFAULT_DATA, ...loadData() };
 
-      // Text content
-      topTitle: "Kad Kahwin Digital",
-      topSubtitle: "Jemputan Rasmi",
-      badgeText: "WEDDING INVITATION",
-      salutation: "Dato’/Datin/Tuan/Puan/Encik/Cik",
-      title:"Walimatul Urus",
-      couple:"Adam & Hawa",
-      message:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis perkahwinan kami.",
-      date:"01/12/2025",
-      time:"9.00am – 2.00pm",
-      venue:"Dewan Serbaguna",
-      address:"Alamat ringkas majlis di sini",
-      maps:"https://maps.google.com/",
-      rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
-      schedule:"11:00 pagi - Ketibaan tetamu • 12:30 tgh - Ketibaan pengantin • 2:00 ptg - Majlis tamat",
-      gallery:"Letak link album atau info galeri di admin panel.",
+/* =========================
+   Themes v1–v5
+========================= */
+const THEMES = {
+  1:{ accent:"#d4af37", bg1:"#0b0b0b", bg2:"#000000", card:"rgba(255,255,255,.07)" }, // gold
+  2:{ accent:"#39ffcf", bg1:"#070a12", bg2:"#000000", card:"rgba(57,255,207,.07)" }, // neon
+  3:{ accent:"#ffffff", bg1:"#0a0a0a", bg2:"#000000", card:"rgba(255,255,255,.07)" }, // mono
+  4:{ accent:"#2ecc71", bg1:"#07120a", bg2:"#000000", card:"rgba(46,204,113,.07)" }, // islamic
+  5:{ accent:"#a78bfa", bg1:"#0a0712", bg2:"#000000", card:"rgba(167,139,250,.07)" }  // royal
+};
 
-      // Optional photo as base64 data url
-      photoDataUrl: "",
+function applyTheme(ver){
+  const t = THEMES[ver] || THEMES[1];
+  document.documentElement.style.setProperty("--accent", t.accent);
+  document.documentElement.style.setProperty("--bg1", t.bg1);
+  document.documentElement.style.setProperty("--bg2", t.bg2);
+  document.documentElement.style.setProperty("--card", t.card);
+  document.getElementById("chipVer").textContent = "V" + ver;
+  document.getElementById("verPicker").value = String(ver);
+}
+applyTheme(v);
 
-      // Note / copyright
-      copyright: "Notis: Dilarang guna/ jual page ini tanpa kebenaran pemilik."
-    };
+/* =========================
+   Render
+========================= */
+const setText = (id, val)=>{ const el=document.getElementById(id); if(el) el.textContent = val ?? ""; };
 
-    function loadData(){
-      try{
-        const raw = localStorage.getItem(KEY);
-        return raw ? Object.assign({}, DEFAULT_DATA, JSON.parse(raw)) : DEFAULT_DATA;
-      }catch(e){ return DEFAULT_DATA; }
+setText("invTitle", d.title || DEFAULT_DATA.title);
+setText("invCouple", d.names || d.couple || DEFAULT_DATA.couple);
+setText("invDate", d.date || DEFAULT_DATA.date);
+setText("invTime", d.time || DEFAULT_DATA.time);
+setText("invVenue", d.location || d.venue || DEFAULT_DATA.venue);
+setText("invAddr", d.address || DEFAULT_DATA.address);
+setText("invMsg", d.message || DEFAULT_DATA.message);
+
+/* =========================
+   To / From display (URL params)
+========================= */
+const toName = (qs.get("to") || qs.get("name") || "").trim();
+const fromName = (qs.get("from") || "").trim();
+
+const chipToFrom = document.getElementById("chipToFrom");
+if(toName || fromName){
+  const a = toName ? ("TO: " + toName) : "";
+  const b = fromName ? ("FROM: " + fromName) : "";
+  chipToFrom.textContent = [a,b].filter(Boolean).join(" • ");
+} else {
+  chipToFrom.textContent = "GUEST";
+}
+
+/* =========================
+   Package display
+========================= */
+document.getElementById("chipPkg").textContent = String((d.pkg || qs.get("pkg") || "PRO")).toUpperCase();
+
+/* =========================
+   Maps
+========================= */
+const mapsUrl = (d.maps || d.MAPS_URL || "").trim();
+const btnMaps = document.getElementById("btnMaps");
+if(mapsUrl){
+  btnMaps.style.display = "block";
+  btnMaps.addEventListener("click", ()=> window.open(mapsUrl, "_blank"));
+}
+
+/* =========================
+   RSVP WhatsApp
+========================= */
+function buildWaLink(status){
+  const guest = (document.getElementById("guest").value || "").trim();
+  const couple = (d.names || d.couple || DEFAULT_DATA.couple);
+  const msg =
+`RSVP ${status}
+Nama: ${guest || "-"}
+To: ${toName || "-"}
+From: ${fromName || "-"}
+Majlis: ${couple}
+Tarikh: ${d.date || DEFAULT_DATA.date}
+Masa: ${d.time || DEFAULT_DATA.time}
+Lokasi: ${(d.location || d.venue || DEFAULT_DATA.venue)}`;
+
+  const wa = String(d.wa || d.WA_PHONE || DEFAULT_DATA.wa).replace(/[^\d]/g,"");
+  return "https://wa.me/" + wa + "?text=" + encodeURIComponent(msg);
+}
+
+document.getElementById("btnHadir").addEventListener("click", ()=>{
+  const url = buildWaLink("Hadir");
+  const w = window.open(url, "_blank");
+  if(!w) location.href = url;
+});
+document.getElementById("btnTidak").addEventListener("click", ()=>{
+  const url = buildWaLink("Tidak Hadir");
+  const w = window.open(url, "_blank");
+  if(!w) location.href = url;
+});
+
+/* =========================
+   Copy link + QR
+========================= */
+function rebuildQR(){
+  const el = document.getElementById("qrcode");
+  el.innerHTML = "";
+  new QRCode(el, {
+    text: window.location.href,
+    width: 200,
+    height: 200,
+    colorDark: "#ffffff",
+    colorLight: "transparent"
+  });
+}
+rebuildQR();
+
+document.getElementById("btnCopy").addEventListener("click", async ()=>{
+  const btn = document.getElementById("btnCopy");
+  try{
+    await navigator.clipboard.writeText(window.location.href);
+    btn.textContent = "Copied!";
+    setTimeout(()=>btn.textContent="Copy Link", 1100);
+  }catch(e){
+    alert(window.location.href);
+  }
+});
+
+/* =========================
+   Watermark text + hidden admin (7 taps)
+========================= */
+function setWatermark(){
+  const couple = (d.names || d.couple || DEFAULT_DATA.couple).toUpperCase();
+  const tag = `R-E-M • ${couple} • V${v} • PREMIUM`;
+  const makeRow = ()=> Array.from({length:8}).map(()=>tag).join("   •   ");
+  document.getElementById("wm1").textContent = makeRow();
+  document.getElementById("wm2").textContent = makeRow();
+  document.getElementById("wm3").textContent = makeRow();
+}
+setWatermark();
+
+(function(){
+  const wm = document.getElementById("wmTap");
+  const admin = document.getElementById("adminLink");
+  if(!wm || !admin) return;
+
+  let taps = 0, tmr = null;
+  wm.addEventListener("click", ()=>{
+    taps++;
+    clearTimeout(tmr);
+    tmr = setTimeout(()=>taps=0, 1500);
+    if(taps >= 7){
+      admin.style.display = "inline";
+      taps = 0;
     }
-    function saveData(d){
-      localStorage.setItem(KEY, JSON.stringify(d));
-    }
+  });
+})();
 
-    const d = loadData();
+/* =========================
+   Version change
+========================= */
+document.getElementById("verPicker").addEventListener("change", ()=>{
+  const next = parseInt(document.getElementById("verPicker").value, 10);
+  if(isNaN(next)) return;
+  v = next;
+  qs.set("v", String(v));
+  history.replaceState(null, "", location.pathname + "?" + qs.toString());
+  applyTheme(v);
+  setWatermark();
+  rebuildQR();
+});
 
-    // =========================
-    // THEME APPLY
-    // =========================
-    function applyTheme(theme){
-      const root = document.documentElement;
-      let accent = "#d6b36a", name="Gold";
-      if(theme==="rose"){ accent="#e7a0a8"; name="Rose"; }
-      if(theme==="emerald"){ accent="#4fd1a4"; name="Emerald"; }
-      if(theme==="midnight"){ accent="#8aa3ff"; name="Midnight"; }
-      root.style.setProperty("--accent", accent);
-      document.getElementById("themeName").textContent = name;
-    }
-    applyTheme(d.theme);
+/* =========================
+   Motion toggle
+========================= */
+const motionBtn = document.getElementById("btnMotion");
+function setMotion(on){
+  document.documentElement.style.setProperty("--motion", on ? "1":"0");
+  motionBtn.textContent = "Motion: " + (on ? "ON" : "OFF");
+  try{ localStorage.setItem("REM_MOTION", on ? "1":"0"); }catch(e){}
+}
+setMotion((localStorage.getItem("REM_MOTION") ?? "1") === "1");
+motionBtn.addEventListener("click", ()=>{
+  const cur = getComputedStyle(document.documentElement).getPropertyValue("--motion").trim() === "1";
+  setMotion(!cur);
+});
 
-    // =========================
-    // VIDEO ON/OFF
-    // =========================
-    const v = document.getElementById("bgVideo");
-    const videoStatus = document.getElementById("videoStatus");
-    function setVideo(on){
-      v.style.display = on ? "block" : "none";
-      videoStatus.textContent = on ? "ON" : "OFF";
-      if(on){
-        v.muted = true;
-        v.play().catch(()=>{ /* autoplay may be blocked; ignore */ });
-      }else{
-        try{ v.pause(); }catch(e){}
-      }
-    }
-    setVideo(!!d.videoOn);
+/* =========================
+   VIP Lock (from payload)
+========================= */
+const vipOn = Number(d.vipOn || 0) === 1;
+const vipPass = String(d.vipPass || DEFAULT_DATA.vipPass || "VIP123");
+const VIP_OK_KEY = "REM_VIP_OK_SESSION_V1";
 
-    // =========================
-    // GUEST NAME (URL ?to=...)
-    // =========================
-    const qs = new URLSearchParams(location.search);
-    const guestName = (qs.get("to") || qs.get("tetamu") || "").trim();
-    const guestPill = document.getElementById("guestPill");
-    const guestNameText = document.getElementById("guestNameText");
-    if(guestName){
-      guestPill.textContent = "👤 " + guestName;
-      guestNameText.textContent = guestName;
-    }else{
-      guestPill.textContent = "👤 Tetamu";
-      guestNameText.textContent = "Tetamu";
-    }
+function showVip(){
+  const vipBack = document.getElementById("vipBack");
+  vipBack.style.display = "flex";
+}
+function hideVip(){
+  const vipBack = document.getElementById("vipBack");
+  vipBack.style.display = "none";
+}
 
-    // =========================
-    // VIP LOCK
-    // =========================
-    const vipLock = document.getElementById("vipLock");
-    const vipStatus = document.getElementById("vipStatus");
-    function checkVip(){
-      vipStatus.textContent = d.vipOn ? "ON" : "OFF";
-      if(!d.vipOn) return;
+document.getElementById("btnVipGo").addEventListener("click", ()=>{
+  const val = (document.getElementById("vipInput").value || "").trim();
+  const msg = document.getElementById("vipMsg");
+  if(val === vipPass){
+    sessionStorage.setItem(VIP_OK_KEY, "1");
+    hideVip();
+  }else{
+    msg.textContent = "VIP code salah. Cuba lagi.";
+  }
+});
 
-      const unlocked = sessionStorage.getItem("VIP_UNLOCKED") === "1";
-      if(unlocked) return;
+/* =========================
+   Tap-to-start gate (Android safe)
+========================= */
+const gate = document.getElementById("gate");
+const btnEnter = document.getElementById("btnEnter");
+const video = document.getElementById("bgVideo");
 
-      vipLock.style.display = "flex";
-    }
-    document.getElementById("vipGoHomeBtn").onclick = () => { location.href = "index.html"; };
-    document.getElementById("vipUnlockBtn").onclick = () => {
-      const code = (document.getElementById("vipCodeInput").value || "").trim();
-      if(code && code === d.vipCode){
-        sessionStorage.setItem("VIP_UNLOCKED","1");
-        vipLock.style.display = "none";
-      }else{
-        alert("Kod VIP tidak tepat.");
-      }
-    };
-    checkVip();
+async function tryPlayVideo(){
+  if(!video) return true;
+  try{
+    video.muted = true;
+    await video.play();
+    return true;
+  }catch(e){
+    return false;
+  }
+}
 
-    // =========================
-    // CONTENT BIND
-    // =========================
-    const setText = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = txt || ""; };
-    setText("topTitle", d.topTitle);
-    setText("topSubtitle", d.topSubtitle);
-    setText("badgeText", d.badgeText);
-    setText("salutationText", "Yth. " + (d.salutation || DEFAULT_DATA.salutation));
-    setText("invTitle", d.title);
-    setText("invMsg", d.message);
-    setText("invCouple", d.couple);
-    setText("invDate", d.date);
-    setText("invTime", d.time);
-    setText("invVenue", d.venue);
-    setText("invAddr", d.address);
-    setText("scheduleText", d.schedule);
-    setText("galleryText", d.gallery);
-    setText("copyrightNote", d.copyright);
+btnEnter.addEventListener("click", async ()=>{
+  // VIP check dahulu
+  if(vipOn && sessionStorage.getItem(VIP_OK_KEY) !== "1"){
+    showVip();
+  }
+  gate.style.display = "none";
+  await tryPlayVideo();
+});
 
-    // Photo
-    const photoBox = document.getElementById("photoBox");
-    const photoImg = document.getElementById("photoImg");
-    if(d.photoDataUrl){
-      photoImg.src = d.photoDataUrl;
-      photoBox.style.display = "block";
-    }else{
-      photoBox.style.display = "none";
-    }
+// kalau VIP ON, block dulu sampai unlock
+if(vipOn && sessionStorage.getItem(VIP_OK_KEY) !== "1"){
+  showVip();
+}
 
-    // Links
-    const btnMaps = document.getElementById("btnMaps");
-    const btnRsvp = document.getElementById("btnRsvp");
-    btnMaps.onclick = () => { if(d.maps) window.open(d.maps,"_blank"); };
-    btnRsvp.onclick = () => {
-      // auto inject guest name into whatsapp text if exists
-      if(!d.rsvp) return;
-      let url = d.rsvp;
-      if(guestName){
-        // if whatsapp url contains "text=", append name if not already
-        try{
-          const u = new URL(url);
-          const text = u.searchParams.get("text") || "";
-          if(text && !text.includes(guestName)){
-            u.searchParams.set("text", text + " (Tetamu: " + guestName + ")");
-            url = u.toString();
-          }
-        }catch(e){}
-      }
-      window.open(url,"_blank");
-    };
-
-    // Add to Calendar (simple ICS via data URI)
-    document.getElementById("btnCalendar").onclick = () => {
-      // expects date dd/mm/yyyy
-      const parts = (d.date||"").split("/");
-      if(parts.length!==3){ alert("Format tarikh perlu DD/MM/YYYY"); return; }
-      const [dd,mm,yyyy] = parts;
-      // all-day event as safe default
-      const dt = `${yyyy}${mm}${dd}`;
-      const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Kad Kahwin//MY
-BEGIN:VEVENT
-DTSTART;VALUE=DATE:${dt}
-DTEND;VALUE=DATE:${dt}
-SUMMARY:${(d.title||"Walimatul Urus")} - ${(d.couple||"")}
-LOCATION:${(d.venue||"")} ${((d.address||"").replace(/\n/g," "))}
-DESCRIPTION:${(d.message||"")}
-END:VEVENT
-END:VCALENDAR`;
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "jemputan.ics";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 8000);
-    };
-
-    // Share
-    document.getElementById("btnShare").onclick = async () => {
-      const base = location.origin + location.pathname; // invite.html path
-      const shareUrl = guestName ? (base + "?to=" + encodeURIComponent(guestName)) : base;
-      const shareText = (d.title||"Jemputan") + " - " + (d.couple||"");
-      try{
-        if(navigator.share){
-          await navigator.share({title:shareText, text:shareText, url:shareUrl});
-        }else{
-          await navigator.clipboard.writeText(shareUrl);
-          alert("Link disalin:\n" + shareUrl);
-        }
-      }catch(e){
-        alert("Link:\n" + shareUrl);
-      }
-    };
-
-    // =========================
-    // LANGUAGE (BM/EN)
-    // =========================
-    const langStatus = document.getElementById("langStatus");
-    function applyLang(lang){
-      langStatus.textContent = (lang==="en") ? "EN" : "BM";
-      if(lang!=="en") return;
-
-      // minimal EN labels
-      setText("topSubtitle","Official Invitation");
-      setText("lblDate","Date"); setText("lblTime","Time"); setText("lblVenue","Venue"); setText("lblAddr","Address");
-      setText("cdTitle","Countdown to the day");
-      setText("cdLblD","DAYS"); setText("cdLblH","HRS"); setText("cdLblM","MIN"); setText("cdLblS","SEC");
-      setText("rsvpGuide","Tap “RSVP” to WhatsApp. You can also track counts below.");
-      setText("extraInfo","Use admin panel to add parents names, dress code, gifts, parking and more.");
-      document.querySelectorAll(".tab").forEach(btn=>{
-        const t = btn.dataset.tab;
-        const map = {Utama:"Home", Maklumat:"Info", Aturcara:"Schedule", Galeri:"Gallery", RSVP:"RSVP"};
-        btn.textContent = map[t] || btn.textContent;
-      });
-    }
-    applyLang(d.lang);
-
-    // =========================
-    // COUNTDOWN
-    // =========================
-    const cdHint = document.getElementById("cdHint");
-    function parseDateDDMMYYYY(s){
-      const p = (s||"").split("/");
-      if(p.length!==3) return null;
-      const dd = parseInt(p[0],10), mm = parseInt(p[1],10), yy = parseInt(p[2],10);
-      if(!dd||!mm||!yy) return null;
-      return new Date(yy, mm-1, dd, 0, 0, 0, 0);
-    }
-    function tickCountdown(){
-      const target = parseDateDDMMYYYY(d.date);
-      if(!target){
-        cdHint.textContent = "Set tarikh format DD/MM/YYYY di admin panel.";
-        return;
-      }
-      const now = new Date();
-      let diff = target.getTime() - now.getTime();
-      if(diff <= 0){
-        document.getElementById("cdD").textContent = "0";
-        document.getElementById("cdH").textContent = "00";
-        document.getElementById("cdM").textContent = "00";
-        document.getElementById("cdS").textContent = "00";
-        cdHint.textContent = (d.lang==="en") ? "Today is the day 🎉" : "Hari ini majlis 🎉";
-        return;
-      }
-      const sec = Math.floor(diff/1000);
-      const days = Math.floor(sec/86400);
-      const hrs = Math.floor((sec%86400)/3600);
-      const mins = Math.floor((sec%3600)/60);
-      const secs = sec%60;
-      document.getElementById("cdD").textContent = String(days);
-      document.getElementById("cdH").textContent = String(hrs).padStart(2,"0");
-      document.getElementById("cdM").textContent = String(mins).padStart(2,"0");
-      document.getElementById("cdS").textContent = String(secs).padStart(2,"0");
-      cdHint.textContent = (d.lang==="en")
-        ? "See you soon ✨"
-        : "Jumpa nanti ✨";
-    }
-    tickCountdown();
-    setInterval(tickCountdown, 1000);
-
-    // =========================
-    // TABS
-    // =========================
-    const sections = {
-      Utama: document.getElementById("secUtama"),
-      Maklumat: document.getElementById("secMaklumat"),
-      Aturcara: document.getElementById("secAturcara"),
-      Galeri: document.getElementById("secGaleri"),
-      RSVP: document.getElementById("secRSVP"),
-    };
-    document.querySelectorAll(".tab").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
-        btn.classList.add("active");
-        Object.values(sections).forEach(s=>s.classList.remove("active"));
-        const key = btn.dataset.tab;
-        if(sections[key]) sections[key].classList.add("active");
-        window.scrollTo({top:0,behavior:"smooth"});
-      });
-    });
-
-    // =========================
-    // RSVP COUNTS (local)
-    // =========================
-    function loadRsvp(){
-      try{
-        const raw = localStorage.getItem(RSVP_KEY);
-        return raw ? JSON.parse(raw) : {yes:0,no:0};
-      }catch(e){ return {yes:0,no:0}; }
-    }
-    function saveRsvp(x){ localStorage.setItem(RSVP_KEY, JSON.stringify(x)); }
-    function renderRsvp(x){
-      document.getElementById("rsvpYes").textContent = x.yes||0;
-      document.getElementById("rsvpNo").textContent = x.no||0;
-    }
-    let r = loadRsvp();
-    renderRsvp(r);
-    document.getElementById("btnHadlr").onclick = () => { r.yes=(r.yes||0)+1; saveRsvp(r); renderRsvp(r); alert("Terima kasih! Direkod: Hadir ✅"); };
-    document.getElementById("btnTdkHadir").onclick = () => { r.no=(r.no||0)+1; saveRsvp(r); renderRsvp(r); alert("Terima kasih! Direkod: Tidak hadir ❌"); };
-    document.getElementById("btnResetRsvp").onclick = () => {
-      if(confirm("Reset kiraan RSVP untuk device ini?")){
-        r={yes:0,no:0}; saveRsvp(r); renderRsvp(r);
-      }
-    };
-  </script>
+/* try autoplay on load (some browsers allow muted autoplay) */
+window.addEventListener("load", async ()=>{
+  await tryPlayVideo();
+});
+</script>
 </body>
 </html>
