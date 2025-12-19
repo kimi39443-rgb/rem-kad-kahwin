@@ -1,368 +1,390 @@
 <!doctype html>
-<html lang="ms" data-theme="floral">
+<html lang="ms">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Jemputan</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Kad Kahwin</title>
   <style>
     :root{
-      --bg:#0f0f12;
-      --card:rgba(255,255,255,.10);
-      --text:#fff;
-      --muted:rgba(255,255,255,.75);
-      --accent:#e7c96e;
-      --shadow: 0 20px 60px rgba(0,0,0,.28);
-      --radius: 26px;
+      --bg:#070a10; --glass:rgba(15,18,26,.58);
+      --line:rgba(255,255,255,.12);
+      --txt:#eef3f7; --muted:rgba(238,243,247,.78);
+      --accent:#a8c2ff;
+      --radius:22px;
     }
-    [data-theme="floral"]{ --bg:#f7f3ef; --card:#ffffffcc; --text:#222; --muted:#666; --accent:#d59aa5; }
-    [data-theme="gold"]{ --bg:#0f0f12; --card:rgba(255,255,255,.10); --text:#fff; --muted:rgba(255,255,255,.75); --accent:#e7c96e; }
-    [data-theme="midnight"]{ --bg:#05060a; --card:rgba(255,255,255,.08); --text:#fff; --muted:rgba(255,255,255,.72); --accent:#9bb8ff; }
-    [data-theme="emerald"]{ --bg:#07110d; --card:rgba(255,255,255,.09); --text:#eafff5; --muted:rgba(234,255,245,.75); --accent:#53f0b7; }
-
-    *{ box-sizing:border-box; }
+    *{box-sizing:border-box}
     body{
-      margin:0;
-      min-height:100vh;
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--txt);
+      min-height:100svh;
+      overflow-x:hidden;
     }
 
-    /* video bg optional */
-    #bgVideo{
+    /* Video background: FULL cover (fix "separuh") */
+    .bg{
       position:fixed; inset:0;
-      width:100%; height:100%;
-      object-fit:cover;
-      z-index:-3;
-      background:#000;
-      display:none; /* ON/OFF dari data */
-    }
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.35);
       z-index:-2;
-      display:none;
+      background: radial-gradient(1000px 600px at 20% 0%, #1d2a3c 0%, #070a10 60%, #070a10 100%);
     }
-
-    .page{
-      padding: 18px 16px 26px;
-      max-width: 760px;
-      margin: 0 auto;
-    }
-    .top{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      margin: 10px 0 14px;
-    }
-    .brand h2{ margin:0; font-size:20px; letter-spacing:.2px; }
-    .brand .sub{ opacity:.75; font-size:13px; margin-top:4px; }
-
-    .pill{
-      padding:10px 12px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.25);
-      color:#fff;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      display:flex; align-items:center; gap:8px;
-      min-height:42px;
-    }
-
-    .warn{
-      margin: 10px 0 14px;
-      background: rgba(255,210,120,.14);
-      border:1px solid rgba(255,210,120,.30);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 10px 12px;
-      display:none;
-    }
-
-    .card{
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 18px 16px;
-    }
-
-    .badge{
-      display:inline-flex;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.08);
-      font-size:12px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      opacity:.95;
-      margin-bottom:12px;
-    }
-
-    .invTitle{
-      font-size: 34px;
-      line-height:1.12;
-      margin: 2px 0 8px;
-      font-weight: 900;
-      letter-spacing:.2px;
-    }
-    .msg{
-      margin: 0 0 14px;
-      opacity:.9;
-      line-height:1.55;
-      font-size: 15px;
-      color: var(--muted);
-    }
-    .couple{
-      margin: 0 0 14px;
-      font-size: 28px;
-      font-weight: 900;
-      padding: 12px 14px;
-      border-radius: 18px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      text-align:center;
-    }
-    [data-theme="floral"] .couple{
-      background: rgba(255,255,255,.45);
-      color:#111;
-    }
-
-    .info{
-      display:grid;
-      gap:10px;
-      margin-top: 12px;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:center;
-      opacity:.95;
-    }
-    .mini{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:center;
-      padding: 10px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-      min-width: 210px;
-    }
-    [data-theme="floral"] .mini{ background: rgba(255,255,255,.40); color:#111; }
-
-    .btnRow{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-      margin-top: 14px;
-    }
-    .btn, .btn2{
+    video#bgVideo{
+      position:absolute; inset:0;
       width:100%;
-      min-height: 48px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.16);
-      cursor:pointer;
-      font-weight: 900;
-      font-size: 15px;
+      height:100%;
+      object-fit:cover;
+      transform: translateZ(0);
+      filter: saturate(1.05) contrast(1.05) brightness(.9);
     }
-    .btn{
-      background: var(--accent);
-      color:#07110d;
-    }
-    .btn2{
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-    }
-    [data-theme="floral"] .btn2{
-      background: rgba(255,255,255,.55);
-      color:#111;
+    .shade{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.75));
+      z-index:1;
     }
 
-    .foot{
-      margin-top: 14px;
-      opacity:.75;
-      font-size: 12px;
-      text-align:center;
-      line-height:1.45;
+    .wrap{max-width:820px; margin:0 auto; padding:18px 14px 44px; position:relative; z-index:2}
+    .card{
+      margin-top:14px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 50px rgba(0,0,0,.45);
+      overflow:hidden;
     }
+    .hero{
+      padding:18px 16px 14px;
+    }
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.22);
+      color:var(--muted);
+      font-size:12px;
+    }
+    h1{margin:12px 0 6px; font-size:28px; letter-spacing:.3px}
+    .names{font-size:18px; color:var(--muted); line-height:1.35}
+    .sec{
+      padding:14px 16px;
+      border-top:1px solid var(--line);
+      display:grid; gap:10px;
+    }
+    .item{
+      padding:12px 12px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+    }
+    .k{font-size:12px; color:rgba(238,243,247,.72); margin-bottom:4px}
+    .v{font-size:15px; line-height:1.35}
+    .btnrow{
+      display:grid; grid-template-columns:1fr 1fr; gap:10px;
+      padding:14px 16px 16px;
+      border-top:1px solid var(--line);
+    }
+    @media(max-width:520px){ .btnrow{grid-template-columns:1fr;} }
+    .btn{
+      border:0; border-radius:18px;
+      padding:12px 14px;
+      font-weight:800;
+      font-size:15px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
+      background: rgba(0,0,0,.28);
+      color:var(--txt);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .btn.primary{background: linear-gradient(135deg, #b7c6ff, #8fb3ff); color:#0b0f14; border:0}
+    .btn:active{transform:translateY(1px)}
+    .foot{
+      margin-top:12px; text-align:center;
+      color:rgba(238,243,247,.65); font-size:12px; line-height:1.5;
+    }
+
+    /* VIP Modal */
+    .modal{
+      position:fixed; inset:0;
+      display:none; align-items:center; justify-content:center;
+      background: rgba(0,0,0,.62);
+      z-index:10;
+      padding:18px 14px;
+    }
+    .modal .box{
+      width:min(520px, 100%);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(15,18,26,.72);
+      backdrop-filter: blur(14px);
+      box-shadow:0 24px 70px rgba(0,0,0,.6);
+      padding:16px;
+    }
+    .modal h2{margin:0 0 6px}
+    .modal p{margin:0 0 12px; color:rgba(238,243,247,.75); font-size:13px; line-height:1.45}
+    .modal input{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.30);
+      color:var(--txt);
+      padding:12px 12px;
+      font-size:16px;
+      outline:none;
+    }
+    .modal .row{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+    @media(max-width:520px){ .modal .row{grid-template-columns:1fr;} }
+
+    /* Expired screen */
+    .expired{
+      display:none;
+      text-align:center;
+      padding:26px 16px;
+    }
+    .expired h1{font-size:22px; margin:0 0 6px}
+    .expired p{margin:0; color:rgba(238,243,247,.75); line-height:1.45}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
   </style>
 </head>
 <body>
 
-  <video id="bgVideo" muted loop playsinline preload="auto">
-    <source src="assets/bg.mp4" type="video/mp4" />
-  </video>
-  <div class="overlay" id="overlay"></div>
+  <div class="bg">
+    <video id="bgVideo" playsinline muted loop preload="metadata"></video>
+    <div class="shade"></div>
+  </div>
 
-  <div class="page">
-    <div class="top">
-      <div class="brand">
-        <h2 id="topTitle">Kad Kahwin Digital</h2>
-        <div class="sub" id="topSubtitle">Jemputan Rasmi</div>
+  <div class="wrap">
+
+    <div class="card" id="mainCard" style="display:none">
+      <div class="hero">
+        <div class="badge">💍 Kad Kahwin Digital • <span id="badgeTime" class="mono"></span></div>
+        <h1 id="title">Jemputan Majlis Perkahwinan</h1>
+        <div class="names"><b id="groom">Nama Pengantin Lelaki</b> &nbsp;♥&nbsp; <b id="bride">Nama Pengantin Perempuan</b></div>
       </div>
-      <div class="pill" id="guestPill">👤 <span id="guestName">Tetamu</span></div>
+
+      <div class="sec">
+        <div class="item">
+          <div class="k">Tarikh</div>
+          <div class="v" id="eventDate">—</div>
+        </div>
+        <div class="item">
+          <div class="k">Masa (12 jam)</div>
+          <div class="v" id="eventTime">—</div>
+        </div>
+        <div class="item">
+          <div class="k">Lokasi</div>
+          <div class="v" id="venue">—</div>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="btn primary" id="openMaps">📍 Buka Maps</button>
+        <button class="btn" id="share">📤 Share / Copy Link</button>
+      </div>
     </div>
 
-    <div class="warn" id="warnBox">⚠️ Link ini dibuka tanpa data tetamu. Untuk tetamu, gunakan link “Generate” (ada <b>?d=</b>).</div>
-
-    <div class="card">
-      <div class="badge" id="badgeText">WEDDING INVITATION</div>
-      <div class="invTitle" id="invTitle">Walimatul Urus</div>
-      <p class="msg" id="invMsg">Dengan penuh kesyukuran, kami menjemput anda hadir bagi memeriahkan majlis perkahwinan kami.</p>
-      <div class="couple" id="invCouple">Adam &amp; Hawa</div>
-
-      <div class="info">
-        <div class="row">
-          <div class="mini">📅 <span id="invDate">01/12/2025</span></div>
-          <div class="mini">🕘 <span id="invTime">9.00am – 2.00pm</span></div>
-        </div>
-        <div class="row">
-          <div class="mini">📍 <span id="invVenue">Dewan Serbaguna</span></div>
-          <div class="mini">🏠 <span id="invAddr">Alamat ringkas majlis di sini</span></div>
-        </div>
+    <div class="card expired" id="expiredCard">
+      <div class="hero">
+        <div class="badge">⏳ Akses Tamat</div>
+        <h1>Link ini sudah tamat tempoh</h1>
+        <p>Sila hubungi pihak admin / pemilik jemputan untuk aktifkan semula.</p>
+        <p style="margin-top:10px" class="mono" id="expInfo"></p>
       </div>
+    </div>
 
-      <div class="btnRow">
-        <button class="btn" id="btnRsvp">✉️ RSVP Sekarang</button>
-        <button class="btn2" id="btnMaps">📍 Lihat Lokasi</button>
-        <button class="btn2" id="btnCopy">🔗 Copy Link</button>
+    <div class="foot">
+      Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.
+    </div>
+
+  </div>
+
+  <!-- VIP Modal -->
+  <div class="modal" id="vipModal">
+    <div class="box">
+      <h2>VIP Lock</h2>
+      <p>Masukkan kod VIP untuk buka kad ini.</p>
+      <input id="vipInput" placeholder="Contoh: VIP123" />
+      <div class="row">
+        <button class="btn" id="vipCancel">Tutup</button>
+        <button class="btn primary" id="vipOk">Buka</button>
       </div>
-
-      <div class="foot" id="noticeText">Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik.</div>
+      <p id="vipMsg" style="margin-top:10px;color:#ffb3b3;display:none"></p>
     </div>
   </div>
 
 <script>
-  // ======= STABLE DATA STRATEGY =======
-  // 1) Jika URL ada ?d= → guna data itu (tetamu mana-mana phone pun sama)
-  // 2) Jika tiada ?d= → fallback localStorage (untuk owner/admin)
-  const KEY_LOCAL = "KADKAHWIN_DATA_V1";
+(() => {
+  const $ = (id) => document.getElementById(id);
 
-  const DEFAULT_DATA = {
-    theme: "gold",
-    videoOn: false,
-    topTitle: "Kad Kahwin Digital",
-    topSubtitle: "Jemputan Rasmi",
-    badge: "WEDDING INVITATION",
-    title:"Walimatul Urus",
-    couple:"Adam & Hawa",
-    date:"01/12/2025",
-    time:"9.00am – 2.00pm",
-    venue:"Dewan Serbaguna",
-    address:"Alamat ringkas majlis di sini",
-    maps:"https://maps.google.com/",
-    rsvp:"https://wa.me/60123456789?text=Assalamualaikum,%20saya%20nak%20RSVP",
-    message:"Dengan penuh kesyukuran, kami menjemput anda hadir bagi memeriahkan majlis perkahwinan kami.",
-    notice:"Notis: Dilarang guna/jual page ini tanpa kebenaran pemilik.",
-    guest:"Tetamu"
-  };
-
-  function b64ToObj(b64){
-    try{
-      const json = decodeURIComponent(escape(atob(b64)));
-      return JSON.parse(json);
-    }catch(e){ return null; }
-  }
-  function objToB64(obj){
-    const json = JSON.stringify(obj);
-    return btoa(unescape(encodeURIComponent(json)));
+  function nowBadge(){
+    // Papar ikut jam sistem (12 jam jika setting phone 12 jam)
+    const fmt = new Intl.DateTimeFormat(undefined, { hour: "numeric", minute:"2-digit" });
+    $("badgeTime").textContent = fmt.format(new Date());
   }
 
-  function getQuery(name){
+  function getParam(name){
     const u = new URL(location.href);
     return u.searchParams.get(name);
   }
 
-  function loadLocal(){
-    try{
-      const raw = localStorage.getItem(KEY_LOCAL);
-      return raw ? JSON.parse(raw) : null;
-    }catch(e){ return null; }
+  function base64UrlDecode(b64url){
+    const s = (b64url || "").replace(/-/g, "+").replace(/_/g, "/");
+    const pad = s.length % 4 ? "=".repeat(4 - (s.length % 4)) : "";
+    const b64 = s + pad;
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   }
 
-  function loadData(){
-    const dParam = getQuery("d");
-    if(dParam){
-      const parsed = b64ToObj(dParam);
-      if(parsed) return { source:"url", data: parsed };
-    }
-    const local = loadLocal();
-    if(local) return { source:"local", data: local };
-    return { source:"default", data: DEFAULT_DATA };
+  function safeCopy(text){
+    return navigator.clipboard?.writeText(text).catch(() => {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    });
   }
 
-  const { source, data } = loadData();
+  function setVideo(videoOn, src){
+    const v = $("bgVideo");
+    if(!videoOn || !src){
+      v.removeAttribute("src");
+      v.style.display = "none";
+      return;
+    }
+    v.style.display = "block";
+    v.src = src;
+    v.muted = true;
+    v.playsInline = true;
 
-  // warn jika tiada ?d=
-  const warnBox = document.getElementById("warnBox");
-  if(source !== "url") warnBox.style.display = "block";
+    // Android autoplay fix: play after user gesture OR after metadata
+    const tryPlay = () => v.play().catch(()=>{});
+    v.addEventListener("loadedmetadata", tryPlay, { once:true });
 
-  // apply theme
-  document.documentElement.setAttribute("data-theme", data.theme || DEFAULT_DATA.theme);
+    // If not playing, allow first tap to start
+    window.addEventListener("touchstart", tryPlay, { once:true, passive:true });
+  }
 
-  // video (optional)
-  const video = document.getElementById("bgVideo");
-  const overlay = document.getElementById("overlay");
-  function setVideo(on){
-    if(on){
-      video.style.display="block";
-      overlay.style.display="block";
-      // autoplay attempt
-      video.muted = true;
-      video.play().catch(()=>{/* ignore */});
-    }else{
-      video.pause?.();
-      video.style.display="none";
-      overlay.style.display="none";
+  function showExpired(expMs){
+    const card = $("expiredCard");
+    const expInfo = $("expInfo");
+    card.style.display = "block";
+    $("mainCard").style.display = "none";
+
+    if(expMs){
+      const dt = new Date(expMs);
+      const fmt = new Intl.DateTimeFormat(undefined, {
+        day:"2-digit", month:"2-digit", year:"numeric",
+        hour:"numeric", minute:"2-digit"
+      });
+      expInfo.textContent = "Expired: " + fmt.format(dt);
+    } else {
+      expInfo.textContent = "";
     }
   }
-  setVideo(!!data.videoOn);
 
-  // set text helpers
-  const set = (id, txt)=>{ const el=document.getElementById(id); if(el) el.textContent = txt||""; };
-  set("topTitle", data.topTitle);
-  set("topSubtitle", data.topSubtitle);
-  set("badgeText", data.badge);
-  set("invTitle", data.title);
-  set("invMsg", data.message);
-  set("invCouple", data.couple);
-  set("invDate", data.date);
-  set("invTime", data.time);
-  set("invVenue", data.venue);
-  set("invAddr", data.address);
-  set("noticeText", data.notice);
-  set("guestName", data.guest || "Tetamu");
+  function mustVip(payload){
+    return payload?.vipOn === 1 && payload?.vipCode;
+  }
 
-  // buttons
-  document.getElementById("btnMaps").addEventListener("click", ()=>{
-    if(data.maps) window.open(data.maps, "_blank");
-  });
-  document.getElementById("btnRsvp").addEventListener("click", ()=>{
-    if(data.rsvp) window.open(data.rsvp, "_blank");
-  });
-  document.getElementById("btnCopy").addEventListener("click", async ()=>{
-    const u = new URL(location.href);
-    // pastikan ada ?d= bila copy
-    if(!u.searchParams.get("d")){
-      // kalau tiada d, bina dari data semasa (local/default) supaya stable untuk share
-      u.searchParams.set("d", objToB64(data));
+  function openVip(payload, onOk){
+    const modal = $("vipModal");
+    const input = $("vipInput");
+    const msg = $("vipMsg");
+    msg.style.display = "none";
+    input.value = "";
+    modal.style.display = "flex";
+    input.focus();
+
+    const close = () => { modal.style.display = "none"; };
+
+    $("vipCancel").onclick = close;
+    $("vipOk").onclick = () => {
+      const val = (input.value || "").trim();
+      if(val === payload.vipCode){
+        close();
+        onOk();
+      }else{
+        msg.textContent = "Kod salah. Cuba lagi.";
+        msg.style.display = "block";
+      }
+    };
+  }
+
+  function fill(payload){
+    $("title").textContent = payload.title || "Jemputan Majlis Perkahwinan";
+    $("groom").textContent = payload.groom || "Nama Pengantin Lelaki";
+    $("bride").textContent = payload.bride || "Nama Pengantin Perempuan";
+    $("eventDate").textContent = payload.eventDate || "—";
+    $("eventTime").textContent = payload.eventTime || "—";
+    $("venue").textContent = payload.venue || "—";
+
+    $("mainCard").style.display = "block";
+    $("expiredCard").style.display = "none";
+
+    // Buttons
+    $("share").onclick = async () => {
+      const link = location.href;
+      try{
+        if(navigator.share){
+          await navigator.share({ title: document.title, url: link });
+        }else{
+          await safeCopy(link);
+          alert("Link sudah copy.");
+        }
+      }catch(e){
+        // fallback copy
+        await safeCopy(link).catch(()=>{});
+      }
+    };
+
+    $("openMaps").onclick = () => {
+      const q = encodeURIComponent(payload.venue || "");
+      if(!q){ alert("Lokasi belum diisi."); return; }
+      window.open("https://www.google.com/maps/search/?api=1&query=" + q, "_blank");
+    };
+
+    // Video
+    setVideo(payload.videoOn === 1, payload.videoSrc);
+  }
+
+  // MAIN
+  nowBadge();
+
+  const d = getParam("d");
+  if(!d){
+    // No data param: show expired-like screen
+    showExpired(null);
+    return;
+  }
+
+  let payload;
+  try{
+    payload = JSON.parse(base64UrlDecode(d));
+  }catch(e){
+    showExpired(null);
+    return;
+  }
+
+  // Expiry check
+  if(payload.expMs && typeof payload.expMs === "number"){
+    if(Date.now() > payload.expMs){
+      showExpired(payload.expMs);
+      return;
     }
-    try{
-      await navigator.clipboard.writeText(u.toString());
-      alert("Link sudah di-copy ✅");
-    }catch(e){
-      prompt("Copy link ini:", u.toString());
-    }
-  });
+  }
+
+  const unlock = () => fill(payload);
+
+  if(mustVip(payload)){
+    openVip(payload, unlock);
+  }else{
+    unlock();
+  }
+})();
 </script>
 </body>
 </html>
