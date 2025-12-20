@@ -11,7 +11,6 @@
   --txt:#f5f7fb;
   --muted:rgba(245,247,251,.75);
   --line:rgba(255,255,255,.14);
-  --glass:rgba(0,0,0,.45);
   --shadow:0 25px 70px rgba(0,0,0,.6);
   --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
   --bg1:radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%);
@@ -84,19 +83,19 @@ body.open .door.right{transform:translateX(105%)}
 body.open .tap{display:none}
 
 .wrap{max-width:860px;margin:auto;padding:16px 14px 120px}
-.topbar{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
-}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
 .pill{
   padding:10px 14px;
   border-radius:999px;
   border:1px solid var(--line);
   background:rgba(0,0,0,.25);
   font-size:12px;
+  display:flex; gap:8px; align-items:center;
 }
 .pill button, .pill select{
-  background:none;border:0;color:var(--txt);font-weight:700;
+  background:none;border:0;color:var(--txt);font-weight:800;cursor:pointer
 }
+.pill select{outline:none}
 
 .card{
   margin-top:14px;
@@ -107,42 +106,58 @@ body.open .tap{display:none}
   overflow:hidden;
 }
 .hero{text-align:center;padding:22px}
-.badge{letter-spacing:3px;font-size:12px;opacity:.8}
+.badge{letter-spacing:3px;font-size:12px;opacity:.85}
 h1{
   font-size:34px;margin:14px 0 6px;
   background:linear-gradient(135deg,var(--a1),var(--a2));
   -webkit-background-clip:text;color:transparent;
 }
-.names{font-size:20px}
+.names{font-size:20px;line-height:1.35}
 .divider{
   width:70px;height:2px;margin:16px auto;
   background:linear-gradient(to right,var(--a1),var(--a2),var(--a3));
 }
 .grid{padding:16px;display:grid;gap:10px}
-.item{padding:12px;border-radius:16px;background:rgba(0,0,0,.25)}
-
+.item{padding:12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.10)}
 .actions{padding:16px;display:grid;gap:10px}
 .btn{
   padding:14px;border-radius:18px;border:0;
-  font-weight:800;
+  font-weight:900;cursor:pointer
 }
 .primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#111}
+.small{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
 
 .editor{
   position:fixed; inset:0; z-index:60;
   background:rgba(0,0,0,.75);
   display:none; overflow:auto;
+  padding:16px;
 }
 .editor .panel{
-  max-width:700px;margin:20px auto;padding:16px;
+  max-width:720px;margin:10px auto;padding:16px;
   border-radius:22px;
-  background:rgba(15,18,26,.9);
+  background:rgba(15,18,26,.92);
+  border:1px solid rgba(255,255,255,.14);
 }
+.editor h3{margin:6px 0 10px}
+.editor label{display:block;margin:10px 0 6px;color:rgba(255,255,255,.78);font-size:12px}
 .editor input, .editor textarea, .editor select{
-  width:100%;padding:10px;border-radius:14px;
-  background:#000;color:#fff;border:1px solid #444;
+  width:100%;padding:11px;border-radius:14px;
+  background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.14);
+  outline:none;
 }
-.editor button{padding:12px;border-radius:14px;border:0;font-weight:800}
+.editor textarea{min-height:80px;resize:vertical}
+.editor .row{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:720px){.editor .row.two{grid-template-columns:1fr 1fr}}
+.editor .bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+@media(max-width:520px){.editor .bar{grid-template-columns:1fr}}
+.editor button{padding:12px;border-radius:14px;border:0;font-weight:900;cursor:pointer}
+.editor .save{background:linear-gradient(135deg,var(--a1),var(--a2));color:#111}
+.editor .close,.editor .reset{background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.14)}
+.warn{margin-top:10px;color:#ffd3d3;font-size:12px;line-height:1.45}
+.ok{margin-top:10px;color:#c6ffd8;font-size:12px;line-height:1.45}
+
+#ytWrap{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}
 </style>
 </head>
 
@@ -163,7 +178,11 @@ h1{
 <div class="door left"></div>
 <div class="door right"></div>
 
+<!-- MP3 audio (paling stabil) -->
 <audio id="bgm" loop></audio>
+
+<!-- YouTube hidden player -->
+<div id="ytWrap"><div id="ytPlayer"></div></div>
 
 <div class="wrap">
   <div class="topbar">
@@ -174,22 +193,26 @@ h1{
         <option value="royal">Royal Night</option>
       </select>
     </div>
-    <div class="pill"><button id="playBtn">▶️ PLAY MUSIC</button></div>
-    <div class="pill"><button id="muteBtn">MUTE</button></div>
-    <div class="pill"><button onclick="openEditor()">EDIT</button></div>
+
+    <div class="pill"><button id="playBtn" type="button">▶️ PLAY MUSIC</button></div>
+    <div class="pill"><button id="muteBtn" type="button">MUTE</button></div>
+    <div class="pill"><button id="editBtn" type="button">EDIT</button></div>
   </div>
 
   <div class="card">
     <div class="hero">
-      <div class="badge">WALIMATULURUS</div>
+      <div class="badge" id="badge">WALIMATULURUS</div>
       <h1 id="title">Jemputan Perkahwinan</h1>
+
       <div class="names">
         <div id="groom">Nama Pengantin Lelaki</div>
-        <div>♥</div>
+        <div style="opacity:.85;margin:6px 0">♥</div>
         <div id="bride">Nama Pengantin Perempuan</div>
       </div>
+
       <div class="divider"></div>
       <div id="inviteText">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
+      <div class="small" id="musicInfo">Muzik: Preset</div>
     </div>
 
     <div class="grid">
@@ -199,89 +222,493 @@ h1{
     </div>
 
     <div class="actions">
-      <button class="btn primary">💬 RSVP WhatsApp</button>
-      <button class="btn">📍 Google Maps</button>
+      <button class="btn primary" id="btnRsvp">💬 RSVP WhatsApp</button>
+      <button class="btn" id="btnMaps">📍 Google Maps</button>
     </div>
   </div>
 </div>
 
+<!-- EDITOR -->
 <div class="editor" id="editor">
   <div class="panel">
-    <h3>Edit Kad</h3>
-    <label>Preset</label>
-    <select id="fPreset">
-      <option value="gold">Gold Luxury</option>
-      <option value="floral">Floral White</option>
-      <option value="royal">Royal Night</option>
-    </select>
-    <label>Nama Lelaki</label><input id="fGroom">
-    <label>Nama Perempuan</label><input id="fBride">
-    <label>Ayat Jemputan</label><textarea id="fInvite"></textarea>
-    <button onclick="saveEditor()">Simpan</button>
-    <button onclick="closeEditor()">Tutup</button>
+    <h3>Edit Kad (Versi B - Ada tempat muzik)</h3>
+
+    <div class="row two">
+      <div>
+        <label>Preset pelanggan</label>
+        <select id="fPreset">
+          <option value="gold">Gold Luxury</option>
+          <option value="floral">Floral White</option>
+          <option value="royal">Royal Night</option>
+        </select>
+      </div>
+      <div>
+        <label>Animasi glow</label>
+        <select id="fAnim">
+          <option value="1">ON</option>
+          <option value="0">OFF</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Nama Pengantin Lelaki</label>
+        <input id="fGroom" placeholder="Contoh: Ahmad">
+      </div>
+      <div>
+        <label>Nama Pengantin Perempuan</label>
+        <input id="fBride" placeholder="Contoh: Siti">
+      </div>
+    </div>
+
+    <label>Ayat Jemputan</label>
+    <textarea id="fInvite" placeholder="Dengan penuh kesyukuran..."></textarea>
+
+    <div class="row two">
+      <div>
+        <label>Tarikh (paparan)</label>
+        <input id="fDateText" placeholder="31/12/2025">
+      </div>
+      <div>
+        <label>Masa (paparan)</label>
+        <input id="fTimeText" placeholder="9.00am – 2.00pm">
+      </div>
+    </div>
+
+    <label>Lokasi (paparan)</label>
+    <textarea id="fVenueText" placeholder="Dewan..."></textarea>
+
+    <div class="row two">
+      <div>
+        <label>No WhatsApp (cth 60123456789)</label>
+        <input id="fPhone" placeholder="6012xxxxxxx">
+      </div>
+      <div>
+        <label>Teks RSVP</label>
+        <input id="fRsvpText" placeholder="Hi, saya ingin RSVP hadir...">
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Maps Link (optional)</label>
+        <input id="fMapsLink" placeholder="https://maps.app.goo.gl/...">
+      </div>
+      <div>
+        <label>Maps Search (jika tiada link)</label>
+        <input id="fMapsQuery" placeholder="Nama dewan / alamat">
+      </div>
+    </div>
+
+    <!-- MUZIK INPUT -->
+    <div class="row two">
+      <div>
+        <label>🎵 MP3 URL (paling stabil)</label>
+        <input id="fMp3" placeholder="https://.../lagu.mp3">
+      </div>
+      <div>
+        <label>▶️ YouTube URL (bukan YouTube Music)</label>
+        <input id="fYt" placeholder="https://youtu.be/VIDEO_ID atau https://youtube.com/watch?v=VIDEO_ID">
+      </div>
+    </div>
+
+    <div class="warn">
+      ⚠️ YouTube Music (music.youtube.com) memang tak boleh bunyi. Guna YouTube biasa sahaja.
+    </div>
+
+    <div class="bar">
+      <button class="close" onclick="closeEditor()">Tutup</button>
+      <button class="reset" onclick="resetAll()">Reset</button>
+      <button class="save" onclick="saveEditor()">Simpan</button>
+    </div>
+
+    <div class="ok" id="saveMsg" style="display:none;">✅ Disimpan. Tekan PLAY MUSIC untuk confirm bunyi.</div>
   </div>
 </div>
 
 <script>
-const MUSIC_PRESETS={
+/* =========================
+   STATE + PRESETS
+========================= */
+const STORAGE_KEY = "KK_VB_MUSIC_EDITOR_1";
+
+const PRESETS = {
   gold:{
-    a1:"#d6b46c",a2:"#f3e2b8",
+    label:"Gold Luxury",
+    a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
     bg:"#050505",
-    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
+    bg1:"radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%)",
+    bg2:"linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9))",
+    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
   },
   floral:{
-    a1:"#111827",a2:"#c7ccd8",
+    label:"Floral White",
+    a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
     bg:"#f6f7fb",
-    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
+    bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
+    bg2:"linear-gradient(to bottom, rgba(255,255,255,.70), rgba(246,247,251,.88))",
+    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
   },
   royal:{
-    a1:"#60a5fa",a2:"#c7d2fe",
+    label:"Royal Night",
+    a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
     bg:"#030712",
-    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
+    bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%)",
+    bg2:"linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.92))",
+    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
   }
 };
 
-let state={preset:"gold",muted:false};
+const DEFAULTS = {
+  preset:"gold",
+  animOn:1,
 
-function applyPreset(p){
-  const x=MUSIC_PRESETS[p];
-  if(!x)return;
-  document.documentElement.style.setProperty("--a1",x.a1);
-  document.documentElement.style.setProperty("--a2",x.a2);
-  document.documentElement.style.setProperty("--bg",x.bg);
-  const a=document.getElementById("bgm");
-  a.src=x.audio;
+  groom:"Nama Pengantin Lelaki",
+  bride:"Nama Pengantin Perempuan",
+  inviteText:"Dengan penuh kesyukuran, kami menjemput anda hadir.",
+
+  dateText:"31/12/2025",
+  timeText:"9.00am – 2.00pm",
+  venueText:"Dewan Contoh, Pulau Pinang",
+
+  rsvpPhone:"60123456789",
+  rsvpText:"Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+
+  mapsLink:"",
+  mapsQuery:"Dewan Contoh, Pulau Pinang",
+
+  // Muzik input (override)
+  mp3Url:"",
+  ytUrl:""
+};
+
+let state = loadState();
+let isMuted = false;
+
+// YouTube
+let ytReady = false;
+let ytPlayer = null;
+let ytVideoId = "";
+
+/* =========================
+   HELPERS
+========================= */
+function $(id){ return document.getElementById(id); }
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return {...DEFAULTS};
+    const obj = JSON.parse(raw);
+    return {...DEFAULTS, ...obj};
+  }catch(e){
+    return {...DEFAULTS};
+  }
+}
+function persist(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-document.getElementById("presetSelect").onchange=e=>{
-  state.preset=e.target.value;
-  applyPreset(state.preset);
-};
+function applyPresetUI(key){
+  const p = PRESETS[key] || PRESETS.gold;
+  const root = document.documentElement.style;
+  root.setProperty("--a1", p.a1);
+  root.setProperty("--a2", p.a2);
+  root.setProperty("--a3", p.a3);
+  root.setProperty("--bg", p.bg);
+  root.setProperty("--bg1", p.bg1);
+  root.setProperty("--bg2", p.bg2);
 
-document.getElementById("playBtn").onclick=()=>{
-  const a=document.getElementById("bgm");
-  a.muted=false;
-  a.play().catch(()=>alert("Sila naikkan volume media"));
-};
-
-document.getElementById("muteBtn").onclick=()=>{
-  const a=document.getElementById("bgm");
-  a.muted=!a.muted;
-};
-
-function openInvite(){
-  document.body.classList.add("open");
-  applyPreset(state.preset);
+  $("animLayer").style.display = (Number(state.animOn)===1) ? "block" : "none";
 }
 
-function openEditor(){document.getElementById("editor").style.display="block";}
-function closeEditor(){document.getElementById("editor").style.display="none";}
+function buildWhatsApp(){
+  const text = encodeURIComponent((state.rsvpText||"") + ` ( ${state.groom} & ${state.bride} )`);
+  return `https://wa.me/${state.rsvpPhone}?text=${text}`;
+}
+function buildMaps(){
+  if(state.mapsLink && state.mapsLink.trim()) return state.mapsLink.trim();
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
+}
+
+/* =========================
+   MUSIC LOGIC (OVERRIDE)
+========================= */
+function stopAllAudio(){
+  // MP3
+  const a = $("bgm");
+  try{ a.pause(); a.currentTime = 0; }catch(e){}
+  // YT
+  if(ytPlayer && ytReady){
+    try{ ytPlayer.stopVideo(); }catch(e){}
+  }
+}
+
+function isYouTubeMusic(url){
+  return (url||"").includes("music.youtube.com");
+}
+
+function parseYouTubeId(url){
+  if(!url) return "";
+  const s = String(url).trim();
+  if(!s) return "";
+  if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+
+  try{
+    const u = new URL(s);
+    if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
+    if(u.searchParams.get("v")) return u.searchParams.get("v");
+    const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+    if(m) return m[1];
+  }catch(e){}
+  return "";
+}
+
+function setMp3Source(url){
+  const a = $("bgm");
+  a.src = url ? url.trim() : "";
+}
+
+function ensureYouTubeApi(cb){
+  if(window.YT && window.YT.Player){
+    ytReady = true;
+    cb();
+    return;
+  }
+  if(document.getElementById("ytApiScript")){
+    const t = setInterval(()=>{
+      if(window.YT && window.YT.Player){
+        clearInterval(t);
+        ytReady = true;
+        cb();
+      }
+    },200);
+    return;
+  }
+  const s = document.createElement("script");
+  s.id = "ytApiScript";
+  s.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(s);
+  window.onYouTubeIframeAPIReady = () => {
+    ytReady = true;
+    cb();
+  };
+}
+
+function loadOrPlayYouTube(videoId){
+  if(!videoId) return;
+  if(!ytPlayer){
+    ytPlayer = new YT.Player("ytPlayer",{
+      height:"0", width:"0", videoId,
+      playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, playsinline:1 },
+      events:{
+        onReady:()=>{
+          try{
+            ytPlayer.setVolume(isMuted ? 0 : 100);
+            ytPlayer.playVideo();
+          }catch(e){}
+        }
+      }
+    });
+  }else{
+    try{
+      ytPlayer.loadVideoById(videoId);
+      ytPlayer.setVolume(isMuted ? 0 : 100);
+      ytPlayer.playVideo();
+    }catch(e){}
+  }
+}
+
+function chooseMusicMode(){
+  // Priority: MP3 override > YouTube override > preset MP3
+  const p = PRESETS[state.preset] || PRESETS.gold;
+
+  // 1) MP3 override
+  if(state.mp3Url && state.mp3Url.trim()){
+    $("musicInfo").textContent = "Muzik: MP3 (custom)";
+    return { type:"mp3", src: state.mp3Url.trim() };
+  }
+
+  // 2) YouTube override (bukan YT Music)
+  if(state.ytUrl && state.ytUrl.trim()){
+    const url = state.ytUrl.trim();
+    if(isYouTubeMusic(url)){
+      $("musicInfo").textContent = "Muzik: YouTube Music (blocked) — sila guna YouTube biasa";
+      return { type:"none", src:"" };
+    }
+    const id = parseYouTubeId(url);
+    if(id){
+      $("musicInfo").textContent = "Muzik: YouTube (custom)";
+      return { type:"yt", src:id };
+    }
+    $("musicInfo").textContent = "Muzik: YouTube (link tak sah)";
+    return { type:"none", src:"" };
+  }
+
+  // 3) Preset mp3
+  $("musicInfo").textContent = "Muzik: Preset (" + p.label + ")";
+  return { type:"mp3", src: p.presetMp3 };
+}
+
+function playMusicManual(){
+  // This is the CONFIRM button for Android
+  stopAllAudio();
+
+  const mode = chooseMusicMode();
+  if(mode.type === "mp3" && mode.src){
+    setMp3Source(mode.src);
+    const a = $("bgm");
+    a.muted = isMuted;
+    a.play().catch(()=>{
+      alert("Tak dapat main MP3. Sila semak link MP3 direct & naikkan volume media.");
+    });
+    return;
+  }
+
+  if(mode.type === "yt" && mode.src){
+    ytVideoId = mode.src;
+    ensureYouTubeApi(()=>loadOrPlayYouTube(ytVideoId));
+    return;
+  }
+
+  alert("Tiada muzik boleh dimainkan. Isi MP3 URL atau YouTube URL (bukan YouTube Music).");
+}
+
+function toggleMute(){
+  isMuted = !isMuted;
+
+  // MP3
+  $("bgm").muted = isMuted;
+
+  // YouTube
+  if(ytPlayer && ytReady){
+    try{ ytPlayer.setVolume(isMuted ? 0 : 100); }catch(e){}
+  }
+}
+
+/* =========================
+   RENDER
+========================= */
+function render(){
+  applyPresetUI(state.preset);
+
+  $("presetSelect").value = state.preset;
+
+  $("groom").textContent = state.groom;
+  $("bride").textContent = state.bride;
+  $("inviteText").textContent = state.inviteText;
+
+  $("dateText").textContent = "📅 " + state.dateText;
+  $("timeText").textContent = "⏰ " + state.timeText;
+  $("venueText").textContent = "📍 " + state.venueText;
+
+  $("btnRsvp").onclick = ()=>window.open(buildWhatsApp(), "_blank");
+  $("btnMaps").onclick = ()=>window.open(buildMaps(), "_blank");
+
+  // Update music label
+  chooseMusicMode();
+}
+
+/* =========================
+   EDITOR
+========================= */
+function openEditor(){
+  $("editor").style.display = "block";
+  $("saveMsg").style.display = "none";
+
+  $("fPreset").value = state.preset;
+  $("fAnim").value = String(state.animOn);
+
+  $("fGroom").value = state.groom;
+  $("fBride").value = state.bride;
+  $("fInvite").value = state.inviteText;
+
+  $("fDateText").value = state.dateText;
+  $("fTimeText").value = state.timeText;
+  $("fVenueText").value = state.venueText;
+
+  $("fPhone").value = state.rsvpPhone;
+  $("fRsvpText").value = state.rsvpText;
+
+  $("fMapsLink").value = state.mapsLink;
+  $("fMapsQuery").value = state.mapsQuery;
+
+  $("fMp3").value = state.mp3Url;
+  $("fYt").value = state.ytUrl;
+}
+function closeEditor(){ $("editor").style.display = "none"; }
+
 function saveEditor(){
-  document.getElementById("groom").innerText=fGroom.value;
-  document.getElementById("bride").innerText=fBride.value;
-  document.getElementById("inviteText").innerText=fInvite.value;
+  state.preset = $("fPreset").value;
+  state.animOn = Number($("fAnim").value);
+
+  state.groom = $("fGroom").value.trim() || state.groom;
+  state.bride = $("fBride").value.trim() || state.bride;
+  state.inviteText = $("fInvite").value.trim() || state.inviteText;
+
+  state.dateText = $("fDateText").value.trim() || state.dateText;
+  state.timeText = $("fTimeText").value.trim() || state.timeText;
+  state.venueText = $("fVenueText").value.trim() || state.venueText;
+
+  state.rsvpPhone = $("fPhone").value.trim() || state.rsvpPhone;
+  state.rsvpText = $("fRsvpText").value.trim() || state.rsvpText;
+
+  state.mapsLink = $("fMapsLink").value.trim();
+  state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
+
+  state.mp3Url = $("fMp3").value.trim();
+  state.ytUrl = $("fYt").value.trim();
+
+  // If user put YouTube Music, keep but warn via label
+  persist();
+  render();
+
+  $("saveMsg").style.display = "block";
+  // do not auto-play here; Android sometimes blocks. Use PLAY MUSIC button to confirm.
+}
+
+function resetAll(){
+  if(!confirm("Reset semua data?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = loadState();
+  stopAllAudio();
+  render();
   closeEditor();
 }
+
+/* =========================
+   OPEN INVITE
+========================= */
+function openInvite(){
+  document.body.classList.add("open");
+  // Apply preset visuals now
+  render();
+  // Do not auto-play - user will press PLAY MUSIC for confirm
+}
+window.openInvite = openInvite;
+window.openEditor = openEditor;
+window.closeEditor = closeEditor;
+window.saveEditor = saveEditor;
+window.resetAll = resetAll;
+
+/* =========================
+   INIT
+========================= */
+$("presetSelect").addEventListener("change", (e)=>{
+  state.preset = e.target.value;
+  persist();
+  render();
+});
+
+$("playBtn").addEventListener("click", playMusicManual);
+$("muteBtn").addEventListener("click", ()=>{
+  toggleMute();
+  $("muteBtn").textContent = isMuted ? "UNMUTE" : "MUTE";
+});
+$("editBtn").addEventListener("click", openEditor);
+
+render();
 </script>
 
 </body>
