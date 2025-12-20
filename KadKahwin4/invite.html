@@ -14,10 +14,10 @@
     --shadow:0 28px 70px rgba(0,0,0,.65);
     --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
 
-    /* Background layers */
+    /* background layers */
     --bg1: radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%);
     --bg2: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.88));
-    --bgImg: none; /* optional image */
+    --bgImg:none;
   }
 
   *{box-sizing:border-box}
@@ -31,9 +31,8 @@
     overflow-x:hidden;
   }
 
-  /* Background image layer */
   .bgimg{
-    position:fixed; inset:0; z-index:-5;
+    position:fixed; inset:0; z-index:-6;
     background-image: var(--bgImg);
     background-size: cover;
     background-position:center;
@@ -41,25 +40,19 @@
     filter:saturate(1.05) contrast(1.02);
     display:none;
   }
-
-  /* Background video */
   video.bg{
     position:fixed; inset:0;
     width:100%; height:100%;
     object-fit:cover;
-    z-index:-6;
+    z-index:-7;
     display:none;
   }
-
-  /* Overlay / themes */
   .overlay{
-    position:fixed; inset:0; z-index:-4;
+    position:fixed; inset:0; z-index:-5;
     background: var(--bg1), var(--bg2);
   }
-
-  /* Optional animated gradient */
   .anim{
-    position:fixed; inset:0; z-index:-4;
+    position:fixed; inset:0; z-index:-5;
     pointer-events:none;
     display:none;
     background: radial-gradient(900px 700px at 10% 10%, rgba(214,180,108,.18), transparent 55%),
@@ -73,7 +66,7 @@
     100%{transform:translate3d(0,0,0) scale(1)}
   }
 
-  /* Tap intro (stabil untuk audio/video Android) */
+  /* Tap intro */
   .tap{
     position:fixed; inset:0; z-index:50;
     display:flex; align-items:center; justify-content:center;
@@ -117,8 +110,7 @@
   body.open .door.right{transform: translateX(103%)}
   body.open .tap{display:none}
 
-  /* Layout */
-  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 120px}
+  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 128px}
   .topbar{
     position:sticky; top:10px; z-index:10;
     display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -266,7 +258,6 @@
     user-select:none;
   }
 
-  /* Editor panel */
   .editor{
     position:fixed; inset:0; z-index:70;
     background: rgba(0,0,0,.70);
@@ -275,7 +266,7 @@
     overflow:auto;
   }
   .editor .panel{
-    width:min(720px, 100%);
+    width:min(740px, 100%);
     margin:0 auto;
     border-radius:22px;
     border:1px solid rgba(255,255,255,.14);
@@ -316,7 +307,6 @@
   .editor .bar .reset{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
   .note{padding:0 6px 10px; color:rgba(245,247,251,.72); font-size:12px; line-height:1.45}
 
-  /* Hide YouTube iframe */
   #ytWrap{position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden}
 </style>
 </head>
@@ -339,29 +329,21 @@
 <div class="door left"></div>
 <div class="door right"></div>
 
-<!-- MP3 audio (paling stabil) -->
 <audio id="bgm" loop preload="auto"></audio>
-
-<!-- YouTube audio option -->
-<div id="ytWrap">
-  <div id="ytPlayer"></div>
-</div>
+<div id="ytWrap"><div id="ytPlayer"></div></div>
 
 <div class="wrap">
   <div class="topbar">
     <div class="pill">🕒 <strong id="clock">--:--</strong> <span style="opacity:.6">•</span> <span id="dayText"></span></div>
-
     <div class="pill">🎨
       <select id="themeSelect">
-        <option value="gold">Gold</option>
-        <option value="rose">Rose Gold</option>
-        <option value="white">White Elegant</option>
-        <option value="emerald">Emerald</option>
-        <option value="royal">Royal Blue</option>
-        <option value="animated">Animated Glow</option>
+        <option value="gold">Gold Luxury</option>
+        <option value="floral">Floral White</option>
+        <option value="royal">Royal Night</option>
+        <option value="emerald">Emerald Garden</option>
+        <option value="minimal">Modern Minimal</option>
       </select>
     </div>
-
     <div class="pill">🔊 <button id="muteBtn" type="button">MUTE</button></div>
     <div class="pill">✏️ <button id="editBtn" type="button">EDIT</button></div>
   </div>
@@ -428,14 +410,25 @@
   <button title="Scroll bawah" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">⬇️</button>
 </div>
 
-<!-- EDITOR -->
 <div class="editor" id="editor">
   <div class="panel">
     <h2>Mode Edit (Isi macam borang)</h2>
     <div class="note">
-      ✅ Untuk muzik paling mudah: guna <b>MP3 direct link</b>.<br>
-      ✅ Kalau nak YouTube: paste link YouTube (akan main lepas klik BUKA KAD).<br>
-      ⚠️ YouTube ada limit autoplay pada sesetengah telefon — normal.
+      ✅ Preset: pilih di atas → terus jadi cantik ikut citarasa pelanggan.<br>
+      ✅ Muzik: letak MP3 direct link (paling stabil). YouTube optional.
+    </div>
+
+    <div class="frow">
+      <div>
+        <label>🎨 Preset Customer</label>
+        <select id="fPreset">
+          <option value="gold">Gold Luxury</option>
+          <option value="floral">Floral White</option>
+          <option value="royal">Royal Night</option>
+          <option value="emerald">Emerald Garden</option>
+          <option value="minimal">Modern Minimal</option>
+        </select>
+      </div>
     </div>
 
     <div class="frow two">
@@ -482,27 +475,6 @@
       <div><label>🖼️ Background Image URL (optional)</label><input id="fBgImg" placeholder="https://.../background.jpg" /></div>
     </div>
 
-    <div class="frow two">
-      <div>
-        <label>🎨 Tema Latar (pilih untuk pelanggan)</label>
-        <select id="fTheme">
-          <option value="gold">Gold</option>
-          <option value="rose">Rose Gold</option>
-          <option value="white">White Elegant</option>
-          <option value="emerald">Emerald</option>
-          <option value="royal">Royal Blue</option>
-          <option value="animated">Animated Glow</option>
-        </select>
-      </div>
-      <div>
-        <label>Animated Glow (ON/OFF)</label>
-        <select id="fAnim">
-          <option value="1">ON</option>
-          <option value="0">OFF</option>
-        </select>
-      </div>
-    </div>
-
     <div class="frow">
       <div>
         <label>Galeri (1 link per baris)</label>
@@ -519,36 +491,89 @@
 </div>
 
 <script>
-  const STORAGE_KEY = "KK_PREMIUM_EDITOR_V2";
+  const STORAGE_KEY = "KK_PREMIUM_PRESET_V1";
+  const $ = (id)=>document.getElementById(id);
+
+  const PRESETS = {
+    gold: {
+      name:"Gold Luxury",
+      themeSelect:"gold",
+      bgImageUrl:"",
+      animOn:1,
+      a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
+      bg:"#050505", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
+      line:"rgba(255,255,255,.14)",
+      bg1:"radial-gradient(950px 620px at 20% 0%, rgba(214,180,108,.20), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(183,198,255,.12), transparent 55%)",
+      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.90))"
+    },
+    floral: {
+      name:"Floral White",
+      themeSelect:"floral",
+      bgImageUrl:"https://images.unsplash.com/photo-1520975958225-9e246c1f1bf5?auto=format&fit=crop&w=1400&q=70",
+      animOn:0,
+      a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
+      bg:"#f6f7fb", txt:"#0b0f14", muted:"rgba(11,15,20,.72)",
+      line:"rgba(0,0,0,.10)",
+      bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
+      bg2:"linear-gradient(to bottom, rgba(255,255,255,.65), rgba(246,247,251,.88))"
+    },
+    royal: {
+      name:"Royal Night",
+      themeSelect:"royal",
+      bgImageUrl:"",
+      animOn:1,
+      a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
+      bg:"#030712", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
+      line:"rgba(255,255,255,.14)",
+      bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%), radial-gradient(900px 600px at 92% 18%, rgba(199,210,254,.14), transparent 55%)",
+      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
+    },
+    emerald: {
+      name:"Emerald Garden",
+      themeSelect:"emerald",
+      bgImageUrl:"",
+      animOn:1,
+      a1:"#34d399", a2:"#d1fae5", a3:"#60a5fa",
+      bg:"#04120b", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
+      line:"rgba(255,255,255,.14)",
+      bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(52,211,153,.20), transparent 55%), radial-gradient(900px 600px at 92% 18%, rgba(96,165,250,.12), transparent 55%)",
+      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
+    },
+    minimal: {
+      name:"Modern Minimal",
+      themeSelect:"minimal",
+      bgImageUrl:"",
+      animOn:0,
+      a1:"#111827", a2:"#e5e7eb", a3:"#94a3b8",
+      bg:"#0b0f14", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
+      line:"rgba(255,255,255,.14)",
+      bg1:"radial-gradient(950px 620px at 20% 0%, rgba(255,255,255,.10), transparent 55%)",
+      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
+    }
+  };
 
   const DEFAULTS = {
-    badge: "WALIMATULURUS",
-    title: "Jemputan Perkahwinan",
-    groom: "Nama Pengantin Lelaki",
-    bride: "Nama Pengantin Perempuan",
-    inviteText: "Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
-    eventDateText: "31 Disember 2025",
-    eventTimeText: "9:00 AM – 2:00 PM",
-    venueText: "Dewan Contoh, Pulau Pinang",
-    eventStartISO: "2025-12-31T09:00:00+08:00",
-    eventEndISO: "2025-12-31T14:00:00+08:00",
-    rsvpPhone: "60123456789",
-    rsvpText: "Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
-
-    mapsLink: "",
-    mapsQuery: "Dewan Contoh, Pulau Pinang",
-
-    // Media
-    audioMp3Url: "",   // mp3 direct
-    youTubeUrl: "",    // youtube link
-    videoUrl: "",      // mp4 direct
-    bgImageUrl: "",    // image url
-
-    // theme/background
-    theme: "gold",
-    animOn: 0,
-
-    gallery: [
+    preset:"gold",
+    badge:"WALIMATULURUS",
+    title:"Jemputan Perkahwinan",
+    groom:"Nama Pengantin Lelaki",
+    bride:"Nama Pengantin Perempuan",
+    inviteText:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
+    eventDateText:"31 Disember 2025",
+    eventTimeText:"9:00 AM – 2:00 PM",
+    venueText:"Dewan Contoh, Pulau Pinang",
+    eventStartISO:"2025-12-31T09:00:00+08:00",
+    eventEndISO:"2025-12-31T14:00:00+08:00",
+    rsvpPhone:"60123456789",
+    rsvpText:"Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+    mapsLink:"",
+    mapsQuery:"Dewan Contoh, Pulau Pinang",
+    audioMp3Url:"",
+    youTubeUrl:"",
+    videoUrl:"",
+    bgImageUrl:"",
+    animOn:1,
+    gallery:[
       "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
       "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
       "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=70",
@@ -556,12 +581,11 @@
     ]
   };
 
-  const $ = (id)=>document.getElementById(id);
   let state = loadState();
   let muted = false;
   let cdTimer = null;
 
-  // YouTube player (optional)
+  // YouTube option
   let ytReady = false;
   let ytPlayer = null;
   let ytVideoId = "";
@@ -576,82 +600,26 @@
       return {...DEFAULTS};
     }
   }
-  function persist(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }
+  function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-  function parseYouTubeId(url){
-    if(!url) return "";
-    const s = String(url).trim();
-    if(!s) return "";
-    // Accept plain ID
-    if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+  function applyPreset(key){
+    const p = PRESETS[key] || PRESETS.gold;
+    state.preset = key;
+    state.animOn = p.animOn;
+    // if user didn't set custom bg img, use preset bg image
+    if(!state.bgImageUrl) state.bgImageUrl = p.bgImageUrl || "";
 
-    try{
-      const u = new URL(s);
-      if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
-      if(u.searchParams.get("v")) return u.searchParams.get("v");
-      // shorts
-      const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
-      if(m) return m[1];
-    }catch(e){}
-    return "";
-  }
-
-  function setTheme(theme){
-    // Accent + base theme
     const root = document.documentElement.style;
+    root.setProperty("--a1", p.a1); root.setProperty("--a2", p.a2); root.setProperty("--a3", p.a3);
+    root.setProperty("--bg", p.bg);
+    root.setProperty("--txt", p.txt);
+    root.setProperty("--muted", p.muted);
+    root.setProperty("--line", p.line);
+    root.setProperty("--bg1", p.bg1);
+    root.setProperty("--bg2", p.bg2);
 
-    // Reset to dark defaults first
-    root.setProperty("--bg", "#050505");
-    root.setProperty("--glass", "rgba(0,0,0,.55)");
-    root.setProperty("--line", "rgba(255,255,255,.14)");
-    root.setProperty("--txt", "#f5f7fb");
-    root.setProperty("--muted", "rgba(245,247,251,.78)");
-
-    // Default overlay layers
-    root.setProperty("--bg1", "radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%)");
-    root.setProperty("--bg2", "linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.88))");
-
-    if(theme === "rose"){
-      root.setProperty("--a1", "#e2a7b5");
-      root.setProperty("--a2", "#ffe2ea");
-      root.setProperty("--a3", "#f1c6c6");
-      root.setProperty("--bg1", "radial-gradient(900px 600px at 25% 0%, rgba(226,167,181,.18), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(255,226,234,.14), transparent 55%)");
-    }else if(theme === "white"){
-      root.setProperty("--bg", "#f6f7fb");
-      root.setProperty("--glass", "rgba(255,255,255,.72)");
-      root.setProperty("--line", "rgba(0,0,0,.10)");
-      root.setProperty("--txt", "#0b0f14");
-      root.setProperty("--muted", "rgba(11,15,20,.72)");
-      root.setProperty("--a1", "#111827");
-      root.setProperty("--a2", "#c7ccd8");
-      root.setProperty("--a3", "#8fb3ff");
-      root.setProperty("--bg1", "radial-gradient(1000px 650px at 15% 0%, rgba(143,179,255,.22), transparent 55%)");
-      root.setProperty("--bg2", "linear-gradient(to bottom, rgba(255,255,255,.65), rgba(246,247,251,.85))");
-    }else if(theme === "emerald"){
-      root.setProperty("--a1", "#34d399");
-      root.setProperty("--a2", "#d1fae5");
-      root.setProperty("--a3", "#60a5fa");
-      root.setProperty("--bg1", "radial-gradient(900px 600px at 18% 0%, rgba(52,211,153,.20), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(96,165,250,.14), transparent 55%)");
-    }else if(theme === "royal"){
-      root.setProperty("--a1", "#60a5fa");
-      root.setProperty("--a2", "#c7d2fe");
-      root.setProperty("--a3", "#fca5a5");
-      root.setProperty("--bg1", "radial-gradient(900px 600px at 18% 0%, rgba(96,165,250,.22), transparent 55%), radial-gradient(900px 600px at 90% 10%, rgba(199,210,254,.16), transparent 55%)");
-    }else if(theme === "animated"){
-      // keep gold accents but turn on animated background (handled elsewhere)
-      root.setProperty("--a1", "#d6b46c");
-      root.setProperty("--a2", "#f3e2b8");
-      root.setProperty("--a3", "#b7c6ff");
-    }else{
-      // gold
-      root.setProperty("--a1", "#d6b46c");
-      root.setProperty("--a2", "#f3e2b8");
-      root.setProperty("--a3", "#b7c6ff");
-    }
-
-    localStorage.setItem("kk_theme", theme);
+    setAnimated(Number(state.animOn)===1);
+    setBackgroundImage(state.bgImageUrl);
   }
 
   function setBackgroundImage(url){
@@ -664,9 +632,21 @@
       layer.style.display = "none";
     }
   }
+  function setAnimated(on){ $("animLayer").style.display = on ? "block" : "none"; }
 
-  function setAnimated(on){
-    $("animLayer").style.display = on ? "block" : "none";
+  function parseYouTubeId(url){
+    if(!url) return "";
+    const s = String(url).trim();
+    if(!s) return "";
+    if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+    try{
+      const u = new URL(s);
+      if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
+      if(u.searchParams.get("v")) return u.searchParams.get("v");
+      const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+      if(m) return m[1];
+    }catch(e){}
+    return "";
   }
 
   function tickClock(){
@@ -757,9 +737,7 @@ END:VCALENDAR`;
     $("lightboxImg").src = src;
     $("lightbox").style.display = "flex";
   }
-  function closeLightbox(){
-    $("lightbox").style.display = "none";
-  }
+  function closeLightbox(){ $("lightbox").style.display = "none"; }
   window.closeLightbox = closeLightbox;
 
   function setVideo(url){
@@ -775,7 +753,7 @@ END:VCALENDAR`;
     v.addEventListener("loadedmetadata", ()=>v.play().catch(()=>{}), {once:true});
   }
 
-  /* ===== Music ===== */
+  // Music
   function setMp3(url){
     const a = $("bgm");
     if(!url || !url.trim()){
@@ -784,20 +762,14 @@ END:VCALENDAR`;
     }
     a.innerHTML = `<source src="${url.trim()}" type="audio/mpeg">`;
   }
-
   function stopAllAudio(){
-    // stop mp3
     const a = $("bgm");
     try{ a.pause(); a.currentTime = 0; }catch(e){}
-
-    // stop youtube
     if(ytPlayer && ytReady){
       try{ ytPlayer.stopVideo(); }catch(e){}
     }
   }
-
   function playMusic(){
-    // Priority: MP3, else YouTube
     const mp3Ok = state.audioMp3Url && state.audioMp3Url.trim();
     const ytId = parseYouTubeId(state.youTubeUrl);
 
@@ -808,9 +780,7 @@ END:VCALENDAR`;
       a.play().catch(()=>{});
       return;
     }
-
     if(ytId){
-      // load API if needed, then play
       ytVideoId = ytId;
       ensureYouTubeApi(() => {
         loadOrCueYouTube(ytVideoId);
@@ -819,36 +789,26 @@ END:VCALENDAR`;
             ytPlayer.setVolume(muted ? 0 : 100);
             ytPlayer.playVideo();
           }catch(e){}
-        }, 200);
+        }, 250);
       });
     }
   }
-
   function toggleMute(){
     muted = !muted;
     $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
-
-    // mp3
     $("bgm").muted = muted;
-
-    // yt
     if(ytPlayer && ytReady){
-      try{
-        ytPlayer.setVolume(muted ? 0 : 100);
-      }catch(e){}
+      try{ ytPlayer.setVolume(muted ? 0 : 100); }catch(e){}
     }
   }
 
-  /* ===== YouTube API handling ===== */
   function ensureYouTubeApi(cb){
     if(window.YT && window.YT.Player){
       ytReady = true;
       cb();
       return;
     }
-    // load once
     if(document.getElementById("ytApiScript")){
-      // wait until ready
       const wait = setInterval(() => {
         if(window.YT && window.YT.Player){
           clearInterval(wait);
@@ -862,39 +822,18 @@ END:VCALENDAR`;
     s.id = "ytApiScript";
     s.src = "https://www.youtube.com/iframe_api";
     document.head.appendChild(s);
-
-    window.onYouTubeIframeAPIReady = () => {
-      ytReady = true;
-      cb();
-    };
+    window.onYouTubeIframeAPIReady = () => { ytReady = true; cb(); };
   }
-
   function loadOrCueYouTube(videoId){
     if(!videoId) return;
     if(!ytPlayer){
       ytPlayer = new YT.Player("ytPlayer", {
-        height: "0",
-        width: "0",
-        videoId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1
-        },
-        events: {
-          onReady: () => {
-            try{
-              ytPlayer.setVolume(muted ? 0 : 100);
-            }catch(e){}
-          }
-        }
+        height:"0", width:"0", videoId,
+        playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, playsinline:1 },
+        events:{ onReady:()=>{ try{ ytPlayer.setVolume(muted?0:100);}catch(e){} } }
       });
     }else{
-      try{
-        ytPlayer.loadVideoById(videoId);
-      }catch(e){}
+      try{ ytPlayer.loadVideoById(videoId); }catch(e){}
     }
   }
 
@@ -913,16 +852,13 @@ END:VCALENDAR`;
     $("btnCal").onclick = downloadICS;
     $("btnShare").onclick = shareLink;
 
-    // Theme + background
-    setTheme(state.theme);
-    $("themeSelect").value = state.theme;
-    setAnimated(Number(state.animOn) === 1 || state.theme === "animated");
-    setBackgroundImage(state.bgImageUrl);
+    // Preset apply (also sets background)
+    applyPreset(state.preset);
+    $("themeSelect").value = state.preset;
 
     // Media
     setVideo(state.videoUrl);
     setMp3(state.audioMp3Url);
-
     setupGallery();
 
     // Countdown
@@ -946,22 +882,17 @@ END:VCALENDAR`;
     cdTimer = setInterval(upd, 1000);
   }
 
-  /* Open invite (after tap) */
   function openInvite(){
     document.body.classList.add("open");
     document.body.style.overflowY = "auto";
-
-    // video (silent)
     const v = $("bgVideo");
     if(v && v.style.display !== "none") v.play().catch(()=>{});
-
-    // Start music after user gesture
     playMusic();
   }
   window.openInvite = openInvite;
 
-  /* Editor */
   function openEditor(){
+    $("fPreset").value = state.preset;
     $("fGroom").value = state.groom;
     $("fBride").value = state.bride;
     $("fTitle").value = state.title;
@@ -975,15 +906,10 @@ END:VCALENDAR`;
     $("fRsvpText").value = state.rsvpText;
     $("fMapsLink").value = state.mapsLink;
     $("fMapsQuery").value = state.mapsQuery;
-
     $("fAudioMp3").value = state.audioMp3Url;
     $("fYouTube").value = state.youTubeUrl;
     $("fVideo").value = state.videoUrl;
     $("fBgImg").value = state.bgImageUrl;
-
-    $("fTheme").value = state.theme;
-    $("fAnim").value = String(state.animOn);
-
     $("fGallery").value = (state.gallery || []).join("\n");
     $("editor").style.display = "block";
   }
@@ -1001,6 +927,8 @@ END:VCALENDAR`;
       alert("End ISO tak sah. Contoh: 2025-12-31T14:00:00+08:00");
       return;
     }
+
+    state.preset = $("fPreset").value;
 
     state.groom = $("fGroom").value.trim() || state.groom;
     state.bride = $("fBride").value.trim() || state.bride;
@@ -1023,16 +951,12 @@ END:VCALENDAR`;
     state.videoUrl = $("fVideo").value.trim();
     state.bgImageUrl = $("fBgImg").value.trim();
 
-    state.theme = $("fTheme").value;
-    state.animOn = Number($("fAnim").value);
-
     const gLines = $("fGallery").value.split("\n").map(s=>s.trim()).filter(Boolean);
     if(gLines.length) state.gallery = gLines;
 
     persist();
     applyState();
 
-    // restart music choice after save (only if already opened)
     if(document.body.classList.contains("open")){
       playMusic();
     }
@@ -1054,23 +978,19 @@ END:VCALENDAR`;
   }
   window.resetData = resetData;
 
-  /* Init */
   (function init(){
-    // initial
     applyState();
     tickClock();
     setInterval(tickClock, 10000);
 
     $("muteBtn").addEventListener("click", toggleMute);
     $("editBtn").addEventListener("click", openEditor);
-
     $("themeSelect").addEventListener("change", (e)=>{
-      state.theme = e.target.value;
+      state.preset = e.target.value;
       persist();
       applyState();
     });
 
-    // keep scroll locked until open
     document.body.style.overflowY = "hidden";
   })();
 </script>
