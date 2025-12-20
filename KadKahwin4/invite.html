@@ -13,7 +13,13 @@
     --muted:rgba(245,247,251,.78);
     --shadow:0 28px 70px rgba(0,0,0,.65);
     --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
+
+    /* Background layers */
+    --bg1: radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%);
+    --bg2: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.88));
+    --bgImg: none; /* optional image */
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
@@ -25,19 +31,46 @@
     overflow-x:hidden;
   }
 
+  /* Background image layer */
+  .bgimg{
+    position:fixed; inset:0; z-index:-5;
+    background-image: var(--bgImg);
+    background-size: cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    filter:saturate(1.05) contrast(1.02);
+    display:none;
+  }
+
   /* Background video */
   video.bg{
     position:fixed; inset:0;
     width:100%; height:100%;
     object-fit:cover;
-    z-index:-4;
+    z-index:-6;
     display:none;
   }
+
+  /* Overlay / themes */
   .overlay{
-    position:fixed; inset:0; z-index:-3;
-    background:
-      radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%),
-      linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.88));
+    position:fixed; inset:0; z-index:-4;
+    background: var(--bg1), var(--bg2);
+  }
+
+  /* Optional animated gradient */
+  .anim{
+    position:fixed; inset:0; z-index:-4;
+    pointer-events:none;
+    display:none;
+    background: radial-gradient(900px 700px at 10% 10%, rgba(214,180,108,.18), transparent 55%),
+                radial-gradient(900px 700px at 90% 20%, rgba(183,198,255,.16), transparent 55%),
+                radial-gradient(900px 700px at 50% 95%, rgba(241,198,198,.14), transparent 55%);
+    animation: floatGlow 10s ease-in-out infinite;
+  }
+  @keyframes floatGlow{
+    0%{transform:translate3d(0,0,0) scale(1)}
+    50%{transform:translate3d(0,-10px,0) scale(1.02)}
+    100%{transform:translate3d(0,0,0) scale(1)}
   }
 
   /* Tap intro (stabil untuk audio/video Android) */
@@ -47,7 +80,7 @@
     background:#000; color:#fff; text-align:center; padding:18px;
   }
   .tap .box{
-    width:min(440px, 92vw);
+    width:min(460px, 92vw);
     border:1px solid rgba(255,255,255,.14);
     background: rgba(0,0,0,.45);
     border-radius:22px;
@@ -85,7 +118,7 @@
   body.open .tap{display:none}
 
   /* Layout */
-  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 110px}
+  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 120px}
   .topbar{
     position:sticky; top:10px; z-index:10;
     display:flex; justify-content:space-between; align-items:center; gap:10px;
@@ -242,7 +275,7 @@
     overflow:auto;
   }
   .editor .panel{
-    width:min(680px, 100%);
+    width:min(720px, 100%);
     margin:0 auto;
     border-radius:22px;
     border:1px solid rgba(255,255,255,.14);
@@ -267,7 +300,7 @@
   }
   .editor textarea{min-height:78px; resize:vertical}
   .editor .bar{
-    display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:6px;
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:6px;
   }
   @media(max-width:520px){ .editor .bar{grid-template-columns:1fr;} }
   .editor .bar button{
@@ -280,21 +313,25 @@
   }
   .editor .bar .save{background: linear-gradient(135deg, var(--a1), var(--a2)); color:#111}
   .editor .bar .close{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
+  .editor .bar .reset{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
   .note{padding:0 6px 10px; color:rgba(245,247,251,.72); font-size:12px; line-height:1.45}
-  .danger{
-    background: rgba(255,255,255,.10);
-    color: var(--txt);
-    border:1px solid rgba(255,255,255,.14);
-  }
+
+  /* Hide YouTube iframe */
+  #ytWrap{position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden}
 </style>
 </head>
 
 <body>
 
+<div class="bgimg" id="bgImgLayer"></div>
+<video class="bg" id="bgVideo" autoplay muted loop playsinline preload="metadata"></video>
+<div class="overlay"></div>
+<div class="anim" id="animLayer"></div>
+
 <div class="tap" id="tap">
   <div class="box">
     <h2>JEMPUTAN PERKAHWINAN</h2>
-    <p>Tekan untuk buka kad. (Ini juga aktifkan audio/video dengan stabil di Android.)</p>
+    <p>Tekan untuk buka kad. (Klik ini juga bantu muzik/video jadi stabil di Android.)</p>
     <button onclick="openInvite()">BUKA KAD</button>
   </div>
 </div>
@@ -302,10 +339,13 @@
 <div class="door left"></div>
 <div class="door right"></div>
 
-<video class="bg" id="bgVideo" autoplay muted loop playsinline preload="metadata"></video>
-<div class="overlay"></div>
-
+<!-- MP3 audio (paling stabil) -->
 <audio id="bgm" loop preload="auto"></audio>
+
+<!-- YouTube audio option -->
+<div id="ytWrap">
+  <div id="ytPlayer"></div>
+</div>
 
 <div class="wrap">
   <div class="topbar">
@@ -316,12 +356,13 @@
         <option value="gold">Gold</option>
         <option value="rose">Rose Gold</option>
         <option value="white">White Elegant</option>
+        <option value="emerald">Emerald</option>
+        <option value="royal">Royal Blue</option>
+        <option value="animated">Animated Glow</option>
       </select>
     </div>
 
     <div class="pill">🔊 <button id="muteBtn" type="button">MUTE</button></div>
-
-    <!-- ✅ EDIT button ready -->
     <div class="pill">✏️ <button id="editBtn" type="button">EDIT</button></div>
   </div>
 
@@ -372,7 +413,7 @@
     </div>
   </div>
 
-  <div class="foot" id="footerTap">
+  <div class="foot">
     Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.<br>
     © Premium Wedding Card
   </div>
@@ -392,8 +433,9 @@
   <div class="panel">
     <h2>Mode Edit (Isi macam borang)</h2>
     <div class="note">
-      ✅ Tekan <b>Simpan</b> → kad terus berubah. Data tersimpan dalam telefon (device).<br>
-      ⚠️ Jika nak guna untuk pembeli lain, paling mudah: buka EDIT, tukar info, kemudian "Save As" fail lain / upload ke folder lain.
+      ✅ Untuk muzik paling mudah: guna <b>MP3 direct link</b>.<br>
+      ✅ Kalau nak YouTube: paste link YouTube (akan main lepas klik BUKA KAD).<br>
+      ⚠️ YouTube ada limit autoplay pada sesetengah telefon — normal.
     </div>
 
     <div class="frow two">
@@ -431,8 +473,34 @@
     </div>
 
     <div class="frow two">
-      <div><label>Video MP4 URL (optional)</label><input id="fVideo" placeholder="https://.../video.mp4" /></div>
-      <div><label>Audio MP3 URL (optional)</label><input id="fAudio" placeholder="https://.../audio.mp3" /></div>
+      <div><label>🎵 MP3 URL (paling stabil)</label><input id="fAudioMp3" placeholder="https://.../lagu.mp3" /></div>
+      <div><label>▶️ YouTube URL (optional)</label><input id="fYouTube" placeholder="https://youtube.com/watch?v=xxxx" /></div>
+    </div>
+
+    <div class="frow two">
+      <div><label>🎥 Video MP4 URL (optional)</label><input id="fVideo" placeholder="https://.../video.mp4" /></div>
+      <div><label>🖼️ Background Image URL (optional)</label><input id="fBgImg" placeholder="https://.../background.jpg" /></div>
+    </div>
+
+    <div class="frow two">
+      <div>
+        <label>🎨 Tema Latar (pilih untuk pelanggan)</label>
+        <select id="fTheme">
+          <option value="gold">Gold</option>
+          <option value="rose">Rose Gold</option>
+          <option value="white">White Elegant</option>
+          <option value="emerald">Emerald</option>
+          <option value="royal">Royal Blue</option>
+          <option value="animated">Animated Glow</option>
+        </select>
+      </div>
+      <div>
+        <label>Animated Glow (ON/OFF)</label>
+        <select id="fAnim">
+          <option value="1">ON</option>
+          <option value="0">OFF</option>
+        </select>
+      </div>
     </div>
 
     <div class="frow">
@@ -444,14 +512,14 @@
 
     <div class="bar">
       <button class="close" onclick="closeEditor()">Tutup</button>
-      <button class="danger" onclick="resetData()">Reset Data</button>
+      <button class="reset" onclick="resetData()">Reset</button>
       <button class="save" onclick="saveEditor()">Simpan</button>
     </div>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY = "KK_PREMIUM_EDITOR_V1";
+  const STORAGE_KEY = "KK_PREMIUM_EDITOR_V2";
 
   const DEFAULTS = {
     badge: "WALIMATULURUS",
@@ -466,10 +534,20 @@
     eventEndISO: "2025-12-31T14:00:00+08:00",
     rsvpPhone: "60123456789",
     rsvpText: "Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+
     mapsLink: "",
     mapsQuery: "Dewan Contoh, Pulau Pinang",
-    videoUrl: "",
-    audioUrl: "",
+
+    // Media
+    audioMp3Url: "",   // mp3 direct
+    youTubeUrl: "",    // youtube link
+    videoUrl: "",      // mp4 direct
+    bgImageUrl: "",    // image url
+
+    // theme/background
+    theme: "gold",
+    animOn: 0,
+
     gallery: [
       "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
       "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
@@ -479,10 +557,14 @@
   };
 
   const $ = (id)=>document.getElementById(id);
-
   let state = loadState();
   let muted = false;
   let cdTimer = null;
+
+  // YouTube player (optional)
+  let ytReady = false;
+  let ytPlayer = null;
+  let ytVideoId = "";
 
   function loadState(){
     try{
@@ -498,36 +580,93 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
+  function parseYouTubeId(url){
+    if(!url) return "";
+    const s = String(url).trim();
+    if(!s) return "";
+    // Accept plain ID
+    if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+
+    try{
+      const u = new URL(s);
+      if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
+      if(u.searchParams.get("v")) return u.searchParams.get("v");
+      // shorts
+      const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
+      if(m) return m[1];
+    }catch(e){}
+    return "";
+  }
+
   function setTheme(theme){
+    // Accent + base theme
+    const root = document.documentElement.style;
+
+    // Reset to dark defaults first
+    root.setProperty("--bg", "#050505");
+    root.setProperty("--glass", "rgba(0,0,0,.55)");
+    root.setProperty("--line", "rgba(255,255,255,.14)");
+    root.setProperty("--txt", "#f5f7fb");
+    root.setProperty("--muted", "rgba(245,247,251,.78)");
+
+    // Default overlay layers
+    root.setProperty("--bg1", "radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%)");
+    root.setProperty("--bg2", "linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.88))");
+
     if(theme === "rose"){
-      document.documentElement.style.setProperty("--a1", "#e2a7b5");
-      document.documentElement.style.setProperty("--a2", "#ffe2ea");
-      document.documentElement.style.setProperty("--a3", "#f1c6c6");
-      document.documentElement.style.setProperty("--bg", "#050505");
-      document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
-      document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
-      document.documentElement.style.setProperty("--txt", "#f5f7fb");
-      document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
+      root.setProperty("--a1", "#e2a7b5");
+      root.setProperty("--a2", "#ffe2ea");
+      root.setProperty("--a3", "#f1c6c6");
+      root.setProperty("--bg1", "radial-gradient(900px 600px at 25% 0%, rgba(226,167,181,.18), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(255,226,234,.14), transparent 55%)");
     }else if(theme === "white"){
-      document.documentElement.style.setProperty("--bg", "#f6f7fb");
-      document.documentElement.style.setProperty("--glass", "rgba(255,255,255,.72)");
-      document.documentElement.style.setProperty("--line", "rgba(0,0,0,.10)");
-      document.documentElement.style.setProperty("--txt", "#0b0f14");
-      document.documentElement.style.setProperty("--muted", "rgba(11,15,20,.72)");
-      document.documentElement.style.setProperty("--a1", "#111827");
-      document.documentElement.style.setProperty("--a2", "#c7ccd8");
-      document.documentElement.style.setProperty("--a3", "#8fb3ff");
+      root.setProperty("--bg", "#f6f7fb");
+      root.setProperty("--glass", "rgba(255,255,255,.72)");
+      root.setProperty("--line", "rgba(0,0,0,.10)");
+      root.setProperty("--txt", "#0b0f14");
+      root.setProperty("--muted", "rgba(11,15,20,.72)");
+      root.setProperty("--a1", "#111827");
+      root.setProperty("--a2", "#c7ccd8");
+      root.setProperty("--a3", "#8fb3ff");
+      root.setProperty("--bg1", "radial-gradient(1000px 650px at 15% 0%, rgba(143,179,255,.22), transparent 55%)");
+      root.setProperty("--bg2", "linear-gradient(to bottom, rgba(255,255,255,.65), rgba(246,247,251,.85))");
+    }else if(theme === "emerald"){
+      root.setProperty("--a1", "#34d399");
+      root.setProperty("--a2", "#d1fae5");
+      root.setProperty("--a3", "#60a5fa");
+      root.setProperty("--bg1", "radial-gradient(900px 600px at 18% 0%, rgba(52,211,153,.20), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(96,165,250,.14), transparent 55%)");
+    }else if(theme === "royal"){
+      root.setProperty("--a1", "#60a5fa");
+      root.setProperty("--a2", "#c7d2fe");
+      root.setProperty("--a3", "#fca5a5");
+      root.setProperty("--bg1", "radial-gradient(900px 600px at 18% 0%, rgba(96,165,250,.22), transparent 55%), radial-gradient(900px 600px at 90% 10%, rgba(199,210,254,.16), transparent 55%)");
+    }else if(theme === "animated"){
+      // keep gold accents but turn on animated background (handled elsewhere)
+      root.setProperty("--a1", "#d6b46c");
+      root.setProperty("--a2", "#f3e2b8");
+      root.setProperty("--a3", "#b7c6ff");
     }else{
-      document.documentElement.style.setProperty("--bg", "#050505");
-      document.documentElement.style.setProperty("--glass", "rgba(0,0,0,.55)");
-      document.documentElement.style.setProperty("--line", "rgba(255,255,255,.14)");
-      document.documentElement.style.setProperty("--txt", "#f5f7fb");
-      document.documentElement.style.setProperty("--muted", "rgba(245,247,251,.78)");
-      document.documentElement.style.setProperty("--a1", "#d6b46c");
-      document.documentElement.style.setProperty("--a2", "#f3e2b8");
-      document.documentElement.style.setProperty("--a3", "#b7c6ff");
+      // gold
+      root.setProperty("--a1", "#d6b46c");
+      root.setProperty("--a2", "#f3e2b8");
+      root.setProperty("--a3", "#b7c6ff");
     }
+
     localStorage.setItem("kk_theme", theme);
+  }
+
+  function setBackgroundImage(url){
+    const layer = $("bgImgLayer");
+    if(url && url.trim()){
+      document.documentElement.style.setProperty("--bgImg", `url("${url.trim()}")`);
+      layer.style.display = "block";
+    }else{
+      document.documentElement.style.setProperty("--bgImg", "none");
+      layer.style.display = "none";
+    }
+  }
+
+  function setAnimated(on){
+    $("animLayer").style.display = on ? "block" : "none";
   }
 
   function tickClock(){
@@ -631,23 +770,132 @@ END:VCALENDAR`;
       return;
     }
     v.style.display = "block";
-    v.innerHTML = `<source src="${url}" type="video/mp4">`;
+    v.innerHTML = `<source src="${url.trim()}" type="video/mp4">`;
     v.muted = true; v.playsInline = true;
     v.addEventListener("loadedmetadata", ()=>v.play().catch(()=>{}), {once:true});
   }
-  function setAudio(url){
+
+  /* ===== Music ===== */
+  function setMp3(url){
     const a = $("bgm");
     if(!url || !url.trim()){
       a.innerHTML = "";
       return;
     }
-    a.innerHTML = `<source src="${url}" type="audio/mpeg">`;
+    a.innerHTML = `<source src="${url.trim()}" type="audio/mpeg">`;
+  }
+
+  function stopAllAudio(){
+    // stop mp3
+    const a = $("bgm");
+    try{ a.pause(); a.currentTime = 0; }catch(e){}
+
+    // stop youtube
+    if(ytPlayer && ytReady){
+      try{ ytPlayer.stopVideo(); }catch(e){}
+    }
+  }
+
+  function playMusic(){
+    // Priority: MP3, else YouTube
+    const mp3Ok = state.audioMp3Url && state.audioMp3Url.trim();
+    const ytId = parseYouTubeId(state.youTubeUrl);
+
+    if(mp3Ok){
+      stopAllAudio();
+      const a = $("bgm");
+      a.muted = muted;
+      a.play().catch(()=>{});
+      return;
+    }
+
+    if(ytId){
+      // load API if needed, then play
+      ytVideoId = ytId;
+      ensureYouTubeApi(() => {
+        loadOrCueYouTube(ytVideoId);
+        setTimeout(() => {
+          try{
+            ytPlayer.setVolume(muted ? 0 : 100);
+            ytPlayer.playVideo();
+          }catch(e){}
+        }, 200);
+      });
+    }
   }
 
   function toggleMute(){
     muted = !muted;
-    $("bgm").muted = muted;
     $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
+
+    // mp3
+    $("bgm").muted = muted;
+
+    // yt
+    if(ytPlayer && ytReady){
+      try{
+        ytPlayer.setVolume(muted ? 0 : 100);
+      }catch(e){}
+    }
+  }
+
+  /* ===== YouTube API handling ===== */
+  function ensureYouTubeApi(cb){
+    if(window.YT && window.YT.Player){
+      ytReady = true;
+      cb();
+      return;
+    }
+    // load once
+    if(document.getElementById("ytApiScript")){
+      // wait until ready
+      const wait = setInterval(() => {
+        if(window.YT && window.YT.Player){
+          clearInterval(wait);
+          ytReady = true;
+          cb();
+        }
+      }, 200);
+      return;
+    }
+    const s = document.createElement("script");
+    s.id = "ytApiScript";
+    s.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(s);
+
+    window.onYouTubeIframeAPIReady = () => {
+      ytReady = true;
+      cb();
+    };
+  }
+
+  function loadOrCueYouTube(videoId){
+    if(!videoId) return;
+    if(!ytPlayer){
+      ytPlayer = new YT.Player("ytPlayer", {
+        height: "0",
+        width: "0",
+        videoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1
+        },
+        events: {
+          onReady: () => {
+            try{
+              ytPlayer.setVolume(muted ? 0 : 100);
+            }catch(e){}
+          }
+        }
+      });
+    }else{
+      try{
+        ytPlayer.loadVideoById(videoId);
+      }catch(e){}
+    }
   }
 
   function applyState(){
@@ -665,8 +913,16 @@ END:VCALENDAR`;
     $("btnCal").onclick = downloadICS;
     $("btnShare").onclick = shareLink;
 
+    // Theme + background
+    setTheme(state.theme);
+    $("themeSelect").value = state.theme;
+    setAnimated(Number(state.animOn) === 1 || state.theme === "animated");
+    setBackgroundImage(state.bgImageUrl);
+
+    // Media
     setVideo(state.videoUrl);
-    setAudio(state.audioUrl);
+    setMp3(state.audioMp3Url);
+
     setupGallery();
 
     // Countdown
@@ -694,10 +950,13 @@ END:VCALENDAR`;
   function openInvite(){
     document.body.classList.add("open");
     document.body.style.overflowY = "auto";
+
+    // video (silent)
     const v = $("bgVideo");
-    const a = $("bgm");
     if(v && v.style.display !== "none") v.play().catch(()=>{});
-    if(a && a.querySelector("source")) { a.muted = muted; a.play().catch(()=>{}); }
+
+    // Start music after user gesture
+    playMusic();
   }
   window.openInvite = openInvite;
 
@@ -716,8 +975,15 @@ END:VCALENDAR`;
     $("fRsvpText").value = state.rsvpText;
     $("fMapsLink").value = state.mapsLink;
     $("fMapsQuery").value = state.mapsQuery;
+
+    $("fAudioMp3").value = state.audioMp3Url;
+    $("fYouTube").value = state.youTubeUrl;
     $("fVideo").value = state.videoUrl;
-    $("fAudio").value = state.audioUrl;
+    $("fBgImg").value = state.bgImageUrl;
+
+    $("fTheme").value = state.theme;
+    $("fAnim").value = String(state.animOn);
+
     $("fGallery").value = (state.gallery || []).join("\n");
     $("editor").style.display = "block";
   }
@@ -752,14 +1018,25 @@ END:VCALENDAR`;
     state.mapsLink = $("fMapsLink").value.trim();
     state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
 
+    state.audioMp3Url = $("fAudioMp3").value.trim();
+    state.youTubeUrl = $("fYouTube").value.trim();
     state.videoUrl = $("fVideo").value.trim();
-    state.audioUrl = $("fAudio").value.trim();
+    state.bgImageUrl = $("fBgImg").value.trim();
+
+    state.theme = $("fTheme").value;
+    state.animOn = Number($("fAnim").value);
 
     const gLines = $("fGallery").value.split("\n").map(s=>s.trim()).filter(Boolean);
     if(gLines.length) state.gallery = gLines;
 
     persist();
     applyState();
+
+    // restart music choice after save (only if already opened)
+    if(document.body.classList.contains("open")){
+      playMusic();
+    }
+
     alert("✅ Disimpan. Kad sudah dikemaskini.");
     closeEditor();
   }
@@ -770,6 +1047,7 @@ END:VCALENDAR`;
       localStorage.removeItem(STORAGE_KEY);
       state = loadState();
       applyState();
+      stopAllAudio();
       alert("✅ Reset siap.");
       closeEditor();
     }
@@ -778,18 +1056,19 @@ END:VCALENDAR`;
 
   /* Init */
   (function init(){
-    const savedTheme = localStorage.getItem("kk_theme") || "gold";
-    $("themeSelect").value = savedTheme;
-    setTheme(savedTheme);
-    $("themeSelect").addEventListener("change", (e)=>setTheme(e.target.value));
-    $("muteBtn").addEventListener("click", toggleMute);
-
-    // ✅ Edit button
-    $("editBtn").addEventListener("click", openEditor);
-
+    // initial
     applyState();
     tickClock();
     setInterval(tickClock, 10000);
+
+    $("muteBtn").addEventListener("click", toggleMute);
+    $("editBtn").addEventListener("click", openEditor);
+
+    $("themeSelect").addEventListener("change", (e)=>{
+      state.theme = e.target.value;
+      persist();
+      applyState();
+    });
 
     // keep scroll locked until open
     document.body.style.overflowY = "hidden";
