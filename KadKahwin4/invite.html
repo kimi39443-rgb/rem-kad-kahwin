@@ -15,7 +15,6 @@
   --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
   --bg1:radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%);
   --bg2:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9));
-  --bgImg:none;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%}
@@ -24,13 +23,6 @@ body{
   background:var(--bg);
   color:var(--txt);
   overflow-x:hidden;
-}
-.bgimg{
-  position:fixed; inset:0; z-index:-6;
-  background-image:var(--bgImg);
-  background-size:cover;
-  background-position:center;
-  display:none;
 }
 .overlay{
   position:fixed; inset:0; z-index:-5;
@@ -52,7 +44,7 @@ body{
   background:#000; color:#fff;
 }
 .tap .box{
-  width:min(420px,90vw);
+  width:min(440px,92vw);
   padding:18px;
   border-radius:22px;
   background:rgba(0,0,0,.6);
@@ -82,7 +74,7 @@ body.open .door.left{transform:translateX(-105%)}
 body.open .door.right{transform:translateX(105%)}
 body.open .tap{display:none}
 
-.wrap{max-width:860px;margin:auto;padding:16px 14px 120px}
+.wrap{max-width:860px;margin:auto;padding:16px 14px 180px}
 .topbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
 .pill{
   padding:10px 14px;
@@ -93,7 +85,7 @@ body.open .tap{display:none}
   display:flex; gap:8px; align-items:center;
 }
 .pill button, .pill select{
-  background:none;border:0;color:var(--txt);font-weight:800;cursor:pointer
+  background:none;border:0;color:var(--txt);font-weight:900;cursor:pointer
 }
 .pill select{outline:none}
 
@@ -134,7 +126,7 @@ h1{
   padding:16px;
 }
 .editor .panel{
-  max-width:720px;margin:10px auto;padding:16px;
+  max-width:820px;margin:10px auto;padding:16px;
   border-radius:22px;
   background:rgba(15,18,26,.92);
   border:1px solid rgba(255,255,255,.14);
@@ -146,7 +138,7 @@ h1{
   background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.14);
   outline:none;
 }
-.editor textarea{min-height:80px;resize:vertical}
+.editor textarea{min-height:72px;resize:vertical}
 .editor .row{display:grid;grid-template-columns:1fr;gap:10px}
 @media(min-width:720px){.editor .row.two{grid-template-columns:1fr 1fr}}
 .editor .bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
@@ -158,30 +150,81 @@ h1{
 .ok{margin-top:10px;color:#c6ffd8;font-size:12px;line-height:1.45}
 
 #ytWrap{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* Bottom actions */
+.bottomBar{
+  position:fixed; left:0; right:0; bottom:0; z-index:55;
+  padding:10px 12px;
+  background:rgba(0,0,0,.55);
+  border-top:1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(10px);
+}
+.bottomRow{
+  max-width:860px;margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+}
+.bbtn{
+  border:0; border-radius:18px; padding:14px 12px;
+  font-weight:900; cursor:pointer;
+  color:#111;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+}
+.bbtn.secondary{
+  color:#fff;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+}
+
+/* Watermark */
+.watermark{
+  position:fixed; left:0; right:0; bottom:64px;
+  z-index:52;
+  text-align:center;
+  font-size:12px;
+  letter-spacing:.4px;
+  opacity:.55;
+  pointer-events:none;
+  display:none;
+}
+
+/* Expired overlay */
+.expired{
+  position:fixed; inset:0; z-index:70;
+  display:none;
+  background:rgba(0,0,0,.85);
+  color:#fff;
+}
+.expired .box{
+  width:min(460px,92vw);
+  margin:18vh auto 0;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.55);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+.expired .box h3{margin:8px 0 6px}
+.expired .box p{opacity:.85; line-height:1.5}
 </style>
 </head>
 
 <body>
-
-<div class="bgimg" id="bgImgLayer"></div>
 <div class="overlay"></div>
 <div class="anim" id="animLayer"></div>
 
-<div class="tap">
+<div class="tap" id="tapLayer">
   <div class="box">
     <h3>JEMPUTAN PERKAHWINAN</h3>
     <p>Tekan untuk buka kad</p>
-    <button onclick="openInvite()">BUKA KAD</button>
+    <button type="button" onclick="openInvite()">BUKA KAD</button>
   </div>
 </div>
 
 <div class="door left"></div>
 <div class="door right"></div>
 
-<!-- MP3 audio (paling stabil) -->
 <audio id="bgm" loop></audio>
-
-<!-- YouTube hidden player -->
 <div id="ytWrap"><div id="ytPlayer"></div></div>
 
 <div class="wrap">
@@ -194,9 +237,12 @@ h1{
       </select>
     </div>
 
-    <div class="pill"><button id="playBtn" type="button">▶️ PLAY MUSIC</button></div>
+    <div class="pill"><button id="playBtn" type="button">▶️ PLAY</button></div>
+    <div class="pill"><button id="stopBtn" type="button">⏹️ STOP</button></div>
     <div class="pill"><button id="muteBtn" type="button">MUTE</button></div>
-    <div class="pill"><button id="editBtn" type="button">EDIT</button></div>
+
+    <!-- EDIT akan auto hide bila Mode Pelanggan ON -->
+    <div class="pill" id="editPill"><button id="editBtn" type="button">EDIT</button></div>
   </div>
 
   <div class="card">
@@ -213,25 +259,48 @@ h1{
       <div class="divider"></div>
       <div id="inviteText">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
       <div class="small" id="musicInfo">Muzik: Preset</div>
+      <div class="small" id="musicHint">Jika tiada bunyi, tekan ▶️ PLAY.</div>
+      <div class="small" id="linkInfo"></div>
     </div>
 
     <div class="grid">
-      <div class="item" id="dateText">📅 31 Disember 2025</div>
+      <div class="item" id="dateText">📅 31/12/2025</div>
       <div class="item" id="timeText">⏰ 9:00 AM – 2:00 PM</div>
       <div class="item" id="venueText">📍 Dewan Contoh, Pulau Pinang</div>
     </div>
 
     <div class="actions">
-      <button class="btn primary" id="btnRsvp">💬 RSVP WhatsApp</button>
-      <button class="btn" id="btnMaps">📍 Google Maps</button>
+      <button class="btn primary" id="btnRsvp" type="button">💬 RSVP WhatsApp</button>
+      <button class="btn" id="btnMaps" type="button">📍 Google Maps</button>
     </div>
   </div>
 </div>
 
-<!-- EDITOR -->
+<!-- watermark -->
+<div class="watermark" id="wm"></div>
+
+<div class="bottomBar">
+  <div class="bottomRow">
+    <button class="bbtn" id="shareBtn" type="button">📤 SHARE INVITE</button>
+    <button class="bbtn secondary" id="copyBtn" type="button">📋 COPY LINK</button>
+  </div>
+  <div class="bottomRow" style="margin-top:10px;">
+    <button class="bbtn secondary" id="newLinkBtn" type="button">✨ GENERATE NEW LINK</button>
+    <button class="bbtn secondary" id="adminBtn" type="button">🔐 ADMIN</button>
+  </div>
+</div>
+
+<div class="expired" id="expiredLayer">
+  <div class="box">
+    <h3>⛔ Link Telah Tamat</h3>
+    <p id="expiredMsg">Sila hubungi pihak admin untuk link terbaru.</p>
+    <button class="bbtn" type="button" onclick="closeExpired()">OK</button>
+  </div>
+</div>
+
 <div class="editor" id="editor">
   <div class="panel">
-    <h3>Edit Kad (Versi B - Ada tempat muzik)</h3>
+    <h3>Edit Kad (Premium Mesra Android)</h3>
 
     <div class="row two">
       <div>
@@ -271,8 +340,8 @@ h1{
         <input id="fDateText" placeholder="31/12/2025">
       </div>
       <div>
-        <label>Masa (paparan)</label>
-        <input id="fTimeText" placeholder="9.00am – 2.00pm">
+        <label>Masa (paparan 12 jam)</label>
+        <input id="fTimeText" placeholder="9:00 AM – 2:00 PM">
       </div>
     </div>
 
@@ -301,7 +370,6 @@ h1{
       </div>
     </div>
 
-    <!-- MUZIK INPUT -->
     <div class="row two">
       <div>
         <label>🎵 MP3 URL (paling stabil)</label>
@@ -317,43 +385,138 @@ h1{
       ⚠️ YouTube Music (music.youtube.com) memang tak boleh bunyi. Guna YouTube biasa sahaja.
     </div>
 
-    <div class="bar">
-      <button class="close" onclick="closeEditor()">Tutup</button>
-      <button class="reset" onclick="resetAll()">Reset</button>
-      <button class="save" onclick="saveEditor()">Simpan</button>
+    <div class="row two">
+      <div>
+        <label>Expired (ON/OFF)</label>
+        <select id="fExpOn">
+          <option value="0">OFF</option>
+          <option value="1">ON</option>
+        </select>
+      </div>
+      <div>
+        <label>Tarikh Expired (DD/MM/YYYY)</label>
+        <input id="fExpDate" placeholder="31/12/2025">
+      </div>
     </div>
 
-    <div class="ok" id="saveMsg" style="display:none;">✅ Disimpan. Tekan PLAY MUSIC untuk confirm bunyi.</div>
+    <div class="row two">
+      <div>
+        <label>Masa Expired (12 jam, contoh 9:30 PM)</label>
+        <input id="fExpTime" placeholder="9:30 PM">
+      </div>
+      <div>
+        <label>Mesej Expired</label>
+        <input id="fExpMsg" placeholder="Sila hubungi admin untuk link terbaru.">
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Admin PIN (untuk buka EDIT)</label>
+        <input id="fPin" placeholder="Contoh: 1234">
+      </div>
+      <div>
+        <label>Auto Logout (minit)</label>
+        <select id="fAutoLogout">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15" selected>15</option>
+          <option value="30">30</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- NEW PREMIUM SETTINGS -->
+    <div class="row two">
+      <div>
+        <label>Watermark (ON/OFF)</label>
+        <select id="fWmOn">
+          <option value="0">OFF</option>
+          <option value="1">ON</option>
+        </select>
+      </div>
+      <div>
+        <label>Teks Watermark</label>
+        <input id="fWmText" placeholder="Contoh: Powered by NamaBrand">
+      </div>
+    </div>
+
+    <div class="row two">
+      <div>
+        <label>Mode Pelanggan (sorok EDIT)</label>
+        <select id="fCustomerMode">
+          <option value="0">OFF (Admin nampak EDIT)</option>
+          <option value="1">ON (Pelanggan tak nampak EDIT)</option>
+        </select>
+      </div>
+      <div>
+        <label>Nota</label>
+        <input value="Tip: Bila Mode Pelanggan ON, guna butang ADMIN untuk buka edit." disabled>
+      </div>
+    </div>
+
+    <div class="bar">
+      <button class="close" type="button" onclick="closeEditor()">Tutup</button>
+      <button class="reset" type="button" onclick="resetAll()">Reset</button>
+      <button class="save" type="button" onclick="saveEditor()">Simpan</button>
+    </div>
+
+    <div class="ok" id="saveMsg" style="display:none;">✅ Disimpan. Guna COPY/SHARE untuk hantar link.</div>
+  </div>
+</div>
+
+<div id="toastHint" style="
+  position:fixed; left:50%; bottom:150px; transform:translateX(-50%);
+  z-index:9999;
+  width:min(520px, 92vw);
+  display:none;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(0,0,0,.72);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+  padding:12px 12px;
+  color:#fff;
+">
+  <div style="display:flex; gap:10px; align-items:flex-start;">
+    <div style="font-size:18px; line-height:1;">🔊</div>
+    <div style="flex:1;">
+      <div style="font-weight:900;">Tip Bunyi</div>
+      <div style="font-size:12px; opacity:.85; margin-top:4px; line-height:1.4;">
+        Jika tiada bunyi, tekan <b>▶️ PLAY</b>.
+      </div>
+    </div>
+    <button id="toastOk" type="button" style="
+      border:0; cursor:pointer;
+      border-radius:12px;
+      padding:8px 10px;
+      font-weight:900;
+      background:rgba(255,255,255,.14);
+      color:#fff;
+    ">OK</button>
   </div>
 </div>
 
 <script>
-/* =========================
-   STATE + PRESETS
-========================= */
-const STORAGE_KEY = "KK_VB_MUSIC_EDITOR_1";
+/* ===== Storage Keys ===== */
+const STORAGE_KEY = "KK_PREMIUM_STATE_V2";
+const AUTH_KEY = "KK_ADMIN_AUTH_V2";
+const PIN_KEY  = "KK_ADMIN_PIN_V2";
+const TOAST_KEY = "KK_TOAST_MUSIC_HINT_SHOWN";
 
+/* ===== Presets ===== */
 const PRESETS = {
-  gold:{
-    label:"Gold Luxury",
-    a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
-    bg:"#050505",
+  gold:{ label:"Gold Luxury", a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff", bg:"#050505",
     bg1:"radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
   },
-  floral:{
-    label:"Floral White",
-    a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
-    bg:"#f6f7fb",
+  floral:{ label:"Floral White", a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff", bg:"#f6f7fb",
     bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(255,255,255,.70), rgba(246,247,251,.88))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
   },
-  royal:{
-    label:"Royal Night",
-    a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
-    bg:"#030712",
+  royal:{ label:"Royal Night", a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5", bg:"#030712",
     bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.92))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
@@ -361,6 +524,7 @@ const PRESETS = {
 };
 
 const DEFAULTS = {
+  ver: 3,
   preset:"gold",
   animOn:1,
 
@@ -369,7 +533,7 @@ const DEFAULTS = {
   inviteText:"Dengan penuh kesyukuran, kami menjemput anda hadir.",
 
   dateText:"31/12/2025",
-  timeText:"9.00am – 2.00pm",
+  timeText:"9:00 AM – 2:00 PM",
   venueText:"Dewan Contoh, Pulau Pinang",
 
   rsvpPhone:"60123456789",
@@ -378,12 +542,23 @@ const DEFAULTS = {
   mapsLink:"",
   mapsQuery:"Dewan Contoh, Pulau Pinang",
 
-  // Muzik input (override)
   mp3Url:"",
-  ytUrl:""
+  ytUrl:"",
+
+  expOn:0,
+  expDate:"31/12/2025",
+  expTime:"9:00 PM",
+  expMsg:"Sila hubungi admin untuk link terbaru.",
+
+  autoLogoutMin:15,
+  adminPin:"1234",
+
+  wmOn: 1,
+  wmText: "Powered by KadKahwin Premium",
+  customerMode: 1
 };
 
-let state = loadState();
+let state = loadMergedState();
 let isMuted = false;
 
 // YouTube
@@ -391,25 +566,78 @@ let ytReady = false;
 let ytPlayer = null;
 let ytVideoId = "";
 
-/* =========================
-   HELPERS
-========================= */
+/* ===== Helpers ===== */
 function $(id){ return document.getElementById(id); }
+function safeJSONParse(s){ try{ return JSON.parse(s); }catch(e){ return null; } }
 
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return {...DEFAULTS};
-    const obj = JSON.parse(raw);
-    return {...DEFAULTS, ...obj};
-  }catch(e){
-    return {...DEFAULTS};
-  }
-}
 function persist(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(PIN_KEY, state.adminPin || "1234");
 }
 
+function b64urlEncode(str){
+  const b64 = btoa(unescape(encodeURIComponent(str)));
+  return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function b64urlDecode(b64url){
+  const b64 = b64url.replace(/-/g,'+').replace(/_/g,'/');
+  const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
+  const s = atob(b64 + pad);
+  return decodeURIComponent(escape(s));
+}
+
+/* ===== Load State (URL ?d= lebih prioriti) ===== */
+function loadMergedState(){
+  const url = new URL(location.href);
+  const d = url.searchParams.get("d");
+  let fromUrl = null;
+
+  if(d){
+    try{
+      const json = b64urlDecode(d);
+      fromUrl = safeJSONParse(json);
+    }catch(e){ fromUrl = null; }
+  }
+
+  const raw = localStorage.getItem(STORAGE_KEY);
+  const fromLs = raw ? safeJSONParse(raw) : null;
+
+  return {...DEFAULTS, ...(fromLs||{}), ...(fromUrl||{})};
+}
+
+/* ===== Build link ===== */
+function getBaseUrl(){
+  const u = new URL(location.href);
+  u.search = "";
+  u.hash = "";
+  return u.toString();
+}
+function buildInviteLink(){
+  const base = getBaseUrl();
+  const clean = {...state};
+  const json = JSON.stringify(clean);
+  return base + "?d=" + b64urlEncode(json);
+}
+
+/* ===== Copy / Share ===== */
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position="fixed"; ta.style.left="-9999px";
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    let ok=false;
+    try{ ok=document.execCommand("copy"); }catch(err){ ok=false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+/* ===== UI preset ===== */
 function applyPresetUI(key){
   const p = PRESETS[key] || PRESETS.gold;
   const root = document.documentElement.style;
@@ -423,6 +651,7 @@ function applyPresetUI(key){
   $("animLayer").style.display = (Number(state.animOn)===1) ? "block" : "none";
 }
 
+/* ===== WA + Maps ===== */
 function buildWhatsApp(){
   const text = encodeURIComponent((state.rsvpText||"") + ` ( ${state.groom} & ${state.bride} )`);
   return `https://wa.me/${state.rsvpPhone}?text=${text}`;
@@ -432,29 +661,22 @@ function buildMaps(){
   return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
 }
 
-/* =========================
-   MUSIC LOGIC (OVERRIDE)
-========================= */
+/* ===== Music ===== */
 function stopAllAudio(){
-  // MP3
   const a = $("bgm");
   try{ a.pause(); a.currentTime = 0; }catch(e){}
-  // YT
   if(ytPlayer && ytReady){
     try{ ytPlayer.stopVideo(); }catch(e){}
   }
 }
-
 function isYouTubeMusic(url){
   return (url||"").includes("music.youtube.com");
 }
-
 function parseYouTubeId(url){
   if(!url) return "";
   const s = String(url).trim();
   if(!s) return "";
   if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
-
   try{
     const u = new URL(s);
     if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
@@ -464,18 +686,11 @@ function parseYouTubeId(url){
   }catch(e){}
   return "";
 }
-
 function setMp3Source(url){
-  const a = $("bgm");
-  a.src = url ? url.trim() : "";
+  $("bgm").src = url ? url.trim() : "";
 }
-
 function ensureYouTubeApi(cb){
-  if(window.YT && window.YT.Player){
-    ytReady = true;
-    cb();
-    return;
-  }
+  if(window.YT && window.YT.Player){ ytReady = true; cb(); return; }
   if(document.getElementById("ytApiScript")){
     const t = setInterval(()=>{
       if(window.YT && window.YT.Player){
@@ -487,15 +702,11 @@ function ensureYouTubeApi(cb){
     return;
   }
   const s = document.createElement("script");
-  s.id = "ytApiScript";
-  s.src = "https://www.youtube.com/iframe_api";
+  s.id="ytApiScript";
+  s.src="https://www.youtube.com/iframe_api";
   document.head.appendChild(s);
-  window.onYouTubeIframeAPIReady = () => {
-    ytReady = true;
-    cb();
-  };
+  window.onYouTubeIframeAPIReady = () => { ytReady=true; cb(); };
 }
-
 function loadOrPlayYouTube(videoId){
   if(!videoId) return;
   if(!ytPlayer){
@@ -519,80 +730,147 @@ function loadOrPlayYouTube(videoId){
     }catch(e){}
   }
 }
-
 function chooseMusicMode(){
-  // Priority: MP3 override > YouTube override > preset MP3
   const p = PRESETS[state.preset] || PRESETS.gold;
 
-  // 1) MP3 override
   if(state.mp3Url && state.mp3Url.trim()){
-    $("musicInfo").textContent = "Muzik: MP3 (custom)";
+    $("musicInfo").textContent = "Muzik: MP3 Custom ✅";
     return { type:"mp3", src: state.mp3Url.trim() };
   }
 
-  // 2) YouTube override (bukan YT Music)
   if(state.ytUrl && state.ytUrl.trim()){
     const url = state.ytUrl.trim();
     if(isYouTubeMusic(url)){
-      $("musicInfo").textContent = "Muzik: YouTube Music (blocked) — sila guna YouTube biasa";
+      $("musicInfo").textContent = "Muzik: YouTube Music ❌ (tak boleh) — guna YouTube biasa";
       return { type:"none", src:"" };
     }
     const id = parseYouTubeId(url);
     if(id){
-      $("musicInfo").textContent = "Muzik: YouTube (custom)";
+      $("musicInfo").textContent = "Muzik: YouTube Custom ✅";
       return { type:"yt", src:id };
     }
-    $("musicInfo").textContent = "Muzik: YouTube (link tak sah)";
+    $("musicInfo").textContent = "Muzik: YouTube ❌ (link tak sah)";
     return { type:"none", src:"" };
   }
 
-  // 3) Preset mp3
-  $("musicInfo").textContent = "Muzik: Preset (" + p.label + ")";
+  $("musicInfo").textContent = "Muzik: Preset ✅ (" + p.label + ")";
   return { type:"mp3", src: p.presetMp3 };
 }
-
 function playMusicManual(){
-  // This is the CONFIRM button for Android
   stopAllAudio();
-
   const mode = chooseMusicMode();
+
   if(mode.type === "mp3" && mode.src){
     setMp3Source(mode.src);
     const a = $("bgm");
     a.muted = isMuted;
-    a.play().catch(()=>{
-      alert("Tak dapat main MP3. Sila semak link MP3 direct & naikkan volume media.");
-    });
+    a.play().catch(()=>alert("Tak dapat main MP3. Pastikan link direct .mp3 & volume media naik."));
     return;
   }
-
   if(mode.type === "yt" && mode.src){
     ytVideoId = mode.src;
     ensureYouTubeApi(()=>loadOrPlayYouTube(ytVideoId));
     return;
   }
-
   alert("Tiada muzik boleh dimainkan. Isi MP3 URL atau YouTube URL (bukan YouTube Music).");
 }
-
 function toggleMute(){
   isMuted = !isMuted;
-
-  // MP3
   $("bgm").muted = isMuted;
-
-  // YouTube
   if(ytPlayer && ytReady){
     try{ ytPlayer.setVolume(isMuted ? 0 : 100); }catch(e){}
   }
 }
 
-/* =========================
-   RENDER
-========================= */
+/* ===== Popup tip (sekali) ===== */
+function showToastHintOnce(){
+  try{ if(localStorage.getItem(TOAST_KEY) === "1") return; }catch(e){}
+  const t = $("toastHint"), ok = $("toastOk");
+  if(!t || !ok) return;
+
+  t.style.display="block";
+  const hide=()=>{
+    t.style.display="none";
+    try{ localStorage.setItem(TOAST_KEY,"1"); }catch(e){}
+  };
+  ok.onclick=hide;
+  setTimeout(hide, 5000);
+}
+
+/* ===== Expired ===== */
+function parseDDMMYYYY(s){
+  const m = String(s||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m) return null;
+  const dd = Number(m[1]), mm = Number(m[2]), yy = Number(m[3]);
+  if(mm<1||mm>12||dd<1||dd>31) return null;
+  return {dd,mm,yy};
+}
+function parseTime12h(s){
+  const m = String(s||"").trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if(!m) return null;
+  let hh = Number(m[1]), min = Number(m[2]);
+  const ap = m[3].toUpperCase();
+  if(hh<1||hh>12||min<0||min>59) return null;
+  if(ap==="AM"){ if(hh===12) hh=0; }
+  else { if(hh!==12) hh+=12; }
+  return {hh,min};
+}
+function getExpiryMs(){
+  if(Number(state.expOn)!==1) return null;
+  const d = parseDDMMYYYY(state.expDate);
+  const t = parseTime12h(state.expTime);
+  if(!d || !t) return null;
+  return new Date(d.yy, d.mm-1, d.dd, t.hh, t.min, 0, 0).getTime();
+}
+function checkExpired(){
+  const ms = getExpiryMs();
+  if(!ms) return false;
+  return Date.now() > ms;
+}
+function showExpired(){
+  $("expiredMsg").textContent = state.expMsg || "Sila hubungi admin untuk link terbaru.";
+  $("expiredLayer").style.display="block";
+  $("tapLayer").style.display="none";
+}
+function closeExpired(){ $("expiredLayer").style.display="none"; }
+window.closeExpired = closeExpired;
+
+/* ===== Admin PIN ===== */
+function getSavedPin(){ return localStorage.getItem(PIN_KEY) || state.adminPin || "1234"; }
+function setAuthNow(){ localStorage.setItem(AUTH_KEY, String(Date.now())); }
+function isAuthed(){
+  const last = Number(localStorage.getItem(AUTH_KEY) || 0);
+  if(!last) return false;
+  const mins = Number(state.autoLogoutMin || 15);
+  return (Date.now() - last) <= mins*60*1000;
+}
+function requirePin(){
+  if(isAuthed()) { setAuthNow(); return true; }
+  const pin = prompt("Masukkan Admin PIN:");
+  if(pin === null) return false;
+  if(pin.trim() === getSavedPin()){
+    setAuthNow();
+    return true;
+  }
+  alert("PIN salah.");
+  return false;
+}
+
+/* ===== Premium: Customer Mode + Watermark ===== */
+function applyCustomerMode(){
+  const on = Number(state.customerMode) === 1;
+  $("editPill").style.display = on ? "none" : "flex";
+}
+function applyWatermark(){
+  const on = Number(state.wmOn) === 1;
+  const wm = $("wm");
+  wm.textContent = state.wmText || "";
+  wm.style.display = (on && wm.textContent.trim()) ? "block" : "none";
+}
+
+/* ===== Render ===== */
 function render(){
   applyPresetUI(state.preset);
-
   $("presetSelect").value = state.preset;
 
   $("groom").textContent = state.groom;
@@ -606,16 +884,20 @@ function render(){
   $("btnRsvp").onclick = ()=>window.open(buildWhatsApp(), "_blank");
   $("btnMaps").onclick = ()=>window.open(buildMaps(), "_blank");
 
-  // Update music label
   chooseMusicMode();
+
+  const link = buildInviteLink();
+  $("linkInfo").textContent = "Link: " + link;
+
+  applyCustomerMode();
+  applyWatermark();
 }
 
-/* =========================
-   EDITOR
-========================= */
+/* ===== Editor ===== */
 function openEditor(){
-  $("editor").style.display = "block";
-  $("saveMsg").style.display = "none";
+  if(!requirePin()) return;
+  $("editor").style.display="block";
+  $("saveMsg").style.display="none";
 
   $("fPreset").value = state.preset;
   $("fAnim").value = String(state.animOn);
@@ -636,8 +918,22 @@ function openEditor(){
 
   $("fMp3").value = state.mp3Url;
   $("fYt").value = state.ytUrl;
+
+  $("fExpOn").value = String(state.expOn);
+  $("fExpDate").value = state.expDate;
+  $("fExpTime").value = state.expTime;
+  $("fExpMsg").value = state.expMsg;
+
+  $("fPin").value = getSavedPin();
+  $("fAutoLogout").value = String(state.autoLogoutMin || 15);
+
+  $("fWmOn").value = String(state.wmOn);
+  $("fWmText").value = state.wmText;
+  $("fCustomerMode").value = String(state.customerMode);
 }
-function closeEditor(){ $("editor").style.display = "none"; }
+function closeEditor(){ $("editor").style.display="none"; }
+window.openEditor = openEditor;
+window.closeEditor = closeEditor;
 
 function saveEditor(){
   state.preset = $("fPreset").value;
@@ -657,59 +953,123 @@ function saveEditor(){
   state.mapsLink = $("fMapsLink").value.trim();
   state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
 
-  state.mp3Url = $("fMp3").value.trim();
-  state.ytUrl = $("fYt").value.trim();
+  // auto elak konflik
+  const mp3 = $("fMp3").value.trim();
+  const yt  = $("fYt").value.trim();
+  if(mp3){ state.mp3Url = mp3; state.ytUrl = ""; }
+  else if(yt){ state.ytUrl = yt; state.mp3Url = ""; }
+  else { state.mp3Url=""; state.ytUrl=""; }
 
-  // If user put YouTube Music, keep but warn via label
+  state.expOn = Number($("fExpOn").value);
+  state.expDate = $("fExpDate").value.trim() || state.expDate;
+  state.expTime = $("fExpTime").value.trim() || state.expTime;
+  state.expMsg  = $("fExpMsg").value.trim() || state.expMsg;
+
+  const pin = ($("fPin").value || "").trim();
+  state.adminPin = pin || state.adminPin || "1234";
+  state.autoLogoutMin = Number($("fAutoLogout").value || 15);
+
+  state.wmOn = Number($("fWmOn").value);
+  state.wmText = ($("fWmText").value || "").trim();
+  state.customerMode = Number($("fCustomerMode").value);
+
   persist();
+  setAuthNow();
   render();
 
-  $("saveMsg").style.display = "block";
-  // do not auto-play here; Android sometimes blocks. Use PLAY MUSIC button to confirm.
+  $("saveMsg").style.display="block";
+
+  // update URL for sharing
+  const link = buildInviteLink();
+  history.replaceState(null, "", link);
 }
+window.saveEditor = saveEditor;
 
 function resetAll(){
   if(!confirm("Reset semua data?")) return;
   localStorage.removeItem(STORAGE_KEY);
-  state = loadState();
+  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(TOAST_KEY);
+  localStorage.removeItem(PIN_KEY);
   stopAllAudio();
+  state = {...DEFAULTS};
+  persist();
   render();
   closeEditor();
+  history.replaceState(null, "", getBaseUrl());
 }
-
-/* =========================
-   OPEN INVITE
-========================= */
-function openInvite(){
-  document.body.classList.add("open");
-  // Apply preset visuals now
-  render();
-  // Do not auto-play - user will press PLAY MUSIC for confirm
-}
-window.openInvite = openInvite;
-window.openEditor = openEditor;
-window.closeEditor = closeEditor;
-window.saveEditor = saveEditor;
 window.resetAll = resetAll;
 
-/* =========================
-   INIT
-========================= */
-$("presetSelect").addEventListener("change", (e)=>{
+/* ===== Open invite ===== */
+function openInvite(){
+  if(checkExpired()){ showExpired(); return; }
+  document.body.classList.add("open");
+  render();
+  showToastHintOnce();
+}
+window.openInvite = openInvite;
+
+/* ===== Buttons: Copy/Share/NewLink/Admin ===== */
+async function doCopy(){
+  const link = buildInviteLink();
+  const ok = await copyText(link);
+  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Sila copy manual dari text Link.");
+}
+async function doShare(){
+  const link = buildInviteLink();
+  if(navigator.share){
+    try{
+      await navigator.share({ title:"Jemputan Perkahwinan", text:"Jemputan Perkahwinan", url: link });
+      return;
+    }catch(e){}
+  }
+  await doCopy();
+}
+async function generateNewLink(){
+  // buat ID baru supaya link unik (untuk setiap customer)
+  state._id = "C" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  persist();
+  render();
+  const link = buildInviteLink();
+  history.replaceState(null, "", link);
+  await doCopy();
+}
+function adminQuick(){
+  if(!requirePin()) return;
+  // bila admin sah, boleh buka editor walaupun customerMode ON
+  openEditor();
+}
+
+/* ===== Init ===== */
+$("presetSelect").addEventListener("change",(e)=>{
   state.preset = e.target.value;
   persist();
   render();
 });
 
 $("playBtn").addEventListener("click", playMusicManual);
+$("stopBtn").addEventListener("click", ()=>{
+  stopAllAudio();
+  $("musicInfo").textContent = "Muzik: Berhenti ⏹️";
+});
 $("muteBtn").addEventListener("click", ()=>{
   toggleMute();
   $("muteBtn").textContent = isMuted ? "UNMUTE" : "MUTE";
 });
+
 $("editBtn").addEventListener("click", openEditor);
+$("copyBtn").addEventListener("click", doCopy);
+$("shareBtn").addEventListener("click", doShare);
+$("newLinkBtn").addEventListener("click", generateNewLink);
+$("adminBtn").addEventListener("click", adminQuick);
+
+$("toastOk").addEventListener("click", ()=>{
+  $("toastHint").style.display="none";
+  try{ localStorage.setItem(TOAST_KEY,"1"); }catch(e){}
+});
 
 render();
+if(checkExpired()){ showExpired(); }
 </script>
-
 </body>
 </html>
