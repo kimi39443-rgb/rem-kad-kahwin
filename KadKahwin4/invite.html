@@ -44,7 +44,7 @@ body{
   background:#000; color:#fff;
 }
 .tap .box{
-  width:min(440px,92vw);
+  width:min(460px,92vw);
   padding:18px;
   border-radius:22px;
   background:rgba(0,0,0,.6);
@@ -74,7 +74,7 @@ body.open .door.left{transform:translateX(-105%)}
 body.open .door.right{transform:translateX(105%)}
 body.open .tap{display:none}
 
-.wrap{max-width:860px;margin:auto;padding:16px 14px 180px}
+.wrap{max-width:860px;margin:auto;padding:16px 14px 210px}
 .topbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
 .pill{
   padding:10px 14px;
@@ -103,6 +103,7 @@ h1{
   font-size:34px;margin:14px 0 6px;
   background:linear-gradient(135deg,var(--a1),var(--a2));
   -webkit-background-clip:text;color:transparent;
+  user-select:none;
 }
 .names{font-size:20px;line-height:1.35}
 .divider{
@@ -126,7 +127,7 @@ h1{
   padding:16px;
 }
 .editor .panel{
-  max-width:820px;margin:10px auto;padding:16px;
+  max-width:860px;margin:10px auto;padding:16px;
   border-radius:22px;
   background:rgba(15,18,26,.92);
   border:1px solid rgba(255,255,255,.14);
@@ -206,6 +207,35 @@ h1{
 }
 .expired .box h3{margin:8px 0 6px}
 .expired .box p{opacity:.85; line-height:1.5}
+
+/* Production block (htmlpreview) */
+.blocker{
+  position:fixed; inset:0; z-index:9999;
+  display:none;
+  background:rgba(0,0,0,.92);
+  color:#fff;
+}
+.blocker .box{
+  width:min(520px,92vw);
+  margin:14vh auto 0;
+  padding:18px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.55);
+  box-shadow:var(--shadow);
+}
+.blocker h3{margin:8px 0 6px}
+.blocker p{opacity:.9; line-height:1.5}
+.blocker code{
+  display:block;
+  margin-top:10px;
+  padding:10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.16);
+  word-break:break-all;
+  font-size:12px;
+}
 </style>
 </head>
 
@@ -241,14 +271,15 @@ h1{
     <div class="pill"><button id="stopBtn" type="button">⏹️ STOP</button></div>
     <div class="pill"><button id="muteBtn" type="button">MUTE</button></div>
 
-    <!-- EDIT akan auto hide bila Mode Pelanggan ON -->
+    <!-- admin-only (auto hide bila customerMode ON) -->
     <div class="pill" id="editPill"><button id="editBtn" type="button">EDIT</button></div>
   </div>
 
   <div class="card">
     <div class="hero">
       <div class="badge" id="badge">WALIMATULURUS</div>
-      <h1 id="title">Jemputan Perkahwinan</h1>
+      <!-- Secret tap target -->
+      <h1 id="titleTap">Jemputan Perkahwinan</h1>
 
       <div class="names">
         <div id="groom">Nama Pengantin Lelaki</div>
@@ -260,7 +291,7 @@ h1{
       <div id="inviteText">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
       <div class="small" id="musicInfo">Muzik: Preset</div>
       <div class="small" id="musicHint">Jika tiada bunyi, tekan ▶️ PLAY.</div>
-      <div class="small" id="linkInfo"></div>
+      <!-- ✅ link panjang sudah dibuang dari paparan pelanggan -->
     </div>
 
     <div class="grid">
@@ -276,15 +307,16 @@ h1{
   </div>
 </div>
 
-<!-- watermark -->
 <div class="watermark" id="wm"></div>
 
-<div class="bottomBar">
+<div class="bottomBar" id="bottomBar">
   <div class="bottomRow">
     <button class="bbtn" id="shareBtn" type="button">📤 SHARE INVITE</button>
     <button class="bbtn secondary" id="copyBtn" type="button">📋 COPY LINK</button>
   </div>
-  <div class="bottomRow" style="margin-top:10px;">
+
+  <!-- admin-only row (auto hide bila customerMode ON) -->
+  <div class="bottomRow" id="adminRow" style="margin-top:10px;">
     <button class="bbtn secondary" id="newLinkBtn" type="button">✨ GENERATE NEW LINK</button>
     <button class="bbtn secondary" id="adminBtn" type="button">🔐 ADMIN</button>
   </div>
@@ -298,24 +330,57 @@ h1{
   </div>
 </div>
 
+<!-- Production block -->
+<div class="blocker" id="blocker">
+  <div class="box">
+    <h3>⛔ Mode Preview Tidak Disokong</h3>
+    <p>
+      Template ini adalah <b>Production</b>. Sila buka menggunakan <b>GitHub Pages</b> (domain kimi39443-rgb.github.io).
+      Mode htmlpreview biasanya menyekat fungsi Share/Copy.
+    </p>
+    <p style="margin-top:10px;">Gunakan URL seperti ini:</p>
+    <code id="prodUrl"></code>
+    <button class="bbtn" type="button" style="margin-top:12px;" onclick="tryCopyProd()">📋 COPY URL PRODUCTION</button>
+  </div>
+</div>
+
+<!-- EDITOR -->
 <div class="editor" id="editor">
   <div class="panel">
-    <h3>Edit Kad (Premium Mesra Android)</h3>
+    <h3>Edit Kad (Production Premium)</h3>
 
     <div class="row two">
       <div>
-        <label>Preset pelanggan</label>
+        <label>Pakej Pelanggan</label>
+        <select id="fPackage">
+          <option value="gold">Gold</option>
+          <option value="platinum">Platinum</option>
+          <option value="vip">VIP</option>
+        </select>
+      </div>
+      <div>
+        <label>Preset Tema</label>
         <select id="fPreset">
           <option value="gold">Gold Luxury</option>
           <option value="floral">Floral White</option>
           <option value="royal">Royal Night</option>
         </select>
       </div>
+    </div>
+
+    <div class="row two">
       <div>
         <label>Animasi glow</label>
         <select id="fAnim">
           <option value="1">ON</option>
           <option value="0">OFF</option>
+        </select>
+      </div>
+      <div>
+        <label>Mode Pelanggan (sorok semua butang admin)</label>
+        <select id="fCustomerMode">
+          <option value="0">OFF (admin nampak butang)</option>
+          <option value="1">ON (pelanggan tak nampak)</option>
         </select>
       </div>
     </div>
@@ -412,23 +477,6 @@ h1{
 
     <div class="row two">
       <div>
-        <label>Admin PIN (untuk buka EDIT)</label>
-        <input id="fPin" placeholder="Contoh: 1234">
-      </div>
-      <div>
-        <label>Auto Logout (minit)</label>
-        <select id="fAutoLogout">
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15" selected>15</option>
-          <option value="30">30</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- NEW PREMIUM SETTINGS -->
-    <div class="row two">
-      <div>
         <label>Watermark (ON/OFF)</label>
         <select id="fWmOn">
           <option value="0">OFF</option>
@@ -443,15 +491,26 @@ h1{
 
     <div class="row two">
       <div>
-        <label>Mode Pelanggan (sorok EDIT)</label>
-        <select id="fCustomerMode">
-          <option value="0">OFF (Admin nampak EDIT)</option>
-          <option value="1">ON (Pelanggan tak nampak EDIT)</option>
-        </select>
+        <label>Admin PIN (untuk buka EDIT)</label>
+        <input id="fPin" placeholder="Contoh: 1234">
       </div>
       <div>
-        <label>Nota</label>
-        <input value="Tip: Bila Mode Pelanggan ON, guna butang ADMIN untuk buka edit." disabled>
+        <label>Auto Logout (minit)</label>
+        <select id="fAutoLogout">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="15" selected>15</option>
+          <option value="30">30</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="ok" id="adminLinkBox" style="display:none;">
+      <div style="font-weight:900;margin-bottom:6px;">🔗 Link (Admin sahaja)</div>
+      <div id="adminLinkText" style="word-break:break-all;font-size:12px;opacity:.9;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
+        <button class="bbtn secondary" type="button" onclick="copyAdminLink()">📋 COPY LINK</button>
+        <button class="bbtn" type="button" onclick="shareAdminLink()">📤 SHARE</button>
       </div>
     </div>
 
@@ -461,10 +520,14 @@ h1{
       <button class="save" type="button" onclick="saveEditor()">Simpan</button>
     </div>
 
-    <div class="ok" id="saveMsg" style="display:none;">✅ Disimpan. Guna COPY/SHARE untuk hantar link.</div>
+    <div class="ok" id="saveMsg" style="display:none;">
+      ✅ Disimpan. Link admin ada dalam panel (Admin sahaja).
+      <br>Tip: Jika customer mode ON, untuk masuk admin guna <b>tap 7x pada tajuk “Jemputan Perkahwinan”</b>.
+    </div>
   </div>
 </div>
 
+<!-- Toast tip -->
 <div id="toastHint" style="
   position:fixed; left:50%; bottom:150px; transform:translateX(-50%);
   z-index:9999;
@@ -498,35 +561,76 @@ h1{
 </div>
 
 <script>
-/* ===== Storage Keys ===== */
-const STORAGE_KEY = "KK_PREMIUM_STATE_V2";
-const AUTH_KEY = "KK_ADMIN_AUTH_V2";
-const PIN_KEY  = "KK_ADMIN_PIN_V2";
-const TOAST_KEY = "KK_TOAST_MUSIC_HINT_SHOWN";
+/* =========================
+   STORAGE KEYS
+========================= */
+const STORAGE_KEY = "KK_PRO_PREMIUM_V4";
+const AUTH_KEY = "KK_ADMIN_AUTH_V4";
+const PIN_KEY  = "KK_ADMIN_PIN_V4";
+const TOAST_KEY = "KK_TOAST_MUSIC_HINT_SHOWN_V4";
 
-/* ===== Presets ===== */
+/* =========================
+   PRESETS
+========================= */
 const PRESETS = {
-  gold:{ label:"Gold Luxury", a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff", bg:"#050505",
+  gold:{
+    label:"Gold Luxury",
+    a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
+    bg:"#050505",
     bg1:"radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
   },
-  floral:{ label:"Floral White", a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff", bg:"#f6f7fb",
+  floral:{
+    label:"Floral White",
+    a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
+    bg:"#f6f7fb",
     bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(255,255,255,.70), rgba(246,247,251,.88))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
   },
-  royal:{ label:"Royal Night", a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5", bg:"#030712",
+  royal:{
+    label:"Royal Night",
+    a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
+    bg:"#030712",
     bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%)",
     bg2:"linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.92))",
     presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
   }
 };
 
+/* =========================
+   PACKAGE DEFAULTS (Gold/Platinum/VIP)
+   - boleh ubah ikut citarasa
+========================= */
+const PACKAGE_DEFAULTS = {
+  gold: {
+    preset: "gold",
+    wmOn: 1,
+    wmText: "Powered by KadKahwin Gold",
+    animOn: 1
+  },
+  platinum: {
+    preset: "royal",
+    wmOn: 1,
+    wmText: "Powered by KadKahwin Platinum",
+    animOn: 1
+  },
+  vip: {
+    preset: "floral",
+    wmOn: 0,
+    wmText: "",
+    animOn: 1
+  }
+};
+
 const DEFAULTS = {
-  ver: 3,
+  ver: 4,
+
+  package: "gold",
   preset:"gold",
   animOn:1,
+  customerMode: 1,   // ✅ default: pelanggan tak nampak admin button
 
   groom:"Nama Pengantin Lelaki",
   bride:"Nama Pengantin Perempuan",
@@ -542,31 +646,39 @@ const DEFAULTS = {
   mapsLink:"",
   mapsQuery:"Dewan Contoh, Pulau Pinang",
 
+  // Muzik
   mp3Url:"",
   ytUrl:"",
 
+  // Expired
   expOn:0,
   expDate:"31/12/2025",
   expTime:"9:00 PM",
   expMsg:"Sila hubungi admin untuk link terbaru.",
 
+  // Admin
   autoLogoutMin:15,
   adminPin:"1234",
 
+  // Watermark
   wmOn: 1,
-  wmText: "Powered by KadKahwin Premium",
-  customerMode: 1
+  wmText: "Powered by KadKahwin Premium"
 };
 
 let state = loadMergedState();
 let isMuted = false;
 
-// YouTube
+/* YouTube */
 let ytReady = false;
 let ytPlayer = null;
-let ytVideoId = "";
 
-/* ===== Helpers ===== */
+/* Secret admin tap */
+let tapCount = 0;
+let tapTimer = null;
+
+/* =========================
+   HELPERS
+========================= */
 function $(id){ return document.getElementById(id); }
 function safeJSONParse(s){ try{ return JSON.parse(s); }catch(e){ return null; } }
 
@@ -586,7 +698,7 @@ function b64urlDecode(b64url){
   return decodeURIComponent(escape(s));
 }
 
-/* ===== Load State (URL ?d= lebih prioriti) ===== */
+/* Load State: URL ?d= > localStorage > defaults */
 function loadMergedState(){
   const url = new URL(location.href);
   const d = url.searchParams.get("d");
@@ -602,16 +714,20 @@ function loadMergedState(){
   const raw = localStorage.getItem(STORAGE_KEY);
   const fromLs = raw ? safeJSONParse(raw) : null;
 
-  return {...DEFAULTS, ...(fromLs||{}), ...(fromUrl||{})};
+  const merged = {...DEFAULTS, ...(fromLs||{}), ...(fromUrl||{})};
+
+  // ensure package exists
+  if(!merged.package || !PACKAGE_DEFAULTS[merged.package]) merged.package = "gold";
+  return merged;
 }
 
-/* ===== Build link ===== */
 function getBaseUrl(){
   const u = new URL(location.href);
   u.search = "";
   u.hash = "";
   return u.toString();
 }
+
 function buildInviteLink(){
   const base = getBaseUrl();
   const clean = {...state};
@@ -619,7 +735,7 @@ function buildInviteLink(){
   return base + "?d=" + b64urlEncode(json);
 }
 
-/* ===== Copy / Share ===== */
+/* Copy / Share */
 async function copyText(text){
   try{
     await navigator.clipboard.writeText(text);
@@ -637,7 +753,34 @@ async function copyText(text){
   }
 }
 
-/* ===== UI preset ===== */
+/* =========================
+   PRODUCTION BLOCK (htmlpreview)
+========================= */
+function isHtmlPreview(){
+  return location.hostname.includes("htmlpreview.github.io") || location.href.includes("htmlpreview.github.io/?");
+}
+function showBlocker(){
+  const real = "https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html";
+  $("prodUrl").textContent = real;
+  $("blocker").style.display = "block";
+
+  // disable buttons (safety)
+  $("shareBtn").disabled = true;
+  $("copyBtn").disabled = true;
+  $("newLinkBtn").disabled = true;
+  $("adminBtn").disabled = true;
+  $("editBtn").disabled = true;
+}
+async function tryCopyProd(){
+  const real = $("prodUrl").textContent;
+  const ok = await copyText(real);
+  alert(ok ? "✅ URL Production telah disalin" : "❌ Tak dapat copy. Copy manual dari kotak.");
+}
+window.tryCopyProd = tryCopyProd;
+
+/* =========================
+   APPLY PRESET / PACKAGE
+========================= */
 function applyPresetUI(key){
   const p = PRESETS[key] || PRESETS.gold;
   const root = document.documentElement.style;
@@ -651,7 +794,30 @@ function applyPresetUI(key){
   $("animLayer").style.display = (Number(state.animOn)===1) ? "block" : "none";
 }
 
-/* ===== WA + Maps ===== */
+function applyPackageDefaults(pkg, soft=true){
+  const d = PACKAGE_DEFAULTS[pkg] || PACKAGE_DEFAULTS.gold;
+
+  // soft=true: hanya apply bila field kosong / default
+  if(!soft){
+    state.preset = d.preset;
+    state.wmOn = d.wmOn;
+    state.wmText = d.wmText;
+    state.animOn = d.animOn;
+    return;
+  }
+
+  // soft apply
+  if(!state.preset) state.preset = d.preset;
+  // kalau user belum customize watermark
+  if(state.wmText === DEFAULTS.wmText) {
+    state.wmOn = d.wmOn;
+    state.wmText = d.wmText;
+  }
+}
+
+/* =========================
+   WA / MAPS
+========================= */
 function buildWhatsApp(){
   const text = encodeURIComponent((state.rsvpText||"") + ` ( ${state.groom} & ${state.bride} )`);
   return `https://wa.me/${state.rsvpPhone}?text=${text}`;
@@ -661,7 +827,9 @@ function buildMaps(){
   return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
 }
 
-/* ===== Music ===== */
+/* =========================
+   MUSIC
+========================= */
 function stopAllAudio(){
   const a = $("bgm");
   try{ a.pause(); a.currentTime = 0; }catch(e){}
@@ -741,7 +909,7 @@ function chooseMusicMode(){
   if(state.ytUrl && state.ytUrl.trim()){
     const url = state.ytUrl.trim();
     if(isYouTubeMusic(url)){
-      $("musicInfo").textContent = "Muzik: YouTube Music ❌ (tak boleh) — guna YouTube biasa";
+      $("musicInfo").textContent = "Muzik: YouTube Music ❌ — guna YouTube biasa";
       return { type:"none", src:"" };
     }
     const id = parseYouTubeId(url);
@@ -768,8 +936,7 @@ function playMusicManual(){
     return;
   }
   if(mode.type === "yt" && mode.src){
-    ytVideoId = mode.src;
-    ensureYouTubeApi(()=>loadOrPlayYouTube(ytVideoId));
+    ensureYouTubeApi(()=>loadOrPlayYouTube(mode.src));
     return;
   }
   alert("Tiada muzik boleh dimainkan. Isi MP3 URL atau YouTube URL (bukan YouTube Music).");
@@ -782,12 +949,13 @@ function toggleMute(){
   }
 }
 
-/* ===== Popup tip (sekali) ===== */
+/* =========================
+   TOAST TIP
+========================= */
 function showToastHintOnce(){
   try{ if(localStorage.getItem(TOAST_KEY) === "1") return; }catch(e){}
   const t = $("toastHint"), ok = $("toastOk");
   if(!t || !ok) return;
-
   t.style.display="block";
   const hide=()=>{
     t.style.display="none";
@@ -797,7 +965,9 @@ function showToastHintOnce(){
   setTimeout(hide, 5000);
 }
 
-/* ===== Expired ===== */
+/* =========================
+   EXPIRED
+========================= */
 function parseDDMMYYYY(s){
   const m = String(s||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   if(!m) return null;
@@ -835,7 +1005,9 @@ function showExpired(){
 function closeExpired(){ $("expiredLayer").style.display="none"; }
 window.closeExpired = closeExpired;
 
-/* ===== Admin PIN ===== */
+/* =========================
+   ADMIN PIN + AUTO LOGOUT
+========================= */
 function getSavedPin(){ return localStorage.getItem(PIN_KEY) || state.adminPin || "1234"; }
 function setAuthNow(){ localStorage.setItem(AUTH_KEY, String(Date.now())); }
 function isAuthed(){
@@ -856,10 +1028,13 @@ function requirePin(){
   return false;
 }
 
-/* ===== Premium: Customer Mode + Watermark ===== */
+/* =========================
+   CUSTOMER MODE + WATERMARK + ADMIN VISIBILITY
+========================= */
 function applyCustomerMode(){
   const on = Number(state.customerMode) === 1;
   $("editPill").style.display = on ? "none" : "flex";
+  $("adminRow").style.display = on ? "none" : "grid";
 }
 function applyWatermark(){
   const on = Number(state.wmOn) === 1;
@@ -868,8 +1043,11 @@ function applyWatermark(){
   wm.style.display = (on && wm.textContent.trim()) ? "block" : "none";
 }
 
-/* ===== Render ===== */
+/* =========================
+   RENDER
+========================= */
 function render(){
+  applyPackageDefaults(state.package, true);
   applyPresetUI(state.preset);
   $("presetSelect").value = state.preset;
 
@@ -885,22 +1063,22 @@ function render(){
   $("btnMaps").onclick = ()=>window.open(buildMaps(), "_blank");
 
   chooseMusicMode();
-
-  const link = buildInviteLink();
-  $("linkInfo").textContent = "Link: " + link;
-
   applyCustomerMode();
   applyWatermark();
 }
 
-/* ===== Editor ===== */
+/* =========================
+   EDITOR
+========================= */
 function openEditor(){
   if(!requirePin()) return;
   $("editor").style.display="block";
   $("saveMsg").style.display="none";
 
+  $("fPackage").value = state.package;
   $("fPreset").value = state.preset;
   $("fAnim").value = String(state.animOn);
+  $("fCustomerMode").value = String(state.customerMode);
 
   $("fGroom").value = state.groom;
   $("fBride").value = state.bride;
@@ -924,20 +1102,27 @@ function openEditor(){
   $("fExpTime").value = state.expTime;
   $("fExpMsg").value = state.expMsg;
 
+  $("fWmOn").value = String(state.wmOn);
+  $("fWmText").value = state.wmText;
+
   $("fPin").value = getSavedPin();
   $("fAutoLogout").value = String(state.autoLogoutMin || 15);
 
-  $("fWmOn").value = String(state.wmOn);
-  $("fWmText").value = state.wmText;
-  $("fCustomerMode").value = String(state.customerMode);
+  // show admin-only link box
+  $("adminLinkBox").style.display = "block";
+  $("adminLinkText").textContent = buildInviteLink();
 }
 function closeEditor(){ $("editor").style.display="none"; }
 window.openEditor = openEditor;
 window.closeEditor = closeEditor;
 
 function saveEditor(){
+  state.package = $("fPackage").value;
+  if(!PACKAGE_DEFAULTS[state.package]) state.package="gold";
+
   state.preset = $("fPreset").value;
   state.animOn = Number($("fAnim").value);
+  state.customerMode = Number($("fCustomerMode").value);
 
   state.groom = $("fGroom").value.trim() || state.groom;
   state.bride = $("fBride").value.trim() || state.bride;
@@ -953,7 +1138,7 @@ function saveEditor(){
   state.mapsLink = $("fMapsLink").value.trim();
   state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
 
-  // auto elak konflik
+  // auto elak konflik mp3/yt
   const mp3 = $("fMp3").value.trim();
   const yt  = $("fYt").value.trim();
   if(mp3){ state.mp3Url = mp3; state.ytUrl = ""; }
@@ -965,13 +1150,12 @@ function saveEditor(){
   state.expTime = $("fExpTime").value.trim() || state.expTime;
   state.expMsg  = $("fExpMsg").value.trim() || state.expMsg;
 
+  state.wmOn = Number($("fWmOn").value);
+  state.wmText = ($("fWmText").value || "").trim();
+
   const pin = ($("fPin").value || "").trim();
   state.adminPin = pin || state.adminPin || "1234";
   state.autoLogoutMin = Number($("fAutoLogout").value || 15);
-
-  state.wmOn = Number($("fWmOn").value);
-  state.wmText = ($("fWmText").value || "").trim();
-  state.customerMode = Number($("fCustomerMode").value);
 
   persist();
   setAuthNow();
@@ -979,9 +1163,12 @@ function saveEditor(){
 
   $("saveMsg").style.display="block";
 
-  // update URL for sharing
+  // update url for sharing
   const link = buildInviteLink();
   history.replaceState(null, "", link);
+
+  // update admin-only link display
+  $("adminLinkText").textContent = link;
 }
 window.saveEditor = saveEditor;
 
@@ -993,6 +1180,7 @@ function resetAll(){
   localStorage.removeItem(PIN_KEY);
   stopAllAudio();
   state = {...DEFAULTS};
+  applyPackageDefaults(state.package, false);
   persist();
   render();
   closeEditor();
@@ -1000,7 +1188,30 @@ function resetAll(){
 }
 window.resetAll = resetAll;
 
-/* ===== Open invite ===== */
+/* =========================
+   ADMIN LINK ACTIONS (Editor only)
+========================= */
+async function copyAdminLink(){
+  const link = buildInviteLink();
+  const ok = await copyText(link);
+  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Copy manual dari box.");
+}
+async function shareAdminLink(){
+  const link = buildInviteLink();
+  if(navigator.share){
+    try{
+      await navigator.share({ title:"Jemputan Perkahwinan", text:"Jemputan Perkahwinan", url: link });
+      return;
+    }catch(e){}
+  }
+  await copyAdminLink();
+}
+window.copyAdminLink = copyAdminLink;
+window.shareAdminLink = shareAdminLink;
+
+/* =========================
+   INVITE OPEN
+========================= */
 function openInvite(){
   if(checkExpired()){ showExpired(); return; }
   document.body.classList.add("open");
@@ -1009,11 +1220,13 @@ function openInvite(){
 }
 window.openInvite = openInvite;
 
-/* ===== Buttons: Copy/Share/NewLink/Admin ===== */
+/* =========================
+   SHARE/COPY/NEWLINK (Bottom bar)
+========================= */
 async function doCopy(){
   const link = buildInviteLink();
   const ok = await copyText(link);
-  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Sila copy manual dari text Link.");
+  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Sila cuba browser lain.");
 }
 async function doShare(){
   const link = buildInviteLink();
@@ -1026,7 +1239,7 @@ async function doShare(){
   await doCopy();
 }
 async function generateNewLink(){
-  // buat ID baru supaya link unik (untuk setiap customer)
+  // link unik untuk setiap customer
   state._id = "C" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
   persist();
   render();
@@ -1036,11 +1249,27 @@ async function generateNewLink(){
 }
 function adminQuick(){
   if(!requirePin()) return;
-  // bila admin sah, boleh buka editor walaupun customerMode ON
   openEditor();
 }
 
-/* ===== Init ===== */
+/* =========================
+   SECRET ADMIN ENTRY (7 taps on title)
+========================= */
+function secretTap(){
+  tapCount++;
+  if(tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(()=>{ tapCount=0; }, 1200);
+
+  if(tapCount >= 7){
+    tapCount = 0;
+    // buka admin walaupun customerMode ON
+    adminQuick();
+  }
+}
+
+/* =========================
+   INIT
+========================= */
 $("presetSelect").addEventListener("change",(e)=>{
   state.preset = e.target.value;
   persist();
@@ -1063,13 +1292,28 @@ $("shareBtn").addEventListener("click", doShare);
 $("newLinkBtn").addEventListener("click", generateNewLink);
 $("adminBtn").addEventListener("click", adminQuick);
 
+// Secret admin tap target
+$("titleTap").addEventListener("click", secretTap);
+
 $("toastOk").addEventListener("click", ()=>{
   $("toastHint").style.display="none";
   try{ localStorage.setItem(TOAST_KEY,"1"); }catch(e){}
 });
 
+// Apply package defaults hard (first load if needed)
+applyPackageDefaults(state.package, true);
+persist();
 render();
-if(checkExpired()){ showExpired(); }
+
+// htmlpreview protection
+if(isHtmlPreview()){
+  showBlocker();
+}
+
+// expired protection
+if(checkExpired()){
+  showExpired();
+}
 </script>
 </body>
 </html>
