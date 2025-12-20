@@ -1,327 +1,161 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Jemputan Perkahwinan</title>
+
 <style>
-  :root{
-    --bg:#050505;
-    --glass:rgba(0,0,0,.55);
-    --line:rgba(255,255,255,.14);
-    --txt:#f5f7fb;
-    --muted:rgba(245,247,251,.78);
-    --shadow:0 28px 70px rgba(0,0,0,.65);
-    --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
+:root{
+  --bg:#050505;
+  --txt:#f5f7fb;
+  --muted:rgba(245,247,251,.75);
+  --line:rgba(255,255,255,.14);
+  --glass:rgba(0,0,0,.45);
+  --shadow:0 25px 70px rgba(0,0,0,.6);
+  --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
+  --bg1:radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%);
+  --bg2:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9));
+  --bgImg:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  background:var(--bg);
+  color:var(--txt);
+  overflow-x:hidden;
+}
+.bgimg{
+  position:fixed; inset:0; z-index:-6;
+  background-image:var(--bgImg);
+  background-size:cover;
+  background-position:center;
+  display:none;
+}
+.overlay{
+  position:fixed; inset:0; z-index:-5;
+  background:var(--bg1),var(--bg2);
+}
+.anim{
+  position:fixed; inset:0; z-index:-5;
+  display:none;
+  background:
+    radial-gradient(800px 600px at 10% 10%, rgba(214,180,108,.18), transparent 55%),
+    radial-gradient(800px 600px at 90% 20%, rgba(183,198,255,.16), transparent 55%);
+  animation:float 10s ease-in-out infinite;
+}
+@keyframes float{50%{transform:translateY(-10px)}}
 
-    /* background layers */
-    --bg1: radial-gradient(900px 550px at 20% 0%, rgba(255,255,255,.10), rgba(0,0,0,.02) 45%, rgba(0,0,0,.65) 80%);
-    --bg2: linear-gradient(to bottom, rgba(0,0,0,.15), rgba(0,0,0,.88));
-    --bgImg:none;
-  }
+.tap{
+  position:fixed; inset:0; z-index:50;
+  display:flex; align-items:center; justify-content:center;
+  background:#000; color:#fff;
+}
+.tap .box{
+  width:min(420px,90vw);
+  padding:18px;
+  border-radius:22px;
+  background:rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+.tap button{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:16px;
+  border:0;
+  font-weight:900;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  color:#111;
+}
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family: ui-serif, Georgia, "Times New Roman", serif;
-    background:var(--bg);
-    color:var(--txt);
-    min-height:100svh;
-    overflow-x:hidden;
-  }
+.door{
+  position:fixed; top:0; width:50%; height:100%;
+  background:#000; z-index:40;
+  transition:transform 1.5s ease;
+}
+.door.left{left:0}
+.door.right{right:0}
+body.open .door.left{transform:translateX(-105%)}
+body.open .door.right{transform:translateX(105%)}
+body.open .tap{display:none}
 
-  .bgimg{
-    position:fixed; inset:0; z-index:-6;
-    background-image: var(--bgImg);
-    background-size: cover;
-    background-position:center;
-    background-repeat:no-repeat;
-    filter:saturate(1.05) contrast(1.02);
-    display:none;
-  }
-  video.bg{
-    position:fixed; inset:0;
-    width:100%; height:100%;
-    object-fit:cover;
-    z-index:-7;
-    display:none;
-  }
-  .overlay{
-    position:fixed; inset:0; z-index:-5;
-    background: var(--bg1), var(--bg2);
-  }
-  .anim{
-    position:fixed; inset:0; z-index:-5;
-    pointer-events:none;
-    display:none;
-    background: radial-gradient(900px 700px at 10% 10%, rgba(214,180,108,.18), transparent 55%),
-                radial-gradient(900px 700px at 90% 20%, rgba(183,198,255,.16), transparent 55%),
-                radial-gradient(900px 700px at 50% 95%, rgba(241,198,198,.14), transparent 55%);
-    animation: floatGlow 10s ease-in-out infinite;
-  }
-  @keyframes floatGlow{
-    0%{transform:translate3d(0,0,0) scale(1)}
-    50%{transform:translate3d(0,-10px,0) scale(1.02)}
-    100%{transform:translate3d(0,0,0) scale(1)}
-  }
+.wrap{max-width:860px;margin:auto;padding:16px 14px 120px}
+.topbar{
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+}
+.pill{
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.25);
+  font-size:12px;
+}
+.pill button, .pill select{
+  background:none;border:0;color:var(--txt);font-weight:700;
+}
 
-  /* Tap intro */
-  .tap{
-    position:fixed; inset:0; z-index:50;
-    display:flex; align-items:center; justify-content:center;
-    background:#000; color:#fff; text-align:center; padding:18px;
-  }
-  .tap .box{
-    width:min(460px, 92vw);
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.45);
-    border-radius:22px;
-    padding:18px 16px;
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-  }
-  .tap h2{margin:0 0 6px; font-size:18px; letter-spacing:1px}
-  .tap p{margin:0 0 14px; color:rgba(255,255,255,.78); font-size:13px; line-height:1.45}
-  .tap button{
-    width:100%;
-    border:0; border-radius:16px;
-    padding:12px 14px;
-    font-weight:900;
-    letter-spacing:.8px;
-    background: linear-gradient(135deg, var(--a1), var(--a2));
-    color:#111;
-    font-size:15px;
-    cursor:pointer;
-    -webkit-tap-highlight-color:transparent;
-  }
+.card{
+  margin-top:14px;
+  border-radius:26px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.06);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.hero{text-align:center;padding:22px}
+.badge{letter-spacing:3px;font-size:12px;opacity:.8}
+h1{
+  font-size:34px;margin:14px 0 6px;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;color:transparent;
+}
+.names{font-size:20px}
+.divider{
+  width:70px;height:2px;margin:16px auto;
+  background:linear-gradient(to right,var(--a1),var(--a2),var(--a3));
+}
+.grid{padding:16px;display:grid;gap:10px}
+.item{padding:12px;border-radius:16px;background:rgba(0,0,0,.25)}
 
-  /* Door */
-  .door{
-    position:fixed; top:0; height:100%; width:50%;
-    background: linear-gradient(135deg, rgba(30,30,30,.95), rgba(0,0,0,.98));
-    z-index:40;
-    transition: transform 1.55s ease;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .door.left{left:0; border-right:0}
-  .door.right{right:0; border-left:0}
-  body.open .door.left{transform: translateX(-103%)}
-  body.open .door.right{transform: translateX(103%)}
-  body.open .tap{display:none}
+.actions{padding:16px;display:grid;gap:10px}
+.btn{
+  padding:14px;border-radius:18px;border:0;
+  font-weight:800;
+}
+.primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#111}
 
-  .wrap{max-width:860px; margin:0 auto; padding:18px 14px 128px}
-  .topbar{
-    position:sticky; top:10px; z-index:10;
-    display:flex; justify-content:space-between; align-items:center; gap:10px;
-    margin-top:10px;
-    flex-wrap:wrap;
-  }
-  .pill{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:10px 12px; border-radius:999px;
-    border:1px solid var(--line);
-    background: rgba(0,0,0,.25);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 10px 26px rgba(0,0,0,.25);
-    color: var(--muted);
-    font-size:12px;
-  }
-  .pill strong{color:var(--txt)}
-  .pill button, .pill select{
-    border:0; background:transparent;
-    color:var(--txt); font-weight:900;
-    cursor:pointer; font-size:12px;
-    outline:none;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .pill select{appearance:none; -webkit-appearance:none}
-
-  .card{
-    margin-top:14px;
-    border-radius:26px;
-    border:1px solid var(--line);
-    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-    overflow:hidden;
-  }
-  .hero{padding:22px 18px 16px; text-align:center}
-  .badge{
-    display:inline-flex; align-items:center; justify-content:center;
-    gap:10px; padding:10px 12px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    color: rgba(245,247,251,.80);
-    letter-spacing:3px;
-    font-size:12px;
-  }
-  h1{
-    margin:14px 0 8px; font-size:34px; letter-spacing:.4px;
-    color:transparent;
-    background: linear-gradient(135deg, var(--a1), var(--a2));
-    -webkit-background-clip:text; background-clip:text;
-  }
-  .names{margin-top:8px; font-size:20px; line-height:1.35; color: rgba(245,247,251,.92)}
-  .subtitle{margin-top:10px; color: rgba(245,247,251,.78); font-size:14px; line-height:1.45}
-  .divider{
-    width:72px; height:2px; margin:18px auto; border-radius:3px;
-    background: linear-gradient(to right, var(--a1), var(--a2), var(--a3));
-  }
-
-  .grid{
-    padding:14px 16px 18px; border-top:1px solid var(--line);
-    display:grid; grid-template-columns:1fr; gap:10px;
-  }
-  @media(min-width:720px){ .grid{grid-template-columns:1fr 1fr} }
-  .item{
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.20);
-    padding:12px;
-  }
-  .k{font-size:12px;color:rgba(245,247,251,.70); margin-bottom:4px}
-  .v{font-size:15px;line-height:1.45;color:rgba(245,247,251,.93)}
-
-  .countWrap{padding:14px 16px 18px; border-top:1px solid var(--line)}
-  .countTitle{text-align:center; color:rgba(245,247,251,.82); font-size:13px; letter-spacing:1.5px; margin-bottom:10px}
-  .count{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
-  @media(max-width:520px){ .count{grid-template-columns:repeat(2,1fr);} }
-  .box{
-    border-radius:18px; border:1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.20);
-    padding:12px 10px; text-align:center;
-  }
-  .num{font-size:22px; font-weight:900}
-  .lab{margin-top:4px; font-size:11px; color:rgba(245,247,251,.65); letter-spacing:1.2px}
-
-  .actions{
-    padding:14px 16px 18px; border-top:1px solid var(--line);
-    display:grid; grid-template-columns:1fr 1fr; gap:10px;
-  }
-  @media(max-width:520px){ .actions{grid-template-columns:1fr;} }
-  .btn{
-    border:0; border-radius:18px;
-    padding:13px 14px;
-    font-weight:900; font-size:15px;
-    cursor:pointer;
-    background: rgba(0,0,0,.22);
-    color:var(--txt);
-    border:1px solid rgba(255,255,255,.12);
-    display:flex; align-items:center; justify-content:center; gap:10px;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .btn.primary{background: linear-gradient(135deg, var(--a1), var(--a2)); color:#111; border:0}
-  .btn:active{transform: translateY(1px)}
-
-  .gallery{padding:14px 16px 18px; border-top:1px solid var(--line)}
-  .gallery h3{margin:0 0 10px; text-align:center; font-size:14px; letter-spacing:1.2px; color:rgba(245,247,251,.82)}
-  .ggrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-  @media(min-width:720px){ .ggrid{grid-template-columns:repeat(4,1fr)} }
-  .gimg{
-    width:100%; aspect-ratio:1/1; border-radius:18px;
-    object-fit:cover; border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    cursor:pointer;
-  }
-
-  .lightbox{position:fixed; inset:0; z-index:60; background: rgba(0,0,0,.78); display:none; align-items:center; justify-content:center; padding:16px}
-  .lightbox img{
-    width:min(92vw,720px); max-height:82vh; object-fit:contain;
-    border-radius:18px; border:1px solid rgba(255,255,255,.14);
-    box-shadow: 0 30px 80px rgba(0,0,0,.65);
-    background:#000;
-  }
-
-  .fab{
-    position:fixed; right:14px; bottom:16px; z-index:30;
-    display:flex; flex-direction:column; gap:10px;
-  }
-  .fab button{
-    width:54px; height:54px; border-radius:18px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.28);
-    color:var(--txt);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 14px 40px rgba(0,0,0,.35);
-    font-size:18px; cursor:pointer;
-    -webkit-tap-highlight-color:transparent;
-  }
-
-  .foot{
-    margin-top:14px;
-    text-align:center;
-    color:rgba(245,247,251,.62);
-    font-size:12px;
-    line-height:1.5;
-    user-select:none;
-  }
-
-  .editor{
-    position:fixed; inset:0; z-index:70;
-    background: rgba(0,0,0,.70);
-    display:none;
-    padding:16px;
-    overflow:auto;
-  }
-  .editor .panel{
-    width:min(740px, 100%);
-    margin:0 auto;
-    border-radius:22px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(15,18,26,.78);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 24px 80px rgba(0,0,0,.65);
-    padding:14px;
-  }
-  .editor h2{margin:6px 6px 10px; font-size:16px}
-  .frow{display:grid; grid-template-columns:1fr; gap:10px; padding:6px}
-  @media(min-width:720px){ .frow.two{grid-template-columns:1fr 1fr} }
-  .editor label{font-size:12px; color:rgba(245,247,251,.72); display:block; margin:0 0 6px}
-  .editor input, .editor textarea, .editor select{
-    width:100%;
-    border-radius:16px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.28);
-    color:var(--txt);
-    padding:12px 12px;
-    font-size:14px;
-    outline:none;
-  }
-  .editor textarea{min-height:78px; resize:vertical}
-  .editor .bar{
-    display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding:6px;
-  }
-  @media(max-width:520px){ .editor .bar{grid-template-columns:1fr;} }
-  .editor .bar button{
-    border:0; border-radius:16px;
-    padding:12px 12px;
-    font-weight:900;
-    cursor:pointer;
-    font-size:14px;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .editor .bar .save{background: linear-gradient(135deg, var(--a1), var(--a2)); color:#111}
-  .editor .bar .close{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
-  .editor .bar .reset{background: rgba(255,255,255,.10); color:var(--txt); border:1px solid rgba(255,255,255,.14)}
-  .note{padding:0 6px 10px; color:rgba(245,247,251,.72); font-size:12px; line-height:1.45}
-
-  #ytWrap{position:fixed; left:-9999px; top:-9999px; width:1px; height:1px; overflow:hidden}
+.editor{
+  position:fixed; inset:0; z-index:60;
+  background:rgba(0,0,0,.75);
+  display:none; overflow:auto;
+}
+.editor .panel{
+  max-width:700px;margin:20px auto;padding:16px;
+  border-radius:22px;
+  background:rgba(15,18,26,.9);
+}
+.editor input, .editor textarea, .editor select{
+  width:100%;padding:10px;border-radius:14px;
+  background:#000;color:#fff;border:1px solid #444;
+}
+.editor button{padding:12px;border-radius:14px;border:0;font-weight:800}
 </style>
 </head>
 
 <body>
 
 <div class="bgimg" id="bgImgLayer"></div>
-<video class="bg" id="bgVideo" autoplay muted loop playsinline preload="metadata"></video>
 <div class="overlay"></div>
 <div class="anim" id="animLayer"></div>
 
-<div class="tap" id="tap">
+<div class="tap">
   <div class="box">
-    <h2>JEMPUTAN PERKAHWINAN</h2>
-    <p>Tekan untuk buka kad. (Klik ini juga bantu muzik/video jadi stabil di Android.)</p>
+    <h3>JEMPUTAN PERKAHWINAN</h3>
+    <p>Tekan untuk buka kad</p>
     <button onclick="openInvite()">BUKA KAD</button>
   </div>
 </div>
@@ -329,670 +163,125 @@
 <div class="door left"></div>
 <div class="door right"></div>
 
-<audio id="bgm" loop preload="auto"></audio>
-<div id="ytWrap"><div id="ytPlayer"></div></div>
+<audio id="bgm" loop></audio>
 
 <div class="wrap">
   <div class="topbar">
-    <div class="pill">🕒 <strong id="clock">--:--</strong> <span style="opacity:.6">•</span> <span id="dayText"></span></div>
     <div class="pill">🎨
-      <select id="themeSelect">
+      <select id="presetSelect">
         <option value="gold">Gold Luxury</option>
         <option value="floral">Floral White</option>
         <option value="royal">Royal Night</option>
-        <option value="emerald">Emerald Garden</option>
-        <option value="minimal">Modern Minimal</option>
       </select>
     </div>
-    <div class="pill">🔊 <button id="muteBtn" type="button">MUTE</button></div>
-    <div class="pill">✏️ <button id="editBtn" type="button">EDIT</button></div>
+    <div class="pill"><button id="playBtn">▶️ PLAY MUSIC</button></div>
+    <div class="pill"><button id="muteBtn">MUTE</button></div>
+    <div class="pill"><button onclick="openEditor()">EDIT</button></div>
   </div>
 
   <div class="card">
     <div class="hero">
-      <div class="badge" id="badge">WALIMATULURUS</div>
+      <div class="badge">WALIMATULURUS</div>
       <h1 id="title">Jemputan Perkahwinan</h1>
-
       <div class="names">
         <div id="groom">Nama Pengantin Lelaki</div>
-        <div style="opacity:.85;margin:6px 0">♥</div>
+        <div>♥</div>
         <div id="bride">Nama Pengantin Perempuan</div>
       </div>
-
       <div class="divider"></div>
-
-      <div class="subtitle" id="inviteText">
-        Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.
-      </div>
+      <div id="inviteText">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
     </div>
 
     <div class="grid">
-      <div class="item"><div class="k">📅 Tarikh</div><div class="v" id="eventDateText">31 Disember 2025</div></div>
-      <div class="item"><div class="k">⏰ Masa</div><div class="v" id="eventTimeText">9:00 AM – 2:00 PM</div></div>
-      <div class="item" style="grid-column:1/-1"><div class="k">📍 Lokasi</div><div class="v" id="venueText">Dewan Contoh, Pulau Pinang</div></div>
-    </div>
-
-    <div class="countWrap">
-      <div class="countTitle">COUNTDOWN MAJLIS</div>
-      <div class="count">
-        <div class="box"><div class="num" id="cdD">--</div><div class="lab">HARI</div></div>
-        <div class="box"><div class="num" id="cdH">--</div><div class="lab">JAM</div></div>
-        <div class="box"><div class="num" id="cdM">--</div><div class="lab">MINIT</div></div>
-        <div class="box"><div class="num" id="cdS">--</div><div class="lab">SAAT</div></div>
-      </div>
+      <div class="item" id="dateText">📅 31 Disember 2025</div>
+      <div class="item" id="timeText">⏰ 9:00 AM – 2:00 PM</div>
+      <div class="item" id="venueText">📍 Dewan Contoh, Pulau Pinang</div>
     </div>
 
     <div class="actions">
-      <button class="btn primary" id="btnRSVP">💬 RSVP WhatsApp</button>
-      <button class="btn" id="btnMaps">📍 Buka Maps</button>
-      <button class="btn" id="btnCal">📅 Add to Calendar</button>
-      <button class="btn" id="btnShare">📤 Share / Copy Link</button>
-    </div>
-
-    <div class="gallery">
-      <h3>GALERI KAMI</h3>
-      <div class="ggrid" id="galleryGrid"></div>
+      <button class="btn primary">💬 RSVP WhatsApp</button>
+      <button class="btn">📍 Google Maps</button>
     </div>
   </div>
-
-  <div class="foot">
-    Nota: Jangan guna template ini untuk jual semula tanpa kebenaran pemilik.<br>
-    © Premium Wedding Card
-  </div>
-</div>
-
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <img id="lightboxImg" alt="Gambar" />
-</div>
-
-<div class="fab">
-  <button title="Scroll atas" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
-  <button title="Scroll bawah" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">⬇️</button>
 </div>
 
 <div class="editor" id="editor">
   <div class="panel">
-    <h2>Mode Edit (Isi macam borang)</h2>
-    <div class="note">
-      ✅ Preset: pilih di atas → terus jadi cantik ikut citarasa pelanggan.<br>
-      ✅ Muzik: letak MP3 direct link (paling stabil). YouTube optional.
-    </div>
-
-    <div class="frow">
-      <div>
-        <label>🎨 Preset Customer</label>
-        <select id="fPreset">
-          <option value="gold">Gold Luxury</option>
-          <option value="floral">Floral White</option>
-          <option value="royal">Royal Night</option>
-          <option value="emerald">Emerald Garden</option>
-          <option value="minimal">Modern Minimal</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="frow two">
-      <div><label>Nama Pengantin Lelaki</label><input id="fGroom" /></div>
-      <div><label>Nama Pengantin Perempuan</label><input id="fBride" /></div>
-    </div>
-
-    <div class="frow">
-      <div><label>Tajuk</label><input id="fTitle" /></div>
-      <div><label>Ayat Jemputan</label><textarea id="fInviteText"></textarea></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>Tarikh (paparan)</label><input id="fDateText" placeholder="31 Disember 2025" /></div>
-      <div><label>Masa (paparan)</label><input id="fTimeText" placeholder="9:00 AM – 2:00 PM" /></div>
-    </div>
-
-    <div class="frow">
-      <div><label>Lokasi (paparan)</label><textarea id="fVenueText"></textarea></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>Start ISO (untuk countdown)</label><input id="fStartISO" placeholder="2025-12-31T09:00:00+08:00" /></div>
-      <div><label>End ISO (untuk calendar)</label><input id="fEndISO" placeholder="2025-12-31T14:00:00+08:00" /></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>No WhatsApp (format 6012xxxxxxx)</label><input id="fPhone" placeholder="60123456789" /></div>
-      <div><label>Teks RSVP</label><input id="fRsvpText" /></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>Maps Link (optional)</label><input id="fMapsLink" placeholder="https://maps.app.goo.gl/xxxx" /></div>
-      <div><label>Maps Search (jika tiada link)</label><input id="fMapsQuery" placeholder="Dewan Seri Mutiara, Pulau Pinang" /></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>🎵 MP3 URL (paling stabil)</label><input id="fAudioMp3" placeholder="https://.../lagu.mp3" /></div>
-      <div><label>▶️ YouTube URL (optional)</label><input id="fYouTube" placeholder="https://youtube.com/watch?v=xxxx" /></div>
-    </div>
-
-    <div class="frow two">
-      <div><label>🎥 Video MP4 URL (optional)</label><input id="fVideo" placeholder="https://.../video.mp4" /></div>
-      <div><label>🖼️ Background Image URL (optional)</label><input id="fBgImg" placeholder="https://.../background.jpg" /></div>
-    </div>
-
-    <div class="frow">
-      <div>
-        <label>Galeri (1 link per baris)</label>
-        <textarea id="fGallery" placeholder="https://.../1.jpg&#10;https://.../2.jpg"></textarea>
-      </div>
-    </div>
-
-    <div class="bar">
-      <button class="close" onclick="closeEditor()">Tutup</button>
-      <button class="reset" onclick="resetData()">Reset</button>
-      <button class="save" onclick="saveEditor()">Simpan</button>
-    </div>
+    <h3>Edit Kad</h3>
+    <label>Preset</label>
+    <select id="fPreset">
+      <option value="gold">Gold Luxury</option>
+      <option value="floral">Floral White</option>
+      <option value="royal">Royal Night</option>
+    </select>
+    <label>Nama Lelaki</label><input id="fGroom">
+    <label>Nama Perempuan</label><input id="fBride">
+    <label>Ayat Jemputan</label><textarea id="fInvite"></textarea>
+    <button onclick="saveEditor()">Simpan</button>
+    <button onclick="closeEditor()">Tutup</button>
   </div>
 </div>
 
 <script>
-  const STORAGE_KEY = "KK_PREMIUM_PRESET_V1";
-  const $ = (id)=>document.getElementById(id);
-
-  const PRESETS = {
-    gold: {
-      name:"Gold Luxury",
-      themeSelect:"gold",
-      bgImageUrl:"",
-      animOn:1,
-      a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
-      bg:"#050505", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
-      line:"rgba(255,255,255,.14)",
-      bg1:"radial-gradient(950px 620px at 20% 0%, rgba(214,180,108,.20), transparent 55%), radial-gradient(900px 600px at 90% 20%, rgba(183,198,255,.12), transparent 55%)",
-      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.90))"
-    },
-    floral: {
-      name:"Floral White",
-      themeSelect:"floral",
-      bgImageUrl:"https://images.unsplash.com/photo-1520975958225-9e246c1f1bf5?auto=format&fit=crop&w=1400&q=70",
-      animOn:0,
-      a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
-      bg:"#f6f7fb", txt:"#0b0f14", muted:"rgba(11,15,20,.72)",
-      line:"rgba(0,0,0,.10)",
-      bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
-      bg2:"linear-gradient(to bottom, rgba(255,255,255,.65), rgba(246,247,251,.88))"
-    },
-    royal: {
-      name:"Royal Night",
-      themeSelect:"royal",
-      bgImageUrl:"",
-      animOn:1,
-      a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
-      bg:"#030712", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
-      line:"rgba(255,255,255,.14)",
-      bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%), radial-gradient(900px 600px at 92% 18%, rgba(199,210,254,.14), transparent 55%)",
-      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
-    },
-    emerald: {
-      name:"Emerald Garden",
-      themeSelect:"emerald",
-      bgImageUrl:"",
-      animOn:1,
-      a1:"#34d399", a2:"#d1fae5", a3:"#60a5fa",
-      bg:"#04120b", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
-      line:"rgba(255,255,255,.14)",
-      bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(52,211,153,.20), transparent 55%), radial-gradient(900px 600px at 92% 18%, rgba(96,165,250,.12), transparent 55%)",
-      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
-    },
-    minimal: {
-      name:"Modern Minimal",
-      themeSelect:"minimal",
-      bgImageUrl:"",
-      animOn:0,
-      a1:"#111827", a2:"#e5e7eb", a3:"#94a3b8",
-      bg:"#0b0f14", txt:"#f5f7fb", muted:"rgba(245,247,251,.78)",
-      line:"rgba(255,255,255,.14)",
-      bg1:"radial-gradient(950px 620px at 20% 0%, rgba(255,255,255,.10), transparent 55%)",
-      bg2:"linear-gradient(to bottom, rgba(0,0,0,.18), rgba(0,0,0,.92))"
-    }
-  };
-
-  const DEFAULTS = {
-    preset:"gold",
-    badge:"WALIMATULURUS",
-    title:"Jemputan Perkahwinan",
-    groom:"Nama Pengantin Lelaki",
-    bride:"Nama Pengantin Perempuan",
-    inviteText:"Dengan penuh kesyukuran, kami menjemput anda hadir memeriahkan majlis kami.",
-    eventDateText:"31 Disember 2025",
-    eventTimeText:"9:00 AM – 2:00 PM",
-    venueText:"Dewan Contoh, Pulau Pinang",
-    eventStartISO:"2025-12-31T09:00:00+08:00",
-    eventEndISO:"2025-12-31T14:00:00+08:00",
-    rsvpPhone:"60123456789",
-    rsvpText:"Assalamualaikum/Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
-    mapsLink:"",
-    mapsQuery:"Dewan Contoh, Pulau Pinang",
-    audioMp3Url:"",
-    youTubeUrl:"",
-    videoUrl:"",
-    bgImageUrl:"",
-    animOn:1,
-    gallery:[
-      "https://images.unsplash.com/photo-1523438097201-512ae7d59c30?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=900&q=70",
-      "https://images.unsplash.com/photo-1529636798458-92182e662485?auto=format&fit=crop&w=900&q=70"
-    ]
-  };
-
-  let state = loadState();
-  let muted = false;
-  let cdTimer = null;
-
-  // YouTube option
-  let ytReady = false;
-  let ytPlayer = null;
-  let ytVideoId = "";
-
-  function loadState(){
-    try{
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if(!raw) return {...DEFAULTS};
-      const obj = JSON.parse(raw);
-      return {...DEFAULTS, ...obj};
-    }catch(e){
-      return {...DEFAULTS};
-    }
+const MUSIC_PRESETS={
+  gold:{
+    a1:"#d6b46c",a2:"#f3e2b8",
+    bg:"#050505",
+    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
+  },
+  floral:{
+    a1:"#111827",a2:"#c7ccd8",
+    bg:"#f6f7fb",
+    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
+  },
+  royal:{
+    a1:"#60a5fa",a2:"#c7d2fe",
+    bg:"#030712",
+    audio:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
   }
-  function persist(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+};
 
-  function applyPreset(key){
-    const p = PRESETS[key] || PRESETS.gold;
-    state.preset = key;
-    state.animOn = p.animOn;
-    // if user didn't set custom bg img, use preset bg image
-    if(!state.bgImageUrl) state.bgImageUrl = p.bgImageUrl || "";
+let state={preset:"gold",muted:false};
 
-    const root = document.documentElement.style;
-    root.setProperty("--a1", p.a1); root.setProperty("--a2", p.a2); root.setProperty("--a3", p.a3);
-    root.setProperty("--bg", p.bg);
-    root.setProperty("--txt", p.txt);
-    root.setProperty("--muted", p.muted);
-    root.setProperty("--line", p.line);
-    root.setProperty("--bg1", p.bg1);
-    root.setProperty("--bg2", p.bg2);
+function applyPreset(p){
+  const x=MUSIC_PRESETS[p];
+  if(!x)return;
+  document.documentElement.style.setProperty("--a1",x.a1);
+  document.documentElement.style.setProperty("--a2",x.a2);
+  document.documentElement.style.setProperty("--bg",x.bg);
+  const a=document.getElementById("bgm");
+  a.src=x.audio;
+}
 
-    setAnimated(Number(state.animOn)===1);
-    setBackgroundImage(state.bgImageUrl);
-  }
+document.getElementById("presetSelect").onchange=e=>{
+  state.preset=e.target.value;
+  applyPreset(state.preset);
+};
 
-  function setBackgroundImage(url){
-    const layer = $("bgImgLayer");
-    if(url && url.trim()){
-      document.documentElement.style.setProperty("--bgImg", `url("${url.trim()}")`);
-      layer.style.display = "block";
-    }else{
-      document.documentElement.style.setProperty("--bgImg", "none");
-      layer.style.display = "none";
-    }
-  }
-  function setAnimated(on){ $("animLayer").style.display = on ? "block" : "none"; }
+document.getElementById("playBtn").onclick=()=>{
+  const a=document.getElementById("bgm");
+  a.muted=false;
+  a.play().catch(()=>alert("Sila naikkan volume media"));
+};
 
-  function parseYouTubeId(url){
-    if(!url) return "";
-    const s = String(url).trim();
-    if(!s) return "";
-    if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
-    try{
-      const u = new URL(s);
-      if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
-      if(u.searchParams.get("v")) return u.searchParams.get("v");
-      const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
-      if(m) return m[1];
-    }catch(e){}
-    return "";
-  }
+document.getElementById("muteBtn").onclick=()=>{
+  const a=document.getElementById("bgm");
+  a.muted=!a.muted;
+};
 
-  function tickClock(){
-    const d = new Date();
-    $("clock").textContent = new Intl.DateTimeFormat(undefined,{hour:"numeric",minute:"2-digit"}).format(d);
-    $("dayText").textContent = new Intl.DateTimeFormat(undefined,{weekday:"long", year:"numeric", month:"short", day:"numeric"}).format(d);
-  }
+function openInvite(){
+  document.body.classList.add("open");
+  applyPreset(state.preset);
+}
 
-  function buildWhatsAppLink(){
-    const text = encodeURIComponent(state.rsvpText + " (" + state.groom + " & " + state.bride + ")");
-    return "https://wa.me/" + state.rsvpPhone + "?text=" + text;
-  }
-  function buildMapsLink(){
-    if(state.mapsLink && state.mapsLink.trim()) return state.mapsLink.trim();
-    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
-  }
-
-  function toICSDate(dt){
-    const d = new Date(dt);
-    const pad = (n)=>String(n).padStart(2,"0");
-    return d.getUTCFullYear() + pad(d.getUTCMonth()+1) + pad(d.getUTCDate()) + "T" +
-           pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + pad(d.getUTCSeconds()) + "Z";
-  }
-  function downloadICS(){
-    const dtStart = toICSDate(state.eventStartISO);
-    const dtEnd = toICSDate(state.eventEndISO);
-    const uid = "kk-" + Math.random().toString(16).slice(2) + "@invite";
-    const summary = `${state.groom} & ${state.bride} - Majlis Perkahwinan`;
-    const location = (state.venueText || "").replace(/\n/g," ");
-    const desc = (state.inviteText || "").replace(/\n/g," ");
-
-    const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//KadKahwin//MY//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${toICSDate(new Date())}
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:${summary}
-LOCATION:${location}
-DESCRIPTION:${desc}
-END:VEVENT
-END:VCALENDAR`;
-
-    const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "Majlis-Perkahwinan.ics";
-    document.body.appendChild(a); a.click(); a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function safeCopy(text){
-    return navigator.clipboard?.writeText(text).catch(() => {
-      const ta = document.createElement("textarea");
-      ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
-      document.body.appendChild(ta); ta.focus(); ta.select();
-      document.execCommand("copy"); ta.remove();
-    });
-  }
-  function shareLink(){
-    const link = location.href;
-    if(navigator.share){
-      navigator.share({ title: document.title, url: link }).catch(()=>{});
-    }else{
-      safeCopy(link).then(()=>alert("Link sudah copy."));
-    }
-  }
-
-  function setupGallery(){
-    const grid = $("galleryGrid");
-    grid.innerHTML = "";
-    (state.gallery || []).forEach((src, idx)=>{
-      const img = document.createElement("img");
-      img.className = "gimg";
-      img.loading = "lazy";
-      img.src = src;
-      img.alt = "Gambar " + (idx+1);
-      img.addEventListener("click", ()=>openLightbox(src));
-      grid.appendChild(img);
-    });
-  }
-  function openLightbox(src){
-    $("lightboxImg").src = src;
-    $("lightbox").style.display = "flex";
-  }
-  function closeLightbox(){ $("lightbox").style.display = "none"; }
-  window.closeLightbox = closeLightbox;
-
-  function setVideo(url){
-    const v = $("bgVideo");
-    if(!url || !url.trim()){
-      v.style.display = "none";
-      v.innerHTML = "";
-      return;
-    }
-    v.style.display = "block";
-    v.innerHTML = `<source src="${url.trim()}" type="video/mp4">`;
-    v.muted = true; v.playsInline = true;
-    v.addEventListener("loadedmetadata", ()=>v.play().catch(()=>{}), {once:true});
-  }
-
-  // Music
-  function setMp3(url){
-    const a = $("bgm");
-    if(!url || !url.trim()){
-      a.innerHTML = "";
-      return;
-    }
-    a.innerHTML = `<source src="${url.trim()}" type="audio/mpeg">`;
-  }
-  function stopAllAudio(){
-    const a = $("bgm");
-    try{ a.pause(); a.currentTime = 0; }catch(e){}
-    if(ytPlayer && ytReady){
-      try{ ytPlayer.stopVideo(); }catch(e){}
-    }
-  }
-  function playMusic(){
-    const mp3Ok = state.audioMp3Url && state.audioMp3Url.trim();
-    const ytId = parseYouTubeId(state.youTubeUrl);
-
-    if(mp3Ok){
-      stopAllAudio();
-      const a = $("bgm");
-      a.muted = muted;
-      a.play().catch(()=>{});
-      return;
-    }
-    if(ytId){
-      ytVideoId = ytId;
-      ensureYouTubeApi(() => {
-        loadOrCueYouTube(ytVideoId);
-        setTimeout(() => {
-          try{
-            ytPlayer.setVolume(muted ? 0 : 100);
-            ytPlayer.playVideo();
-          }catch(e){}
-        }, 250);
-      });
-    }
-  }
-  function toggleMute(){
-    muted = !muted;
-    $("muteBtn").textContent = muted ? "UNMUTE" : "MUTE";
-    $("bgm").muted = muted;
-    if(ytPlayer && ytReady){
-      try{ ytPlayer.setVolume(muted ? 0 : 100); }catch(e){}
-    }
-  }
-
-  function ensureYouTubeApi(cb){
-    if(window.YT && window.YT.Player){
-      ytReady = true;
-      cb();
-      return;
-    }
-    if(document.getElementById("ytApiScript")){
-      const wait = setInterval(() => {
-        if(window.YT && window.YT.Player){
-          clearInterval(wait);
-          ytReady = true;
-          cb();
-        }
-      }, 200);
-      return;
-    }
-    const s = document.createElement("script");
-    s.id = "ytApiScript";
-    s.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(s);
-    window.onYouTubeIframeAPIReady = () => { ytReady = true; cb(); };
-  }
-  function loadOrCueYouTube(videoId){
-    if(!videoId) return;
-    if(!ytPlayer){
-      ytPlayer = new YT.Player("ytPlayer", {
-        height:"0", width:"0", videoId,
-        playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, playsinline:1 },
-        events:{ onReady:()=>{ try{ ytPlayer.setVolume(muted?0:100);}catch(e){} } }
-      });
-    }else{
-      try{ ytPlayer.loadVideoById(videoId); }catch(e){}
-    }
-  }
-
-  function applyState(){
-    $("badge").textContent = state.badge;
-    $("title").textContent = state.title;
-    $("groom").textContent = state.groom;
-    $("bride").textContent = state.bride;
-    $("inviteText").textContent = state.inviteText;
-    $("eventDateText").textContent = state.eventDateText;
-    $("eventTimeText").textContent = state.eventTimeText;
-    $("venueText").textContent = state.venueText;
-
-    $("btnRSVP").onclick = ()=>window.open(buildWhatsAppLink(), "_blank");
-    $("btnMaps").onclick = ()=>window.open(buildMapsLink(), "_blank");
-    $("btnCal").onclick = downloadICS;
-    $("btnShare").onclick = shareLink;
-
-    // Preset apply (also sets background)
-    applyPreset(state.preset);
-    $("themeSelect").value = state.preset;
-
-    // Media
-    setVideo(state.videoUrl);
-    setMp3(state.audioMp3Url);
-    setupGallery();
-
-    // Countdown
-    if(cdTimer) clearInterval(cdTimer);
-    const target = new Date(state.eventStartISO).getTime();
-    const upd = ()=>{
-      const now = Date.now();
-      let diff = target - now;
-      if(!isFinite(diff)) diff = 0;
-      if(diff < 0) diff = 0;
-      const d = Math.floor(diff/(1000*60*60*24));
-      const h = Math.floor((diff/(1000*60*60))%24);
-      const m = Math.floor((diff/(1000*60))%60);
-      const s = Math.floor((diff/1000)%60);
-      $("cdD").textContent = String(d).padStart(2,"0");
-      $("cdH").textContent = String(h).padStart(2,"0");
-      $("cdM").textContent = String(m).padStart(2,"0");
-      $("cdS").textContent = String(s).padStart(2,"0");
-    };
-    upd();
-    cdTimer = setInterval(upd, 1000);
-  }
-
-  function openInvite(){
-    document.body.classList.add("open");
-    document.body.style.overflowY = "auto";
-    const v = $("bgVideo");
-    if(v && v.style.display !== "none") v.play().catch(()=>{});
-    playMusic();
-  }
-  window.openInvite = openInvite;
-
-  function openEditor(){
-    $("fPreset").value = state.preset;
-    $("fGroom").value = state.groom;
-    $("fBride").value = state.bride;
-    $("fTitle").value = state.title;
-    $("fInviteText").value = state.inviteText;
-    $("fDateText").value = state.eventDateText;
-    $("fTimeText").value = state.eventTimeText;
-    $("fVenueText").value = state.venueText;
-    $("fStartISO").value = state.eventStartISO;
-    $("fEndISO").value = state.eventEndISO;
-    $("fPhone").value = state.rsvpPhone;
-    $("fRsvpText").value = state.rsvpText;
-    $("fMapsLink").value = state.mapsLink;
-    $("fMapsQuery").value = state.mapsQuery;
-    $("fAudioMp3").value = state.audioMp3Url;
-    $("fYouTube").value = state.youTubeUrl;
-    $("fVideo").value = state.videoUrl;
-    $("fBgImg").value = state.bgImageUrl;
-    $("fGallery").value = (state.gallery || []).join("\n");
-    $("editor").style.display = "block";
-  }
-  function closeEditor(){ $("editor").style.display = "none"; }
-  window.closeEditor = closeEditor;
-
-  function saveEditor(){
-    const startISO = $("fStartISO").value.trim();
-    const endISO = $("fEndISO").value.trim();
-    if(isNaN(new Date(startISO).getTime())){
-      alert("Start ISO tak sah. Contoh: 2025-12-31T09:00:00+08:00");
-      return;
-    }
-    if(isNaN(new Date(endISO).getTime())){
-      alert("End ISO tak sah. Contoh: 2025-12-31T14:00:00+08:00");
-      return;
-    }
-
-    state.preset = $("fPreset").value;
-
-    state.groom = $("fGroom").value.trim() || state.groom;
-    state.bride = $("fBride").value.trim() || state.bride;
-    state.title = $("fTitle").value.trim() || state.title;
-    state.inviteText = $("fInviteText").value.trim() || state.inviteText;
-    state.eventDateText = $("fDateText").value.trim() || state.eventDateText;
-    state.eventTimeText = $("fTimeText").value.trim() || state.eventTimeText;
-    state.venueText = $("fVenueText").value.trim() || state.venueText;
-    state.eventStartISO = startISO;
-    state.eventEndISO = endISO;
-
-    state.rsvpPhone = $("fPhone").value.trim() || state.rsvpPhone;
-    state.rsvpText = $("fRsvpText").value.trim() || state.rsvpText;
-
-    state.mapsLink = $("fMapsLink").value.trim();
-    state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
-
-    state.audioMp3Url = $("fAudioMp3").value.trim();
-    state.youTubeUrl = $("fYouTube").value.trim();
-    state.videoUrl = $("fVideo").value.trim();
-    state.bgImageUrl = $("fBgImg").value.trim();
-
-    const gLines = $("fGallery").value.split("\n").map(s=>s.trim()).filter(Boolean);
-    if(gLines.length) state.gallery = gLines;
-
-    persist();
-    applyState();
-
-    if(document.body.classList.contains("open")){
-      playMusic();
-    }
-
-    alert("✅ Disimpan. Kad sudah dikemaskini.");
-    closeEditor();
-  }
-  window.saveEditor = saveEditor;
-
-  function resetData(){
-    if(confirm("Reset semua data ke default?")){
-      localStorage.removeItem(STORAGE_KEY);
-      state = loadState();
-      applyState();
-      stopAllAudio();
-      alert("✅ Reset siap.");
-      closeEditor();
-    }
-  }
-  window.resetData = resetData;
-
-  (function init(){
-    applyState();
-    tickClock();
-    setInterval(tickClock, 10000);
-
-    $("muteBtn").addEventListener("click", toggleMute);
-    $("editBtn").addEventListener("click", openEditor);
-    $("themeSelect").addEventListener("change", (e)=>{
-      state.preset = e.target.value;
-      persist();
-      applyState();
-    });
-
-    document.body.style.overflowY = "hidden";
-  })();
+function openEditor(){document.getElementById("editor").style.display="block";}
+function closeEditor(){document.getElementById("editor").style.display="none";}
+function saveEditor(){
+  document.getElementById("groom").innerText=fGroom.value;
+  document.getElementById("bride").innerText=fBride.value;
+  document.getElementById("inviteText").innerText=fInvite.value;
+  closeEditor();
+}
 </script>
 
 </body>
