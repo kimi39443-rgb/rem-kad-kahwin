@@ -1,1319 +1,1790 @@
 <!doctype html>
 <html lang="ms">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Jemputan Perkahwinan</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>R-E-M Creative Studio — Pakar pembuat batu nisan & bakut</title>
+  <meta name="description" content="Pakar pembuat batu nisan dan bakut. Kemas dan berkualiti dijamin puas hati." />
 
-<style>
-:root{
-  --bg:#050505;
-  --txt:#f5f7fb;
-  --muted:rgba(245,247,251,.75);
-  --line:rgba(255,255,255,.14);
-  --shadow:0 25px 70px rgba(0,0,0,.6);
-  --a1:#d6b46c; --a2:#f3e2b8; --a3:#b7c6ff;
-  --bg1:radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%);
-  --bg2:linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9));
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%}
-body{
-  font-family: ui-serif, Georgia, "Times New Roman", serif;
-  background:var(--bg);
-  color:var(--txt);
-  overflow-x:hidden;
-}
-.overlay{
-  position:fixed; inset:0; z-index:-5;
-  background:var(--bg1),var(--bg2);
-}
-.anim{
-  position:fixed; inset:0; z-index:-5;
-  display:none;
-  background:
-    radial-gradient(800px 600px at 10% 10%, rgba(214,180,108,.18), transparent 55%),
-    radial-gradient(800px 600px at 90% 20%, rgba(183,198,255,.16), transparent 55%);
-  animation:float 10s ease-in-out infinite;
-}
-@keyframes float{50%{transform:translateY(-10px)}}
+  <style>
+    :root{
+      --bg:#07090c;
+      --card:rgba(255,255,255,.06);
+      --card2:rgba(255,255,255,.08);
+      --stroke:rgba(255,255,255,.12);
+      --txt:rgba(245,247,255,.92);
+      --muted:rgba(245,247,255,.70);
 
-.tap{
-  position:fixed; inset:0; z-index:50;
-  display:flex; align-items:center; justify-content:center;
-  background:#000; color:#fff;
-}
-.tap .box{
-  width:min(460px,92vw);
-  padding:18px;
-  border-radius:22px;
-  background:rgba(0,0,0,.6);
-  border:1px solid rgba(255,255,255,.15);
-  box-shadow:var(--shadow);
-  text-align:center;
-}
-.tap button{
-  width:100%;
-  margin-top:12px;
-  padding:12px;
-  border-radius:16px;
-  border:0;
-  font-weight:900;
-  background:linear-gradient(135deg,var(--a1),var(--a2));
-  color:#111;
-}
+      --accent:#e6b93c;
+      --accent2:#ffdd73;
+      --cool: rgba(120,200,255,.12);
 
-.door{
-  position:fixed; top:0; width:50%; height:100%;
-  background:#000; z-index:40;
-  transition:transform 1.5s ease;
-}
-.door.left{left:0}
-.door.right{right:0}
-body.open .door.left{transform:translateX(-105%)}
-body.open .door.right{transform:translateX(105%)}
-body.open .tap{display:none}
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --blur: 18px;
 
-.wrap{max-width:860px;margin:auto;padding:16px 14px 210px}
-.topbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
-.pill{
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(0,0,0,.25);
-  font-size:12px;
-  display:flex; gap:8px; align-items:center;
-}
-.pill button, .pill select{
-  background:none;border:0;color:var(--txt);font-weight:900;cursor:pointer
-}
-.pill select{outline:none}
+      --r: 22px;
+      --r2: 18px;
 
-.card{
-  margin-top:14px;
-  border-radius:26px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.06);
-  box-shadow:var(--shadow);
-  overflow:hidden;
-}
-.hero{text-align:center;padding:22px}
-.badge{letter-spacing:3px;font-size:12px;opacity:.85}
-h1{
-  font-size:34px;margin:14px 0 6px;
-  background:linear-gradient(135deg,var(--a1),var(--a2));
-  -webkit-background-clip:text;color:transparent;
-  user-select:none;
-}
-.names{font-size:20px;line-height:1.35}
-.divider{
-  width:70px;height:2px;margin:16px auto;
-  background:linear-gradient(to right,var(--a1),var(--a2),var(--a3));
-}
-.grid{padding:16px;display:grid;gap:10px}
-.item{padding:12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.10)}
-.actions{padding:16px;display:grid;gap:10px}
-.btn{
-  padding:14px;border-radius:18px;border:0;
-  font-weight:900;cursor:pointer
-}
-.primary{background:linear-gradient(135deg,var(--a1),var(--a2));color:#111}
-.small{font-size:12px;color:var(--muted);margin-top:8px;text-align:center}
+      --max: 1100px;
+      --gap: 16px;
 
-.editor{
-  position:fixed; inset:0; z-index:60;
-  background:rgba(0,0,0,.75);
-  display:none; overflow:auto;
-  padding:16px;
-}
-.editor .panel{
-  max-width:860px;margin:10px auto;padding:16px;
-  border-radius:22px;
-  background:rgba(15,18,26,.92);
-  border:1px solid rgba(255,255,255,.14);
-}
-.editor h3{margin:6px 0 10px}
-.editor label{display:block;margin:10px 0 6px;color:rgba(255,255,255,.78);font-size:12px}
-.editor input, .editor textarea, .editor select{
-  width:100%;padding:11px;border-radius:14px;
-  background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.14);
-  outline:none;
-}
-.editor textarea{min-height:72px;resize:vertical}
-.editor .row{display:grid;grid-template-columns:1fr;gap:10px}
-@media(min-width:720px){.editor .row.two{grid-template-columns:1fr 1fr}}
-.editor .bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
-@media(max-width:520px){.editor .bar{grid-template-columns:1fr}}
-.editor button{padding:12px;border-radius:14px;border:0;font-weight:900;cursor:pointer}
-.editor .save{background:linear-gradient(135deg,var(--a1),var(--a2));color:#111}
-.editor .close,.editor .reset{background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.14)}
-.warn{margin-top:10px;color:#ffd3d3;font-size:12px;line-height:1.45}
-.ok{margin-top:10px;color:#c6ffd8;font-size:12px;line-height:1.45}
+      --tap: 46px;
+      --focus: 0 0 0 3px rgba(230,185,60,.20), 0 0 0 8px rgba(230,185,60,.10);
 
-#ytWrap{position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden}
+      --ease: cubic-bezier(.2,.9,.2,1);
+    }
 
-/* Bottom actions */
-.bottomBar{
-  position:fixed; left:0; right:0; bottom:0; z-index:55;
-  padding:10px 12px;
-  background:rgba(0,0,0,.55);
-  border-top:1px solid rgba(255,255,255,.14);
-  backdrop-filter: blur(10px);
-}
-.bottomRow{
-  max-width:860px;margin:0 auto;
-  display:grid; grid-template-columns:1fr 1fr; gap:10px;
-}
-.bbtn{
-  border:0; border-radius:18px; padding:14px 12px;
-  font-weight:900; cursor:pointer;
-  color:#111;
-  background:linear-gradient(135deg,var(--a1),var(--a2));
-}
-.bbtn.secondary{
-  color:#fff;
-  background:rgba(255,255,255,.12);
-  border:1px solid rgba(255,255,255,.18);
-}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background: var(--bg);
+      color: var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height: 1.55;
+      overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-/* Watermark */
-.watermark{
-  position:fixed; left:0; right:0; bottom:64px;
-  z-index:52;
-  text-align:center;
-  font-size:12px;
-  letter-spacing:.4px;
-  opacity:.55;
-  pointer-events:none;
-  display:none;
-}
+    /* ===== Premium: preloader ===== */
+    .preloader{
+      position:fixed; inset:0;
+      z-index:9999;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(900px 500px at 18% 12%, rgba(230,185,60,.10), transparent 55%),
+        radial-gradient(650px 450px at 85% 20%, rgba(255,221,115,.06), transparent 60%),
+        linear-gradient(180deg, rgba(7,9,12,.98), rgba(7,9,12,.92));
+      transition: opacity .45s var(--ease), visibility .45s var(--ease);
+    }
+    .preloader.hide{ opacity:0; visibility:hidden; }
+    .preCard{
+      width:min(520px, calc(100% - 48px));
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      box-shadow: 0 25px 80px rgba(0,0,0,.65);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .preCard:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(500px 180px at 15% 0%, rgba(230,185,60,.18), transparent 58%),
+        radial-gradient(460px 200px at 85% 40%, rgba(120,200,255,.08), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .preInner{ position:relative; display:flex; align-items:center; gap:12px; }
+    .preLogo{
+      width:42px; height:42px; border-radius: 16px;
+      background:
+        radial-gradient(10px 10px at 30% 30%, rgba(255,255,255,.40), transparent 55%),
+        radial-gradient(18px 18px at 70% 60%, rgba(230,185,60,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+      flex: 0 0 auto;
+    }
+    .preText b{
+      display:block; font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    }
+    .preText span{
+      display:block; font-size:12px; color: var(--muted);
+    }
+    .bar{
+      margin-top: 12px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      overflow:hidden;
+      position:relative;
+    }
+    .bar > i{
+      display:block;
+      height:100%;
+      width: 42%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(230,185,60,.18), rgba(230,185,60,.55), rgba(255,221,115,.24));
+      filter: saturate(1.05);
+      animation: load 1.2s var(--ease) infinite;
+    }
+    @keyframes load{
+      0%{ transform: translateX(-120%); opacity:.85; }
+      50%{ opacity:1; }
+      100%{ transform: translateX(220%); opacity:.9; }
+    }
 
-/* Expired overlay */
-.expired{
-  position:fixed; inset:0; z-index:70;
-  display:none;
-  background:rgba(0,0,0,.85);
-  color:#fff;
-}
-.expired .box{
-  width:min(460px,92vw);
-  margin:18vh auto 0;
-  padding:18px;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(0,0,0,.55);
-  box-shadow:var(--shadow);
-  text-align:center;
-}
-.expired .box h3{margin:8px 0 6px}
-.expired .box p{opacity:.85; line-height:1.5}
+    /* ===== Premium: progress bar ===== */
+    .progress{
+      position:fixed;
+      top:0; left:0; right:0;
+      height: 3px;
+      z-index: 80;
+      background: rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .progress > i{
+      display:block;
+      height:100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(230,185,60,.10), rgba(230,185,60,.65), rgba(120,200,255,.18));
+      box-shadow: 0 0 22px rgba(230,185,60,.20);
+      transform-origin:left center;
+    }
 
-/* Production block (htmlpreview) */
-.blocker{
-  position:fixed; inset:0; z-index:9999;
-  display:none;
-  background:rgba(0,0,0,.92);
-  color:#fff;
-}
-.blocker .box{
-  width:min(520px,92vw);
-  margin:14vh auto 0;
-  padding:18px;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(0,0,0,.55);
-  box-shadow:var(--shadow);
-}
-.blocker h3{margin:8px 0 6px}
-.blocker p{opacity:.9; line-height:1.5}
-.blocker code{
-  display:block;
-  margin-top:10px;
-  padding:10px;
-  border-radius:14px;
-  background:rgba(255,255,255,.10);
-  border:1px solid rgba(255,255,255,.16);
-  word-break:break-all;
-  font-size:12px;
-}
-</style>
+    /* Low-glare cyber background (controlled glow) */
+    .bg{
+      position:fixed; inset:0;
+      pointer-events:none;
+      background:
+        radial-gradient(900px 500px at 18% 12%, rgba(230,185,60,.10), transparent 55%),
+        radial-gradient(650px 450px at 85% 20%, rgba(255,221,115,.06), transparent 60%),
+        radial-gradient(850px 600px at 55% 90%, rgba(120,200,255,.05), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.02), transparent 22%, rgba(0,0,0,.22));
+      filter: saturate(1.02);
+    }
+
+    .grid{
+      position:fixed; inset:-2px;
+      pointer-events:none;
+      opacity:.14;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.07) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(60% 50% at 50% 20%, rgba(0,0,0,1), transparent 70%);
+    }
+
+    .wrap{
+      width:min(var(--max), calc(100% - 2*16px));
+      margin:0 auto;
+      padding: 18px 0 120px; /* room for sticky CTA */
+    }
+
+    header{
+      position:sticky; top:3px; z-index:30; /* allow progress bar */
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(7,9,12,.70), rgba(7,9,12,.35));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .nav{
+      width:min(var(--max), calc(100% - 2*16px));
+      margin:0 auto;
+      padding: 12px 0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+    }
+
+    .brand{ display:flex; align-items:center; gap:10px; min-width: 0; }
+    .logo{
+      width: 34px; height: 34px; border-radius: 12px;
+      background:
+        radial-gradient(10px 10px at 30% 30%, rgba(255,255,255,.40), transparent 55%),
+        radial-gradient(18px 18px at 70% 60%, rgba(230,185,60,.22), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 26px rgba(0,0,0,.35);
+      flex: 0 0 auto;
+    }
+
+    .brandText{ min-width:0; }
+    .brandText b{
+      display:block;
+      font-size: 13px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brandText span{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .navActions{ display:flex; align-items:center; gap:10px; flex: 0 0 auto; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      height: var(--tap);
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--txt);
+      text-decoration:none;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .01em;
+      box-shadow: 0 10px 22px rgba(0,0,0,.28);
+      transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+      position:relative;
+      overflow:hidden;
+    }
+    .pill:hover{ transform: translateY(-1px); border-color: rgba(230,185,60,.35); }
+    .pill:active{ transform: translateY(0px) scale(.99); }
+    .pill:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    .pill.primary{
+      background: linear-gradient(180deg, rgba(230,185,60,.22), rgba(230,185,60,.08));
+      border-color: rgba(230,185,60,.40);
+    }
+    .pill.primary:hover{ background: linear-gradient(180deg, rgba(230,185,60,.26), rgba(230,185,60,.10)); }
+
+    /* Premium: subtle ripple */
+    .ripple:after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(220px 140px at var(--rx,50%) var(--ry,50%), rgba(230,185,60,.20), transparent 60%);
+      opacity:0;
+      transition: opacity .25s var(--ease);
+      pointer-events:none;
+    }
+    .ripple.down:after{ opacity:1; }
+
+    /* Reveal on scroll */
+    .reveal{
+      opacity:0;
+      transform: translateY(10px);
+      transition: opacity .6s var(--ease), transform .6s var(--ease);
+    }
+    .reveal.on{
+      opacity:1;
+      transform: translateY(0);
+    }
+
+    .hero{ padding: 18px 0 10px; }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(var(--blur));
+      -webkit-backdrop-filter: blur(var(--blur));
+      overflow:hidden;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(500px 180px at 15% 0%, rgba(230,185,60,.16), transparent 58%),
+        radial-gradient(420px 140px at 85% 18%, rgba(255,221,115,.08), transparent 60%);
+      pointer-events:none;
+      opacity:.95;
+    }
+    .cardInner{ position:relative; padding: 18px 16px; }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.10);
+      color: rgba(245,247,255,.88);
+      font-size: 12px;
+      letter-spacing:.02em;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(230,185,60,.85);
+      box-shadow: 0 0 0 3px rgba(230,185,60,.10);
+    }
+
+    h1{
+      margin: 12px 0 6px;
+      font-size: 26px;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+    }
+    .tagline{ margin: 0 0 12px; font-size: 14px; color: var(--muted); }
+
+    .summary{ margin: 0; color: rgba(245,247,255,.86); font-size: 14px; }
+
+    /* Premium: stats */
+    .stats{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .stat{
+      border-radius: 18px;
+      padding: 10px 10px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      position:relative;
+      overflow:hidden;
+      min-height: 64px;
+    }
+    .stat:before{
+      content:"";
+      position:absolute;
+      inset:-1px;
+      background: radial-gradient(180px 90px at 20% 0%, rgba(230,185,60,.12), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .stat b{
+      position:relative;
+      display:block;
+      font-size: 18px;
+      letter-spacing:-.02em;
+      margin-bottom: 2px;
+    }
+    .stat span{
+      position:relative;
+      display:block;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .ctaRow{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items:center;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height: var(--tap);
+      padding: 0 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+      font-weight: 800;
+      font-size: 14px;
+      text-decoration:none;
+      transition: transform .2s var(--ease), background .2s var(--ease), border-color .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+      width: 100%;
+      position:relative;
+      overflow:hidden;
+    }
+    .btn:hover{ transform: translateY(-1px); border-color: rgba(230,185,60,.35); }
+    .btn:active{ transform: translateY(0px) scale(.99); }
+    .btn:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(230,185,60,.25), rgba(230,185,60,.10));
+      border-color: rgba(230,185,60,.40);
+    }
+    .btn.primary:hover{ background: linear-gradient(180deg, rgba(230,185,60,.30), rgba(230,185,60,.12)); }
+
+    .btn .ico{ width: 18px; height: 18px; display:inline-block; flex: 0 0 auto; filter: drop-shadow(0 6px 16px rgba(0,0,0,.35)); }
+
+    .micro{ font-size: 12px; color: var(--muted); margin-top: 10px; }
+    .micro strong{ color: rgba(245,247,255,.92); }
+
+    .facts{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .fact{
+      border-radius: var(--r2);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .fact::after{
+      content:"";
+      position:absolute;
+      right:-30px; top:-30px;
+      width: 120px; height: 120px;
+      background: radial-gradient(circle at 30% 30%, rgba(230,185,60,.18), transparent 60%);
+      transform: rotate(18deg);
+      pointer-events:none;
+      opacity:.85;
+    }
+    .fact b{ display:block; font-size: 12px; color: rgba(245,247,255,.82); letter-spacing:.02em; margin-bottom: 2px; }
+    .fact span{ display:block; font-size: 13px; color: var(--muted); }
+
+    section{ margin-top: 14px; }
+
+    .sectionTitle{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap: 10px;
+      margin: 18px 0 10px;
+    }
+    .sectionTitle h2{ margin:0; font-size: 16px; letter-spacing: -.01em; }
+    .sectionTitle p{ margin:0; font-size: 12px; color: var(--muted); }
+
+    .grid3{ display:grid; grid-template-columns: 1fr; gap: 12px; }
+
+    .tile{
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 14px 40px rgba(0,0,0,.40);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow:hidden;
+      position:relative;
+      transition: transform .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
+    }
+    .tile:hover{
+      transform: translateY(-2px);
+      border-color: rgba(230,185,60,.28);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+    }
+
+    .tileInner{ padding: 14px; position:relative; }
+    .tileTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(230,185,60,.10);
+      border: 1px solid rgba(230,185,60,.26);
+      color: rgba(245,247,255,.88);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing:.02em;
+    }
+
+    .iconBox{
+      width: 36px; height: 36px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      display:grid;
+      place-items:center;
+    }
+
+    .tile h3{ margin: 0 0 6px; font-size: 14px; letter-spacing: -.01em; }
+    .tile p{ margin:0; font-size: 13px; color: var(--muted); }
+
+    /* ===== Premium: Pricing toggle ===== */
+    .toggleRow{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content:flex-start;
+      margin: 10px 0 12px;
+      flex-wrap:wrap;
+    }
+    .seg{
+      display:inline-flex;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 999px;
+      overflow:hidden;
+    }
+    .seg button{
+      appearance:none;
+      border:0;
+      background:transparent;
+      color: rgba(245,247,255,.80);
+      padding: 10px 12px;
+      min-height: 40px;
+      font-weight: 800;
+      font-size: 12px;
+      cursor:pointer;
+      transition: background .2s var(--ease), color .2s var(--ease);
+    }
+    .seg button.active{
+      background: linear-gradient(180deg, rgba(230,185,60,.22), rgba(230,185,60,.08));
+      color: rgba(245,247,255,.92);
+    }
+    .seg button:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    .price{
+      margin-top: 8px;
+      display:flex; align-items:baseline; gap: 8px;
+    }
+    .price b{ font-size: 20px; letter-spacing:-.02em; }
+    .price span{ font-size: 12px; color: var(--muted); }
+
+    .ul{
+      margin: 10px 0 0;
+      padding-left: 16px;
+      color: rgba(245,247,255,.82);
+      font-size: 12px;
+    }
+    .ul li{ margin: 6px 0; color: rgba(245,247,255,.78); }
+    .ul li i{ color: rgba(255,221,115,.92); font-style:normal; }
+
+    /* Testimonials */
+    .quote{
+      position:relative;
+      border-radius: var(--r);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 14px;
+      overflow:hidden;
+    }
+    .quote::before{
+      content:"";
+      position:absolute;
+      left:-10px; top:-10px;
+      width: 170px; height: 170px;
+      background: radial-gradient(circle at 30% 30%, rgba(230,185,60,.14), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .quoteInner{ position:relative; }
+    .quote p{ margin: 0 0 10px; color: rgba(245,247,255,.88); font-size: 13px; }
+    .quote .who{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ===== Premium: FAQ accordion ===== */
+    .faq{
+      border-radius: var(--r);
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .faqItem + .faqItem{ border-top: 1px solid rgba(255,255,255,.08); }
+    .faqBtn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      padding: 14px 14px;
+      background: transparent;
+      border:0;
+      color: rgba(245,247,255,.90);
+      font-weight: 900;
+      font-size: 13px;
+      cursor:pointer;
+      text-align:left;
+    }
+    .faqBtn:focus-visible{ outline:none; box-shadow: var(--focus); }
+    .faqBtn i{
+      width: 30px; height: 30px;
+      border-radius: 12px;
+      display:grid; place-items:center;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      flex: 0 0 auto;
+      transition: transform .25s var(--ease), border-color .25s var(--ease);
+    }
+    .faqItem.open .faqBtn i{
+      transform: rotate(45deg);
+      border-color: rgba(230,185,60,.25);
+    }
+    .faqBody{
+      max-height:0;
+      overflow:hidden;
+      transition: max-height .35s var(--ease);
+    }
+    .faqBody > div{
+      padding: 0 14px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Style showcase / gallery */
+    .styleRow{ display:grid; grid-template-columns: 1fr; gap: 12px; }
+    .frame{
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      position:relative;
+      box-shadow: 0 14px 42px rgba(0,0,0,.42);
+    }
+    .frame::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(650px 240px at 10% 0%, rgba(230,185,60,.14), transparent 55%),
+        radial-gradient(520px 220px at 80% 40%, rgba(120,200,255,.05), transparent 60%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .frameInner{ position:relative; padding: 14px; }
+
+    .gal{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .shot{
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(90px 80px at 20% 30%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(120px 90px at 80% 60%, rgba(230,185,60,.10), transparent 65%),
+        rgba(0,0,0,.20);
+      height: 90px;
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .2s var(--ease), border-color .2s var(--ease);
+    }
+    .shot:hover{ transform: translateY(-2px); border-color: rgba(230,185,60,.25); }
+    .shot span{
+      position:absolute;
+      inset:auto 10px 10px 10px;
+      font-size: 11px;
+      color: rgba(245,247,255,.78);
+      text-shadow: 0 10px 20px rgba(0,0,0,.55);
+    }
+
+    /* Modal viewer */
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      z-index: 120;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 18px;
+    }
+    .modal.show{ display:grid; place-items:center; }
+    .modalCard{
+      width:min(900px, 100%);
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      box-shadow: 0 28px 90px rgba(0,0,0,.70);
+      overflow:hidden;
+      position:relative;
+    }
+    .modalCard:before{
+      content:"";
+      position:absolute; inset:-1px;
+      background:
+        radial-gradient(680px 220px at 15% 0%, rgba(230,185,60,.18), transparent 58%),
+        radial-gradient(560px 220px at 85% 40%, rgba(120,200,255,.08), transparent 62%);
+      opacity:.85;
+      pointer-events:none;
+    }
+    .modalTop{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .modalTop b{ font-size: 13px; letter-spacing:.02em; }
+    .x{
+      appearance:none; border:0;
+      width: 42px; height: 42px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(245,247,255,.90);
+      cursor:pointer;
+      transition: transform .2s var(--ease), border-color .2s var(--ease);
+    }
+    .x:hover{ transform: translateY(-1px); border-color: rgba(230,185,60,.25); }
+    .x:active{ transform: translateY(0) scale(.99); }
+    .x:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    .modalBody{
+      position:relative;
+      padding: 14px;
+    }
+    .modalPreview{
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.18);
+      background:
+        radial-gradient(220px 160px at 15% 20%, rgba(255,255,255,.06), transparent 60%),
+        radial-gradient(260px 180px at 85% 65%, rgba(230,185,60,.12), transparent 65%),
+        rgba(0,0,0,.22);
+      height: min(56vh, 420px);
+      display:grid;
+      place-items:center;
+      color: rgba(245,247,255,.78);
+      text-align:center;
+      padding: 14px;
+    }
+
+    /* Form inputs */
+    input,select,textarea{
+      -webkit-appearance:none;
+      appearance:none;
+    }
+    .in{
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.22);
+      color:var(--txt);
+      padding:10px 12px;
+      outline:none;
+      transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .in:focus{
+      border-color: rgba(230,185,60,.30);
+      box-shadow: 0 0 0 3px rgba(230,185,60,.12);
+    }
+    textarea.in{ resize:vertical; min-height: 96px; }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left: 50%;
+      bottom: 92px; /* above sticky CTA */
+      transform: translateX(-50%) translateY(10px);
+      z-index: 130;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s var(--ease), transform .25s var(--ease);
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.40);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: rgba(245,247,255,.88);
+      font-size: 12px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.55);
+      white-space:nowrap;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .footer{
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: var(--r);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .footer b{ color: rgba(245,247,255,.86); }
+
+    /* WhatsApp floating button */
+    .wa-fab{
+      position: fixed;
+      right: 14px;
+      bottom: 86px; /* keep above sticky CTA */
+      z-index: 60;
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(230,185,60,.22), rgba(0,0,0,.24));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      display:grid;
+      place-items:center;
+      text-decoration:none;
+      color: var(--txt);
+      transition: transform .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    .wa-fab:hover{ transform: translateY(-2px); border-color: rgba(230,185,60,.35); }
+    .wa-fab:active{ transform: translateY(0px) scale(.99); }
+    .wa-fab:focus-visible{ outline:none; box-shadow: var(--focus); }
+    .wa-fab .wa-ico{ width: 24px; height: 24px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.40)); }
+
+    .wa-label{
+      position: fixed;
+      right: 14px;
+      bottom: 150px;
+      z-index: 60;
+      display:none;
+      align-items:center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.28);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      color: rgba(245,247,255,.86);
+      font-size: 12px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.45);
+      pointer-events:none;
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity .25s var(--ease), transform .25s var(--ease);
+      white-space:nowrap;
+    }
+    .wa-label.show{ opacity:1; transform: translateY(0); }
+
+    /* ===== Premium: Sticky bottom CTA bar (mobile) ===== */
+    .stickyCta{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      z-index: 70;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(7,9,12,.10), rgba(7,9,12,.75));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .stickyInner{
+      width:min(var(--max), calc(100% - 2*4px));
+      margin:0 auto;
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .stickyInfo{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+    }
+    .stickyInfo b{
+      font-size: 12px;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .stickyInfo span{
+      font-size: 11px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .stickyBtn{
+      flex: 0 0 auto;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(230,185,60,.40);
+      background: linear-gradient(180deg, rgba(230,185,60,.25), rgba(230,185,60,.10));
+      color: rgba(245,247,255,.92);
+      font-weight: 900;
+      font-size: 13px;
+      text-decoration:none;
+      transition: transform .2s var(--ease), border-color .2s var(--ease);
+      position:relative;
+      overflow:hidden;
+    }
+    .stickyBtn:hover{ transform: translateY(-1px); }
+    .stickyBtn:active{ transform: translateY(0) scale(.99); }
+    .stickyBtn:focus-visible{ outline:none; box-shadow: var(--focus); }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ transition:none !important; animation:none !important; scroll-behavior:auto !important; }
+      .reveal{ opacity:1 !important; transform:none !important; }
+    }
+
+    /* Larger screens */
+    @media (min-width: 820px){
+      .wrap{ padding-bottom: 90px; }
+      .heroGrid{ grid-template-columns: 1.2fr .8fr; gap: 14px; }
+      .btn{ width: auto; }
+      .grid3{ grid-template-columns: repeat(3, 1fr); }
+      .styleRow{ grid-template-columns: 1.2fr .8fr; }
+      .wa-label{ display:flex; }
+      .stickyCta{ display:none; } /* desktop: hide sticky bottom bar */
+      .wa-fab{ bottom: 14px; }
+      .wa-label{ bottom: 78px; }
+      .toast{ bottom: 20px; }
+    }
+
+    /* Disable selection highlight weirdness on mobile */
+    ::selection{ background: rgba(230,185,60,.20); }
+  </style>
 </head>
 
 <body>
-<div class="overlay"></div>
-<div class="anim" id="animLayer"></div>
-
-<div class="tap" id="tapLayer">
-  <div class="box">
-    <h3>JEMPUTAN PERKAHWINAN</h3>
-    <p>Tekan untuk buka kad</p>
-    <button type="button" onclick="openInvite()">BUKA KAD</button>
-  </div>
-</div>
-
-<div class="door left"></div>
-<div class="door right"></div>
-
-<audio id="bgm" loop></audio>
-<div id="ytWrap"><div id="ytPlayer"></div></div>
-
-<div class="wrap">
-  <div class="topbar">
-    <div class="pill">🎨
-      <select id="presetSelect">
-        <option value="gold">Gold Luxury</option>
-        <option value="floral">Floral White</option>
-        <option value="royal">Royal Night</option>
-      </select>
-    </div>
-
-    <div class="pill"><button id="playBtn" type="button">▶️ PLAY</button></div>
-    <div class="pill"><button id="stopBtn" type="button">⏹️ STOP</button></div>
-    <div class="pill"><button id="muteBtn" type="button">MUTE</button></div>
-
-    <!-- admin-only (auto hide bila customerMode ON) -->
-    <div class="pill" id="editPill"><button id="editBtn" type="button">EDIT</button></div>
-  </div>
-
-  <div class="card">
-    <div class="hero">
-      <div class="badge" id="badge">WALIMATULURUS</div>
-      <!-- Secret tap target -->
-      <h1 id="titleTap">Jemputan Perkahwinan</h1>
-
-      <div class="names">
-        <div id="groom">Nama Pengantin Lelaki</div>
-        <div style="opacity:.85;margin:6px 0">♥</div>
-        <div id="bride">Nama Pengantin Perempuan</div>
+  <!-- Preloader -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preCard">
+      <div class="preInner">
+        <div class="preLogo" aria-hidden="true"></div>
+        <div class="preText">
+          <b>R-E-M Creative Studio</b>
+          <span>Loading premium glass UI…</span>
+        </div>
       </div>
-
-      <div class="divider"></div>
-      <div id="inviteText">Dengan penuh kesyukuran, kami menjemput anda hadir.</div>
-      <div class="small" id="musicInfo">Muzik: Preset</div>
-      <div class="small" id="musicHint">Jika tiada bunyi, tekan ▶️ PLAY.</div>
-      <!-- ✅ link panjang sudah dibuang dari paparan pelanggan -->
-    </div>
-
-    <div class="grid">
-      <div class="item" id="dateText">📅 31/12/2025</div>
-      <div class="item" id="timeText">⏰ 9:00 AM – 2:00 PM</div>
-      <div class="item" id="venueText">📍 Dewan Contoh, Pulau Pinang</div>
-    </div>
-
-    <div class="actions">
-      <button class="btn primary" id="btnRsvp" type="button">💬 RSVP WhatsApp</button>
-      <button class="btn" id="btnMaps" type="button">📍 Google Maps</button>
+      <div class="bar" aria-hidden="true"><i></i></div>
     </div>
   </div>
-</div>
 
-<div class="watermark" id="wm"></div>
+  <!-- Progress bar -->
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 
-<div class="bottomBar" id="bottomBar">
-  <div class="bottomRow">
-    <button class="bbtn" id="shareBtn" type="button">📤 SHARE INVITE</button>
-    <button class="bbtn secondary" id="copyBtn" type="button">📋 COPY LINK</button>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
+
+  <header>
+    <div class="nav">
+      <div class="brand" aria-label="R-E-M Creative Studio">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brandText">
+          <b>R-E-M Creative Studio</b>
+          <span>Pakar pembuat batu nisan &amp; bakut</span>
+        </div>
+      </div>
+
+      <div class="navActions">
+        <a class="pill ripple" href="#pilihan" id="navPilihan">Pilihan</a>
+        <a class="pill primary ripple" href="#hubungi" id="navCTA">Minta Sebut Harga</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero reveal" id="top">
+      <div class="heroGrid">
+        <!-- HERO MAIN -->
+        <div class="card reveal">
+          <div class="cardInner">
+            <div class="badge">
+              <span class="dot" aria-hidden="true"></span>
+              <span><strong style="color:rgba(245,247,255,.92)">Bold Neon (Cyber)</strong> · Low-glare glass</span>
+            </div>
+
+            <h1>Pakar pembuat batu nisan dan bakut</h1>
+            <p class="tagline">Kemas dan berkualiti dijamin puas hati</p>
+
+            <p class="summary">
+              <strong>Ringkasan:</strong>
+              <span id="ringkasanText">[ISI RINGKASAN]</span>
+            </p>
+
+            <!-- Premium: Counters -->
+            <div class="stats" aria-label="Social proof ringkas">
+              <div class="stat">
+                <b data-count="650" data-suffix="+">0</b>
+                <span>Tempahan siap</span>
+              </div>
+              <div class="stat">
+                <b data-count="4.9" data-dec="1" data-suffix="/5">0</b>
+                <span>Rating kepuasan</span>
+              </div>
+              <div class="stat">
+                <b data-count="24" data-suffix=" jam">0</b>
+                <span>Respon pantas</span>
+              </div>
+            </div>
+
+            <div class="ctaRow" id="hubungi">
+              <a class="btn primary ripple" href="#form">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 12.5l6 6L20 8" stroke="rgba(245,247,255,.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Tempah / Tanya Harga Sekarang
+              </a>
+
+              <a class="btn ripple" href="#testimoni">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 20l-7-4V8l7-4 7 4v8l-7 4z" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Lihat Testimoni
+              </a>
+            </div>
+
+            <div class="micro">
+              <strong>Nota:</strong> Servis tempahan batu nisan &amp; bakut — kemasan rapi, material sesuai &amp; boleh bincang design ikut bajet.
+            </div>
+          </div>
+        </div>
+
+        <!-- HERO SIDE: QUICK FACTS -->
+        <div class="card reveal">
+          <div class="cardInner">
+            <div class="sectionTitle" style="margin-top:0">
+              <h2>Kenapa pilih kami</h2>
+              <p>Ringkas, jelas</p>
+            </div>
+
+            <div class="facts">
+              <div class="fact">
+                <b>Kemasan</b>
+                <span>Detail halus, tulisan jelas, hasil nampak premium.</span>
+              </div>
+              <div class="fact">
+                <b>Kualiti</b>
+                <span>Material dipilih teliti untuk ketahanan &amp; kekemasan.</span>
+              </div>
+              <div class="fact">
+                <b>Urusan Mudah</b>
+                <span>Terima tempahan, semak design, siap ikut jadual.</span>
+              </div>
+            </div>
+
+            <div class="ctaRow" style="margin-top:12px">
+              <a class="btn ripple" href="#gaya">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 7h16M7 12h10M10 17h4" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Lihat Gaya & Contoh
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PILIHAN -->
+    <section id="pilihan" class="reveal">
+      <div class="sectionTitle">
+        <h2>Pilihan Servis</h2>
+        <p>Tempahan ikut keperluan</p>
+      </div>
+
+      <div class="grid3">
+        <article class="tile reveal">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Batu Nisan</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M8 21h8M9 21V8a3 3 0 0 1 6 0v13" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Tempahan Batu Nisan</h3>
+            <p>Design ringkas hingga eksklusif. Tulisan kemas &amp; susun atur jelas.</p>
+          </div>
+        </article>
+
+        <article class="tile reveal">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Bakut</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 7h10l-1 14H8L7 7z" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Tempahan Bakut</h3>
+            <p>Kemasan rapi &amp; kukuh. Boleh ikut ukuran/keperluan yang diminta.</p>
+          </div>
+        </article>
+
+        <article class="tile reveal">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Korporat</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 20V8l8-4 8 4v12" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 20v-6h6v6" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Servis / Korporat</h3>
+            <p>Urusan tempahan secara profesional—sesuai untuk organisasi &amp; projek berkala.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pakej" class="reveal">
+      <div class="sectionTitle">
+        <h2>Pakej Cadangan</h2>
+        <p>Toggle Standard / Premium</p>
+      </div>
+
+      <div class="toggleRow">
+        <div class="seg" role="tablist" aria-label="Pilihan pakej">
+          <button type="button" class="active" data-plan="standard" role="tab" aria-selected="true">Standard</button>
+          <button type="button" data-plan="premium" role="tab" aria-selected="false">Premium</button>
+        </div>
+        <p style="margin:0;color:var(--muted);font-size:12px;">*Harga contoh — anda boleh ubah ikut bisnes.</p>
+      </div>
+
+      <div class="grid3">
+        <article class="tile reveal" data-price-card="1">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Pakej Asas</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2l3 7h7l-5.5 4 2 7-6.5-4.5L5.5 20l2-7L2 9h7l3-7z" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Ringkas & Kemas</h3>
+            <div class="price">
+              <b data-price="standard">RM 1xx</b>
+              <b data-price="premium" style="display:none;">RM 2xx</b>
+              <span>/ tempahan</span>
+            </div>
+            <ul class="ul">
+              <li><i>✓</i> Layout tulisan kemas</li>
+              <li><i>✓</i> Semak & sahkan sebelum buat</li>
+              <li><i>✓</i> Cadangan design ringkas</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="tile reveal" data-price-card="2">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Pakej Popular</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 19h12M8 19V8a4 4 0 0 1 8 0v11" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Detail Lebih Premium</h3>
+            <div class="price">
+              <b data-price="standard">RM 2xx</b>
+              <b data-price="premium" style="display:none;">RM 3xx</b>
+              <span>/ tempahan</span>
+            </div>
+            <ul class="ul">
+              <li><i>✓</i> Susun atur + spacing premium</li>
+              <li><i>✓</i> 2 pilihan gaya tulisan</li>
+              <li><i>✓</i> Prioriti semakan</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="tile reveal" data-price-card="3">
+          <div class="tileInner">
+            <div class="tileTop">
+              <span class="chip">Pakej Korporat</span>
+              <span class="iconBox" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 20V8l8-4 8 4v12" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                  <path d="M9 20v-6h6v6" stroke="rgba(245,247,255,.82)" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <h3>Urusan Berkala</h3>
+            <div class="price">
+              <b data-price="standard">Sebutharga</b>
+              <b data-price="premium" style="display:none;">Sebutharga</b>
+              <span>/ projek</span>
+            </div>
+            <ul class="ul">
+              <li><i>✓</i> SOP urusan jelas</li>
+              <li><i>✓</i> Rekod tempahan</li>
+              <li><i>✓</i> Keutamaan jadual</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TESTIMONI -->
+    <section id="testimoni" class="reveal">
+      <div class="sectionTitle">
+        <h2>Testimoni</h2>
+        <p>Keyakinan pelanggan</p>
+      </div>
+
+      <div class="grid3">
+        <div class="quote reveal">
+          <div class="quoteInner">
+            <p>“Hasil memang kemas. Tulisan jelas dan susun atur cantik. Servis cepat &amp; senang berurusan.”</p>
+            <div class="who">
+              <span>— Pelanggan</span>
+              <span>★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote reveal">
+          <div class="quoteInner">
+            <p>“Kualiti padu. Team sangat membantu dari awal sampai siap. Memang puas hati.”</p>
+            <div class="who">
+              <span>— Pelanggan</span>
+              <span>★★★★★</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote reveal">
+          <div class="quoteInner">
+            <p>“Harga berbaloi dengan hasil. Kemasan premium, siap ikut masa yang dijanjikan.”</p>
+            <div class="who">
+              <span>— Pelanggan</span>
+              <span>★★★★★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAYA -->
+    <section id="gaya" class="reveal">
+      <div class="sectionTitle">
+        <h2>Gaya & Contoh</h2>
+        <p>Tap untuk preview</p>
+      </div>
+
+      <div class="styleRow">
+        <div class="frame reveal">
+          <div class="frameInner">
+            <h3 style="margin:0 0 6px;font-size:14px;">Galeri (Placeholder)</h3>
+            <p style="margin:0;color:var(--muted);font-size:12px;">Anda boleh tukar setiap kotak jadi gambar sebenar bila ada bahan.</p>
+
+            <div class="gal" aria-label="Galeri contoh">
+              <div class="shot ripple" data-shot="Contoh 1"><span>Contoh 1</span></div>
+              <div class="shot ripple" data-shot="Contoh 2"><span>Contoh 2</span></div>
+              <div class="shot ripple" data-shot="Contoh 3"><span>Contoh 3</span></div>
+              <div class="shot ripple" data-shot="Contoh 4"><span>Contoh 4</span></div>
+              <div class="shot ripple" data-shot="Contoh 5"><span>Contoh 5</span></div>
+              <div class="shot ripple" data-shot="Contoh 6"><span>Contoh 6</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="frame reveal">
+          <div class="frameInner">
+            <h3 style="margin:0 0 8px;font-size:14px;">Proses Ringkas</h3>
+            <div class="grid3" style="grid-template-columns:1fr;gap:10px;">
+              <div class="fact">
+                <b>1) Maklumat</b>
+                <span>Hantar nama/tarikh/format tulisan &amp; pilihan design.</span>
+              </div>
+              <div class="fact">
+                <b>2) Semak & Sahkan</b>
+                <span>Kami susun layout. Anda semak sebelum mula buat.</span>
+              </div>
+              <div class="fact">
+                <b>3) Siap & Serahan</b>
+                <span>Hasil kemas, siap ikut jadual. (Boleh bincang lokasi/kaedah serahan).</span>
+              </div>
+            </div>
+
+            <div class="ctaRow" style="margin-top:12px">
+              <a class="btn primary ripple" href="#form">Mula Tempahan</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="reveal">
+      <div class="sectionTitle">
+        <h2>FAQ</h2>
+        <p>Soalan biasa</p>
+      </div>
+
+      <div class="faq">
+        <div class="faqItem">
+          <button class="faqBtn ripple" type="button">
+            Berapa lama proses siap?
+            <i aria-hidden="true">+</i>
+          </button>
+          <div class="faqBody"><div>
+            Bergantung pada jenis tempahan & jadual semasa. Biasanya kami maklumkan anggaran siap selepas semakan detail.
+          </div></div>
+        </div>
+
+        <div class="faqItem">
+          <button class="faqBtn ripple" type="button">
+            Boleh custom design / tulisan?
+            <i aria-hidden="true">+</i>
+          </button>
+          <div class="faqBody"><div>
+            Ya. Anda boleh beri contoh design atau kami cadangkan layout yang kemas dan jelas ikut bajet.
+          </div></div>
+        </div>
+
+        <div class="faqItem">
+          <button class="faqBtn ripple" type="button">
+            Macam mana proses tempahan?
+            <i aria-hidden="true">+</i>
+          </button>
+          <div class="faqBody"><div>
+            Hantar maklumat → kami susun & tunjuk draft → anda sahkan → kami siapkan → serahan/urusan seterusnya.
+          </div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORM -->
+    <section id="form" class="reveal">
+      <div class="sectionTitle">
+        <h2>Hantar Pertanyaan</h2>
+        <p>Auto-prepare mesej WhatsApp</p>
+      </div>
+
+      <div class="card reveal">
+        <div class="cardInner">
+          <form id="leadForm" autocomplete="on" novalidate>
+            <div style="display:grid;grid-template-columns:1fr;gap:12px;">
+              <label style="display:block;">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Nama</div>
+                <input id="nama" name="nama" inputmode="text" autocomplete="name" placeholder="Contoh: Ali" required class="in" />
+              </label>
+
+              <label style="display:block;">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Servis</div>
+                <select id="servis" name="servis" class="in">
+                  <option value="Batu Nisan">Batu Nisan</option>
+                  <option value="Bakut">Bakut</option>
+                  <option value="Korporat / Lain-lain">Korporat / Lain-lain</option>
+                </select>
+              </label>
+
+              <label style="display:block;">
+                <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Nota ringkas (optional)</div>
+                <textarea id="nota" name="nota" rows="3" placeholder="Contoh: Nak design ringkas, siap minggu ini" class="in"></textarea>
+              </label>
+            </div>
+
+            <div class="ctaRow" style="margin-top:14px;">
+              <button type="submit" class="btn primary ripple" style="cursor:pointer;">
+                <span style="display:inline-flex;align-items:center;gap:10px;">
+                  <svg class="ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 12h14" stroke="rgba(245,247,255,.92)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M14 6l6 6-6 6" stroke="rgba(245,247,255,.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Hantar ke WhatsApp
+                </span>
+              </button>
+
+              <button type="button" class="btn ripple" id="copyBtn" style="cursor:pointer;">
+                Salin Mesej
+              </button>
+            </div>
+
+            <p class="micro" id="hintText" style="margin-bottom:0;">
+              Mesej auto-generate ikut input anda, dan terus buka WhatsApp (jika nombor sudah diisi).
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer reveal">
+      <b>R-E-M Creative Studio</b> — Landing page gaya premium dark glassmorphism (low-glare).<br/>
+      <span style="opacity:.95">Nota penggunaan: Jangan guna page ini untuk jual/edar tanpa kebenaran pemilik.</span>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">Disalin ✓</div>
+
+  <!-- WhatsApp Floating CTA -->
+  <div class="wa-label" id="waLabel">WhatsApp</div>
+  <a class="wa-fab ripple" id="waFab" href="#" aria-label="WhatsApp">
+    <svg class="wa-ico" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M16 3.5C9.2 3.5 3.7 9 3.7 15.8c0 2.4.6 4.7 1.8 6.8L4.2 28l5.6-1.2c2 1.1 4.2 1.7 6.2 1.7 6.8 0 12.3-5.5 12.3-12.3C28.3 9 22.8 3.5 16 3.5z" stroke="rgba(245,247,255,.85)" stroke-width="1.6" opacity=".85"/>
+      <path d="M12.4 10.7c-.3-.6-.6-.6-.9-.6h-.8c-.2 0-.6.1-.9.5-.3.4-1.2 1.1-1.2 2.7 0 1.6 1.2 3.2 1.4 3.4.2.2 2.4 3.7 5.9 5.1 2.9 1.1 3.5.9 4.1.8.6-.1 1.9-.8 2.1-1.6.3-.8.3-1.4.2-1.6-.1-.2-.3-.3-.6-.5l-2-1c-.2-.1-.4-.1-.6.2l-.8 1c-.2.2-.4.3-.7.2-.3-.1-1.4-.5-2.7-1.6-1-1-1.6-2.1-1.8-2.4-.2-.3 0-.5.1-.6l.6-.7c.2-.2.2-.4.3-.6.1-.2 0-.4-.1-.6l-.9-2.2z"
+            fill="rgba(230,185,60,.92)" opacity=".92"/>
+    </svg>
+  </a>
+
+  <!-- Sticky bottom CTA -->
+  <div class="stickyCta" role="region" aria-label="Bar tindakan pantas">
+    <div class="stickyInner">
+      <div class="stickyInfo">
+        <b>Kemas & berkualiti — dijamin puas hati</b>
+        <span>Tekan untuk terus WhatsApp</span>
+      </div>
+      <a class="stickyBtn ripple" id="stickyBtn" href="#form" aria-label="Mula tempahan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12h14" stroke="rgba(245,247,255,.92)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M14 6l6 6-6 6" stroke="rgba(245,247,255,.92)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Tempah
+      </a>
+    </div>
   </div>
 
-  <!-- admin-only row (auto hide bila customerMode ON) -->
-  <div class="bottomRow" id="adminRow" style="margin-top:10px;">
-    <button class="bbtn secondary" id="newLinkBtn" type="button">✨ GENERATE NEW LINK</button>
-    <button class="bbtn secondary" id="adminBtn" type="button">🔐 ADMIN</button>
-  </div>
-</div>
-
-<div class="expired" id="expiredLayer">
-  <div class="box">
-    <h3>⛔ Link Telah Tamat</h3>
-    <p id="expiredMsg">Sila hubungi pihak admin untuk link terbaru.</p>
-    <button class="bbtn" type="button" onclick="closeExpired()">OK</button>
-  </div>
-</div>
-
-<!-- Production block -->
-<div class="blocker" id="blocker">
-  <div class="box">
-    <h3>⛔ Mode Preview Tidak Disokong</h3>
-    <p>
-      Template ini adalah <b>Production</b>. Sila buka menggunakan <b>GitHub Pages</b> (domain kimi39443-rgb.github.io).
-      Mode htmlpreview biasanya menyekat fungsi Share/Copy.
-    </p>
-    <p style="margin-top:10px;">Gunakan URL seperti ini:</p>
-    <code id="prodUrl"></code>
-    <button class="bbtn" type="button" style="margin-top:12px;" onclick="tryCopyProd()">📋 COPY URL PRODUCTION</button>
-  </div>
-</div>
-
-<!-- EDITOR -->
-<div class="editor" id="editor">
-  <div class="panel">
-    <h3>Edit Kad (Production Premium)</h3>
-
-    <div class="row two">
-      <div>
-        <label>Pakej Pelanggan</label>
-        <select id="fPackage">
-          <option value="gold">Gold</option>
-          <option value="platinum">Platinum</option>
-          <option value="vip">VIP</option>
-        </select>
+  <!-- Gallery Modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-label="Preview galeri">
+      <div class="modalTop">
+        <b id="modalTitle">Preview</b>
+        <button class="x ripple" type="button" id="modalClose" aria-label="Tutup">✕</button>
       </div>
-      <div>
-        <label>Preset Tema</label>
-        <select id="fPreset">
-          <option value="gold">Gold Luxury</option>
-          <option value="floral">Floral White</option>
-          <option value="royal">Royal Night</option>
-        </select>
+      <div class="modalBody">
+        <div class="modalPreview" id="modalPreview">
+          <div>
+            <div style="font-weight:900;margin-bottom:6px;">Placeholder Preview</div>
+            <div style="opacity:.85;font-size:12px;">Bila anda letak gambar sebenar, sini akan papar imej penuh.</div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Animasi glow</label>
-        <select id="fAnim">
-          <option value="1">ON</option>
-          <option value="0">OFF</option>
-        </select>
-      </div>
-      <div>
-        <label>Mode Pelanggan (sorok semua butang admin)</label>
-        <select id="fCustomerMode">
-          <option value="0">OFF (admin nampak butang)</option>
-          <option value="1">ON (pelanggan tak nampak)</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Nama Pengantin Lelaki</label>
-        <input id="fGroom" placeholder="Contoh: Ahmad">
-      </div>
-      <div>
-        <label>Nama Pengantin Perempuan</label>
-        <input id="fBride" placeholder="Contoh: Siti">
-      </div>
-    </div>
-
-    <label>Ayat Jemputan</label>
-    <textarea id="fInvite" placeholder="Dengan penuh kesyukuran..."></textarea>
-
-    <div class="row two">
-      <div>
-        <label>Tarikh (paparan)</label>
-        <input id="fDateText" placeholder="31/12/2025">
-      </div>
-      <div>
-        <label>Masa (paparan 12 jam)</label>
-        <input id="fTimeText" placeholder="9:00 AM – 2:00 PM">
-      </div>
-    </div>
-
-    <label>Lokasi (paparan)</label>
-    <textarea id="fVenueText" placeholder="Dewan..."></textarea>
-
-    <div class="row two">
-      <div>
-        <label>No WhatsApp (cth 60123456789)</label>
-        <input id="fPhone" placeholder="6012xxxxxxx">
-      </div>
-      <div>
-        <label>Teks RSVP</label>
-        <input id="fRsvpText" placeholder="Hi, saya ingin RSVP hadir...">
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Maps Link (optional)</label>
-        <input id="fMapsLink" placeholder="https://maps.app.goo.gl/...">
-      </div>
-      <div>
-        <label>Maps Search (jika tiada link)</label>
-        <input id="fMapsQuery" placeholder="Nama dewan / alamat">
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>🎵 MP3 URL (paling stabil)</label>
-        <input id="fMp3" placeholder="https://.../lagu.mp3">
-      </div>
-      <div>
-        <label>▶️ YouTube URL (bukan YouTube Music)</label>
-        <input id="fYt" placeholder="https://youtu.be/VIDEO_ID atau https://youtube.com/watch?v=VIDEO_ID">
-      </div>
-    </div>
-
-    <div class="warn">
-      ⚠️ YouTube Music (music.youtube.com) memang tak boleh bunyi. Guna YouTube biasa sahaja.
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Expired (ON/OFF)</label>
-        <select id="fExpOn">
-          <option value="0">OFF</option>
-          <option value="1">ON</option>
-        </select>
-      </div>
-      <div>
-        <label>Tarikh Expired (DD/MM/YYYY)</label>
-        <input id="fExpDate" placeholder="31/12/2025">
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Masa Expired (12 jam, contoh 9:30 PM)</label>
-        <input id="fExpTime" placeholder="9:30 PM">
-      </div>
-      <div>
-        <label>Mesej Expired</label>
-        <input id="fExpMsg" placeholder="Sila hubungi admin untuk link terbaru.">
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Watermark (ON/OFF)</label>
-        <select id="fWmOn">
-          <option value="0">OFF</option>
-          <option value="1">ON</option>
-        </select>
-      </div>
-      <div>
-        <label>Teks Watermark</label>
-        <input id="fWmText" placeholder="Contoh: Powered by NamaBrand">
-      </div>
-    </div>
-
-    <div class="row two">
-      <div>
-        <label>Admin PIN (untuk buka EDIT)</label>
-        <input id="fPin" placeholder="Contoh: 1234">
-      </div>
-      <div>
-        <label>Auto Logout (minit)</label>
-        <select id="fAutoLogout">
-          <option value="5">5</option>
-          <option value="10">10</option>
-          <option value="15" selected>15</option>
-          <option value="30">30</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="ok" id="adminLinkBox" style="display:none;">
-      <div style="font-weight:900;margin-bottom:6px;">🔗 Link (Admin sahaja)</div>
-      <div id="adminLinkText" style="word-break:break-all;font-size:12px;opacity:.9;"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;">
-        <button class="bbtn secondary" type="button" onclick="copyAdminLink()">📋 COPY LINK</button>
-        <button class="bbtn" type="button" onclick="shareAdminLink()">📤 SHARE</button>
-      </div>
-    </div>
-
-    <div class="bar">
-      <button class="close" type="button" onclick="closeEditor()">Tutup</button>
-      <button class="reset" type="button" onclick="resetAll()">Reset</button>
-      <button class="save" type="button" onclick="saveEditor()">Simpan</button>
-    </div>
-
-    <div class="ok" id="saveMsg" style="display:none;">
-      ✅ Disimpan. Link admin ada dalam panel (Admin sahaja).
-      <br>Tip: Jika customer mode ON, untuk masuk admin guna <b>tap 7x pada tajuk “Jemputan Perkahwinan”</b>.
     </div>
   </div>
-</div>
 
-<!-- Toast tip -->
-<div id="toastHint" style="
-  position:fixed; left:50%; bottom:150px; transform:translateX(-50%);
-  z-index:9999;
-  width:min(520px, 92vw);
-  display:none;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.16);
-  background:rgba(0,0,0,.72);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0,0,0,.55);
-  padding:12px 12px;
-  color:#fff;
-">
-  <div style="display:flex; gap:10px; align-items:flex-start;">
-    <div style="font-size:18px; line-height:1;">🔊</div>
-    <div style="flex:1;">
-      <div style="font-weight:900;">Tip Bunyi</div>
-      <div style="font-size:12px; opacity:.85; margin-top:4px; line-height:1.4;">
-        Jika tiada bunyi, tekan <b>▶️ PLAY</b>.
-      </div>
-    </div>
-    <button id="toastOk" type="button" style="
-      border:0; cursor:pointer;
-      border-radius:12px;
-      padding:8px 10px;
-      font-weight:900;
-      background:rgba(255,255,255,.14);
-      color:#fff;
-    ">OK</button>
-  </div>
-</div>
+  <script>
+    (function(){
+      // ====== CONFIG (EDIT HERE) ======
+      const BRAND = "R-E-M Creative Studio";
+      const PRODUCT = "Pakar pembuat batu nisan dan Bakut";
 
-<script>
-/* =========================
-   STORAGE KEYS
-========================= */
-const STORAGE_KEY = "KK_PRO_PREMIUM_V4";
-const AUTH_KEY = "KK_ADMIN_AUTH_V4";
-const PIN_KEY  = "KK_ADMIN_PIN_V4";
-const TOAST_KEY = "KK_TOAST_MUSIC_HINT_SHOWN_V4";
+      // Isi nombor WhatsApp anda dalam format antarabangsa tanpa + (Malaysia: 60...)
+      // Contoh: 60123456789
+      const WHATSAPP_NUMBER = "[ISI NOMBOR]";
 
-/* =========================
-   PRESETS
-========================= */
-const PRESETS = {
-  gold:{
-    label:"Gold Luxury",
-    a1:"#d6b46c", a2:"#f3e2b8", a3:"#b7c6ff",
-    bg:"#050505",
-    bg1:"radial-gradient(900px 600px at 20% 0%, rgba(214,180,108,.20), transparent 55%)",
-    bg2:"linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.9))",
-    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/gold.mp3"
-  },
-  floral:{
-    label:"Floral White",
-    a1:"#111827", a2:"#c7ccd8", a3:"#8fb3ff",
-    bg:"#f6f7fb",
-    bg1:"radial-gradient(1200px 700px at 15% 0%, rgba(143,179,255,.20), transparent 55%)",
-    bg2:"linear-gradient(to bottom, rgba(255,255,255,.70), rgba(246,247,251,.88))",
-    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/floral.mp3"
-  },
-  royal:{
-    label:"Royal Night",
-    a1:"#60a5fa", a2:"#c7d2fe", a3:"#fca5a5",
-    bg:"#030712",
-    bg1:"radial-gradient(1000px 650px at 18% 0%, rgba(96,165,250,.22), transparent 55%)",
-    bg2:"linear-gradient(to bottom, rgba(0,0,0,.20), rgba(0,0,0,.92))",
-    presetMp3:"https://raw.githubusercontent.com/kimi39443-rgb/rem-kad-kahwin/main/KadKahwin4/assets/royal.mp3"
-  }
-};
+      const DEFAULT_MESSAGE = "Hai, saya berminat dengan servis pakar pembuat batu nisan dan Bakut.Boleh bagi detail?";
+      // =================================
 
-/* =========================
-   PACKAGE DEFAULTS (Gold/Platinum/VIP)
-   - boleh ubah ikut citarasa
-========================= */
-const PACKAGE_DEFAULTS = {
-  gold: {
-    preset: "gold",
-    wmOn: 1,
-    wmText: "Powered by KadKahwin Gold",
-    animOn: 1
-  },
-  platinum: {
-    preset: "royal",
-    wmOn: 1,
-    wmText: "Powered by KadKahwin Platinum",
-    animOn: 1
-  },
-  vip: {
-    preset: "floral",
-    wmOn: 0,
-    wmText: "",
-    animOn: 1
-  }
-};
+      const $ = (s)=>document.querySelector(s);
+      const $$ = (s)=>Array.from(document.querySelectorAll(s));
 
-const DEFAULTS = {
-  ver: 4,
+      const preloader = $("#preloader");
+      const progressBar = $("#progressBar");
 
-  package: "gold",
-  preset:"gold",
-  animOn:1,
-  customerMode: 1,   // ✅ default: pelanggan tak nampak admin button
+      const waFab = $("#waFab");
+      const waLabel = $("#waLabel");
+      const stickyBtn = $("#stickyBtn");
 
-  groom:"Nama Pengantin Lelaki",
-  bride:"Nama Pengantin Perempuan",
-  inviteText:"Dengan penuh kesyukuran, kami menjemput anda hadir.",
+      const form = $("#leadForm");
+      const copyBtn = $("#copyBtn");
+      const hintText = $("#hintText");
+      const toast = $("#toast");
 
-  dateText:"31/12/2025",
-  timeText:"9:00 AM – 2:00 PM",
-  venueText:"Dewan Contoh, Pulau Pinang",
+      const modal = $("#modal");
+      const modalTitle = $("#modalTitle");
+      const modalClose = $("#modalClose");
 
-  rsvpPhone:"60123456789",
-  rsvpText:"Hi, saya ingin RSVP hadir ke majlis perkahwinan.",
+      // Android-friendly smooth scroll
+      document.documentElement.style.scrollBehavior = "smooth";
 
-  mapsLink:"",
-  mapsQuery:"Dewan Contoh, Pulau Pinang",
+      // Hide preloader after first paint
+      window.addEventListener("load", ()=>{
+        window.setTimeout(()=> preloader.classList.add("hide"), 220);
+      }, {once:true});
 
-  // Muzik
-  mp3Url:"",
-  ytUrl:"",
-
-  // Expired
-  expOn:0,
-  expDate:"31/12/2025",
-  expTime:"9:00 PM",
-  expMsg:"Sila hubungi admin untuk link terbaru.",
-
-  // Admin
-  autoLogoutMin:15,
-  adminPin:"1234",
-
-  // Watermark
-  wmOn: 1,
-  wmText: "Powered by KadKahwin Premium"
-};
-
-let state = loadMergedState();
-let isMuted = false;
-
-/* YouTube */
-let ytReady = false;
-let ytPlayer = null;
-
-/* Secret admin tap */
-let tapCount = 0;
-let tapTimer = null;
-
-/* =========================
-   HELPERS
-========================= */
-function $(id){ return document.getElementById(id); }
-function safeJSONParse(s){ try{ return JSON.parse(s); }catch(e){ return null; } }
-
-function persist(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  localStorage.setItem(PIN_KEY, state.adminPin || "1234");
-}
-
-function b64urlEncode(str){
-  const b64 = btoa(unescape(encodeURIComponent(str)));
-  return b64.replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-function b64urlDecode(b64url){
-  const b64 = b64url.replace(/-/g,'+').replace(/_/g,'/');
-  const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
-  const s = atob(b64 + pad);
-  return decodeURIComponent(escape(s));
-}
-
-/* Load State: URL ?d= > localStorage > defaults */
-function loadMergedState(){
-  const url = new URL(location.href);
-  const d = url.searchParams.get("d");
-  let fromUrl = null;
-
-  if(d){
-    try{
-      const json = b64urlDecode(d);
-      fromUrl = safeJSONParse(json);
-    }catch(e){ fromUrl = null; }
-  }
-
-  const raw = localStorage.getItem(STORAGE_KEY);
-  const fromLs = raw ? safeJSONParse(raw) : null;
-
-  const merged = {...DEFAULTS, ...(fromLs||{}), ...(fromUrl||{})};
-
-  // ensure package exists
-  if(!merged.package || !PACKAGE_DEFAULTS[merged.package]) merged.package = "gold";
-  return merged;
-}
-
-function getBaseUrl(){
-  const u = new URL(location.href);
-  u.search = "";
-  u.hash = "";
-  return u.toString();
-}
-
-function buildInviteLink(){
-  const base = getBaseUrl();
-  const clean = {...state};
-  const json = JSON.stringify(clean);
-  return base + "?d=" + b64urlEncode(json);
-}
-
-/* Copy / Share */
-async function copyText(text){
-  try{
-    await navigator.clipboard.writeText(text);
-    return true;
-  }catch(e){
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position="fixed"; ta.style.left="-9999px";
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    let ok=false;
-    try{ ok=document.execCommand("copy"); }catch(err){ ok=false; }
-    document.body.removeChild(ta);
-    return ok;
-  }
-}
-
-/* =========================
-   PRODUCTION BLOCK (htmlpreview)
-========================= */
-function isHtmlPreview(){
-  return location.hostname.includes("htmlpreview.github.io") || location.href.includes("htmlpreview.github.io/?");
-}
-function showBlocker(){
-  const real = "https://kimi39443-rgb.github.io/rem-kad-kahwin/KadKahwin4/invite.html";
-  $("prodUrl").textContent = real;
-  $("blocker").style.display = "block";
-
-  // disable buttons (safety)
-  $("shareBtn").disabled = true;
-  $("copyBtn").disabled = true;
-  $("newLinkBtn").disabled = true;
-  $("adminBtn").disabled = true;
-  $("editBtn").disabled = true;
-}
-async function tryCopyProd(){
-  const real = $("prodUrl").textContent;
-  const ok = await copyText(real);
-  alert(ok ? "✅ URL Production telah disalin" : "❌ Tak dapat copy. Copy manual dari kotak.");
-}
-window.tryCopyProd = tryCopyProd;
-
-/* =========================
-   APPLY PRESET / PACKAGE
-========================= */
-function applyPresetUI(key){
-  const p = PRESETS[key] || PRESETS.gold;
-  const root = document.documentElement.style;
-  root.setProperty("--a1", p.a1);
-  root.setProperty("--a2", p.a2);
-  root.setProperty("--a3", p.a3);
-  root.setProperty("--bg", p.bg);
-  root.setProperty("--bg1", p.bg1);
-  root.setProperty("--bg2", p.bg2);
-
-  $("animLayer").style.display = (Number(state.animOn)===1) ? "block" : "none";
-}
-
-function applyPackageDefaults(pkg, soft=true){
-  const d = PACKAGE_DEFAULTS[pkg] || PACKAGE_DEFAULTS.gold;
-
-  // soft=true: hanya apply bila field kosong / default
-  if(!soft){
-    state.preset = d.preset;
-    state.wmOn = d.wmOn;
-    state.wmText = d.wmText;
-    state.animOn = d.animOn;
-    return;
-  }
-
-  // soft apply
-  if(!state.preset) state.preset = d.preset;
-  // kalau user belum customize watermark
-  if(state.wmText === DEFAULTS.wmText) {
-    state.wmOn = d.wmOn;
-    state.wmText = d.wmText;
-  }
-}
-
-/* =========================
-   WA / MAPS
-========================= */
-function buildWhatsApp(){
-  const text = encodeURIComponent((state.rsvpText||"") + ` ( ${state.groom} & ${state.bride} )`);
-  return `https://wa.me/${state.rsvpPhone}?text=${text}`;
-}
-function buildMaps(){
-  if(state.mapsLink && state.mapsLink.trim()) return state.mapsLink.trim();
-  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(state.mapsQuery || state.venueText);
-}
-
-/* =========================
-   MUSIC
-========================= */
-function stopAllAudio(){
-  const a = $("bgm");
-  try{ a.pause(); a.currentTime = 0; }catch(e){}
-  if(ytPlayer && ytReady){
-    try{ ytPlayer.stopVideo(); }catch(e){}
-  }
-}
-function isYouTubeMusic(url){
-  return (url||"").includes("music.youtube.com");
-}
-function parseYouTubeId(url){
-  if(!url) return "";
-  const s = String(url).trim();
-  if(!s) return "";
-  if(/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
-  try{
-    const u = new URL(s);
-    if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","");
-    if(u.searchParams.get("v")) return u.searchParams.get("v");
-    const m = u.pathname.match(/\/shorts\/([a-zA-Z0-9_-]{11})/);
-    if(m) return m[1];
-  }catch(e){}
-  return "";
-}
-function setMp3Source(url){
-  $("bgm").src = url ? url.trim() : "";
-}
-function ensureYouTubeApi(cb){
-  if(window.YT && window.YT.Player){ ytReady = true; cb(); return; }
-  if(document.getElementById("ytApiScript")){
-    const t = setInterval(()=>{
-      if(window.YT && window.YT.Player){
-        clearInterval(t);
-        ytReady = true;
-        cb();
+      // Scroll progress
+      function onScrollProgress(){
+        const doc = document.documentElement;
+        const scrollTop = doc.scrollTop || document.body.scrollTop;
+        const height = (doc.scrollHeight - doc.clientHeight) || 1;
+        const p = Math.min(1, Math.max(0, scrollTop / height));
+        progressBar.style.width = (p * 100).toFixed(2) + "%";
       }
-    },200);
-    return;
-  }
-  const s = document.createElement("script");
-  s.id="ytApiScript";
-  s.src="https://www.youtube.com/iframe_api";
-  document.head.appendChild(s);
-  window.onYouTubeIframeAPIReady = () => { ytReady=true; cb(); };
-}
-function loadOrPlayYouTube(videoId){
-  if(!videoId) return;
-  if(!ytPlayer){
-    ytPlayer = new YT.Player("ytPlayer",{
-      height:"0", width:"0", videoId,
-      playerVars:{ autoplay:0, controls:0, rel:0, modestbranding:1, playsinline:1 },
-      events:{
-        onReady:()=>{
-          try{
-            ytPlayer.setVolume(isMuted ? 0 : 100);
-            ytPlayer.playVideo();
-          }catch(e){}
+      document.addEventListener("scroll", onScrollProgress, {passive:true});
+      onScrollProgress();
+
+      // Ripple effect (subtle)
+      function bindRipple(el){
+        if(!el) return;
+        const down = (ev)=>{
+          const rect = el.getBoundingClientRect();
+          const x = (ev.touches ? ev.touches[0].clientX : ev.clientX) - rect.left;
+          const y = (ev.touches ? ev.touches[0].clientY : ev.clientY) - rect.top;
+          el.style.setProperty("--rx", (x/rect.width*100) + "%");
+          el.style.setProperty("--ry", (y/rect.height*100) + "%");
+          el.classList.add("down");
+        };
+        const up = ()=> el.classList.remove("down");
+
+        el.addEventListener("mousedown", down);
+        el.addEventListener("touchstart", down, {passive:true});
+        el.addEventListener("mouseup", up);
+        el.addEventListener("mouseleave", up);
+        el.addEventListener("touchend", up);
+        el.addEventListener("touchcancel", up);
+      }
+      $$(".ripple").forEach(bindRipple);
+
+      // Reveal on scroll
+      const prefersReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if(!prefersReduce && "IntersectionObserver" in window){
+        const io = new IntersectionObserver((entries)=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting){
+              e.target.classList.add("on");
+              io.unobserve(e.target);
+            }
+          });
+        }, {threshold: 0.12});
+        $$(".reveal").forEach(el=> io.observe(el));
+      }else{
+        $$(".reveal").forEach(el=> el.classList.add("on"));
+      }
+
+      // Counter up
+      function animateCounters(){
+        const items = $$(".stat b");
+        items.forEach(el=>{
+          const targetStr = el.getAttribute("data-count") || "0";
+          const suffix = el.getAttribute("data-suffix") || "";
+          const dec = parseInt(el.getAttribute("data-dec") || "0", 10);
+
+          const target = parseFloat(targetStr);
+          const duration = 850;
+          const start = performance.now();
+
+          function tick(now){
+            const t = Math.min(1, (now - start)/duration);
+            const eased = 1 - Math.pow(1 - t, 3);
+            const val = target * eased;
+            el.textContent = (dec ? val.toFixed(dec) : Math.round(val)) + suffix;
+            if(t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      // Start counters when hero visible
+      let countersStarted = false;
+      if("IntersectionObserver" in window){
+        const hero = document.querySelector(".stats");
+        if(hero){
+          const io2 = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+              if(e.isIntersecting && !countersStarted){
+                countersStarted = true;
+                animateCounters();
+                io2.disconnect();
+              }
+            });
+          }, {threshold: 0.25});
+          io2.observe(hero);
+        } else {
+          animateCounters();
+        }
+      } else {
+        animateCounters();
+      }
+
+      // Pricing toggle
+      const segBtns = $$(".seg button");
+      function setPlan(plan){
+        segBtns.forEach(b=>{
+          const active = b.getAttribute("data-plan") === plan;
+          b.classList.toggle("active", active);
+          b.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        $$("[data-price]").forEach(el=>{
+          const is = el.getAttribute("data-price") === plan;
+          el.style.display = is ? "" : "none";
+        });
+      }
+      segBtns.forEach(btn=>{
+        btn.addEventListener("click", ()=> setPlan(btn.getAttribute("data-plan")));
+      });
+
+      // FAQ accordion
+      $$(".faqItem").forEach(item=>{
+        const btn = item.querySelector(".faqBtn");
+        const body = item.querySelector(".faqBody");
+        if(!btn || !body) return;
+
+        btn.addEventListener("click", ()=>{
+          const open = item.classList.contains("open");
+          // close others for premium feel
+          $$(".faqItem.open").forEach(o=>{
+            if(o !== item){
+              o.classList.remove("open");
+              const b = o.querySelector(".faqBody");
+              if(b) b.style.maxHeight = "0px";
+            }
+          });
+
+          item.classList.toggle("open", !open);
+          if(!open){
+            body.style.maxHeight = body.scrollHeight + "px";
+          }else{
+            body.style.maxHeight = "0px";
+          }
+        });
+      });
+
+      // Modal gallery placeholders
+      function openModal(title){
+        modalTitle.textContent = title || "Preview";
+        modal.classList.add("show");
+        modal.setAttribute("aria-hidden","false");
+        // lock scroll (Android safe)
+        document.body.style.overflow = "hidden";
+      }
+      function closeModal(){
+        modal.classList.remove("show");
+        modal.setAttribute("aria-hidden","true");
+        document.body.style.overflow = "";
+      }
+      $$(".shot").forEach(s=>{
+        s.addEventListener("click", ()=>{
+          openModal(s.getAttribute("data-shot") || "Preview");
+        });
+      });
+      modalClose.addEventListener("click", closeModal);
+      modal.addEventListener("click", (e)=>{
+        if(e.target === modal) closeModal();
+      });
+      document.addEventListener("keydown", (e)=>{
+        if(e.key === "Escape" && modal.classList.contains("show")) closeModal();
+      });
+
+      // WhatsApp helper
+      function buildMessageFromForm(){
+        const nama = ($("#nama").value || "").trim();
+        const servis = ($("#servis").value || "").trim();
+        const nota = ($("#nota").value || "").trim();
+
+        let msg = DEFAULT_MESSAGE;
+        const extras = [];
+        if (nama) extras.push("Nama: " + nama);
+        if (servis) extras.push("Servis: " + servis);
+        if (nota) extras.push("Nota: " + nota);
+
+        if (extras.length){
+          msg += "\n\n" + extras.join("\n");
+        }
+        msg += "\n\n— " + BRAND;
+        return msg;
+      }
+
+      function waUrl(message){
+        const text = encodeURIComponent(message);
+        const num = (WHATSAPP_NUMBER || "").replace(/[^\d]/g, "");
+        if (!num || num.includes("ISI")){
+          return "https://wa.me/?text=" + text; // fallback
+        }
+        return "https://wa.me/" + num + "?text=" + text;
+      }
+
+      function setLinks(){
+        const msg = buildMessageFromForm();
+        const url = waUrl(msg);
+        waFab.href = url;
+        // sticky CTA goes to WhatsApp if number exists, else goes to form
+        const num = (WHATSAPP_NUMBER || "").replace(/[^\d]/g, "");
+        if(num && !num.includes("ISI")){
+          stickyBtn.href = url;
+        }else{
+          stickyBtn.href = "#form";
         }
       }
-    });
-  }else{
-    try{
-      ytPlayer.loadVideoById(videoId);
-      ytPlayer.setVolume(isMuted ? 0 : 100);
-      ytPlayer.playVideo();
-    }catch(e){}
-  }
-}
-function chooseMusicMode(){
-  const p = PRESETS[state.preset] || PRESETS.gold;
 
-  if(state.mp3Url && state.mp3Url.trim()){
-    $("musicInfo").textContent = "Muzik: MP3 Custom ✅";
-    return { type:"mp3", src: state.mp3Url.trim() };
-  }
+      // WA label show
+      function showLabelTemp(){
+        waLabel.classList.add("show");
+        window.setTimeout(()=>waLabel.classList.remove("show"), 1400);
+      }
+      showLabelTemp();
+      waFab.addEventListener("mouseenter", ()=> waLabel.classList.add("show"));
+      waFab.addEventListener("mouseleave", ()=> waLabel.classList.remove("show"));
 
-  if(state.ytUrl && state.ytUrl.trim()){
-    const url = state.ytUrl.trim();
-    if(isYouTubeMusic(url)){
-      $("musicInfo").textContent = "Muzik: YouTube Music ❌ — guna YouTube biasa";
-      return { type:"none", src:"" };
-    }
-    const id = parseYouTubeId(url);
-    if(id){
-      $("musicInfo").textContent = "Muzik: YouTube Custom ✅";
-      return { type:"yt", src:id };
-    }
-    $("musicInfo").textContent = "Muzik: YouTube ❌ (link tak sah)";
-    return { type:"none", src:"" };
-  }
+      // Keep WA link updated
+      ["input","change"].forEach(evt=>{
+        form.addEventListener(evt, ()=> setLinks());
+      });
+      setLinks();
 
-  $("musicInfo").textContent = "Muzik: Preset ✅ (" + p.label + ")";
-  return { type:"mp3", src: p.presetMp3 };
-}
-function playMusicManual(){
-  stopAllAudio();
-  const mode = chooseMusicMode();
+      // Toast helper
+      let toastTimer = null;
+      function showToast(text){
+        if(text) toast.textContent = text;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(()=> toast.classList.remove("show"), 1400);
+      }
 
-  if(mode.type === "mp3" && mode.src){
-    setMp3Source(mode.src);
-    const a = $("bgm");
-    a.muted = isMuted;
-    a.play().catch(()=>alert("Tak dapat main MP3. Pastikan link direct .mp3 & volume media naik."));
-    return;
-  }
-  if(mode.type === "yt" && mode.src){
-    ensureYouTubeApi(()=>loadOrPlayYouTube(mode.src));
-    return;
-  }
-  alert("Tiada muzik boleh dimainkan. Isi MP3 URL atau YouTube URL (bukan YouTube Music).");
-}
-function toggleMute(){
-  isMuted = !isMuted;
-  $("bgm").muted = isMuted;
-  if(ytPlayer && ytReady){
-    try{ ytPlayer.setVolume(isMuted ? 0 : 100); }catch(e){}
-  }
-}
+      // Form submit -> open WA
+      form.addEventListener("submit", (e)=>{
+        e.preventDefault();
+        const nama = ($("#nama").value || "").trim();
+        if (!nama){
+          $("#nama").focus();
+          hintText.textContent = "Sila isi Nama dulu untuk teruskan (lebih mudah kami bantu).";
+          hintText.style.color = "rgba(255,221,115,.92)";
+          showToast("Isi nama dulu");
+          return;
+        }
+        hintText.textContent = "Membuka WhatsApp…";
+        hintText.style.color = "rgba(245,247,255,.78)";
+        const msg = buildMessageFromForm();
+        window.location.href = waUrl(msg);
+      });
 
-/* =========================
-   TOAST TIP
-========================= */
-function showToastHintOnce(){
-  try{ if(localStorage.getItem(TOAST_KEY) === "1") return; }catch(e){}
-  const t = $("toastHint"), ok = $("toastOk");
-  if(!t || !ok) return;
-  t.style.display="block";
-  const hide=()=>{
-    t.style.display="none";
-    try{ localStorage.setItem(TOAST_KEY,"1"); }catch(e){}
-  };
-  ok.onclick=hide;
-  setTimeout(hide, 5000);
-}
+      // Copy message
+      copyBtn.addEventListener("click", async ()=>{
+        const msg = buildMessageFromForm();
+        try{
+          await navigator.clipboard.writeText(msg);
+          showToast("Disalin ✓");
+        }catch(err){
+          const ta = document.createElement("textarea");
+          ta.value = msg;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try{
+            document.execCommand("copy");
+            showToast("Disalin ✓");
+          }catch(e2){
+            showToast("Gagal salin");
+          }
+          document.body.removeChild(ta);
+        }
+      });
 
-/* =========================
-   EXPIRED
-========================= */
-function parseDDMMYYYY(s){
-  const m = String(s||"").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if(!m) return null;
-  const dd = Number(m[1]), mm = Number(m[2]), yy = Number(m[3]);
-  if(mm<1||mm>12||dd<1||dd>31) return null;
-  return {dd,mm,yy};
-}
-function parseTime12h(s){
-  const m = String(s||"").trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if(!m) return null;
-  let hh = Number(m[1]), min = Number(m[2]);
-  const ap = m[3].toUpperCase();
-  if(hh<1||hh>12||min<0||min>59) return null;
-  if(ap==="AM"){ if(hh===12) hh=0; }
-  else { if(hh!==12) hh+=12; }
-  return {hh,min};
-}
-function getExpiryMs(){
-  if(Number(state.expOn)!==1) return null;
-  const d = parseDDMMYYYY(state.expDate);
-  const t = parseTime12h(state.expTime);
-  if(!d || !t) return null;
-  return new Date(d.yy, d.mm-1, d.dd, t.hh, t.min, 0, 0).getTime();
-}
-function checkExpired(){
-  const ms = getExpiryMs();
-  if(!ms) return false;
-  return Date.now() > ms;
-}
-function showExpired(){
-  $("expiredMsg").textContent = state.expMsg || "Sila hubungi admin untuk link terbaru.";
-  $("expiredLayer").style.display="block";
-  $("tapLayer").style.display="none";
-}
-function closeExpired(){ $("expiredLayer").style.display="none"; }
-window.closeExpired = closeExpired;
-
-/* =========================
-   ADMIN PIN + AUTO LOGOUT
-========================= */
-function getSavedPin(){ return localStorage.getItem(PIN_KEY) || state.adminPin || "1234"; }
-function setAuthNow(){ localStorage.setItem(AUTH_KEY, String(Date.now())); }
-function isAuthed(){
-  const last = Number(localStorage.getItem(AUTH_KEY) || 0);
-  if(!last) return false;
-  const mins = Number(state.autoLogoutMin || 15);
-  return (Date.now() - last) <= mins*60*1000;
-}
-function requirePin(){
-  if(isAuthed()) { setAuthNow(); return true; }
-  const pin = prompt("Masukkan Admin PIN:");
-  if(pin === null) return false;
-  if(pin.trim() === getSavedPin()){
-    setAuthNow();
-    return true;
-  }
-  alert("PIN salah.");
-  return false;
-}
-
-/* =========================
-   CUSTOMER MODE + WATERMARK + ADMIN VISIBILITY
-========================= */
-function applyCustomerMode(){
-  const on = Number(state.customerMode) === 1;
-  $("editPill").style.display = on ? "none" : "flex";
-  $("adminRow").style.display = on ? "none" : "grid";
-}
-function applyWatermark(){
-  const on = Number(state.wmOn) === 1;
-  const wm = $("wm");
-  wm.textContent = state.wmText || "";
-  wm.style.display = (on && wm.textContent.trim()) ? "block" : "none";
-}
-
-/* =========================
-   RENDER
-========================= */
-function render(){
-  applyPackageDefaults(state.package, true);
-  applyPresetUI(state.preset);
-  $("presetSelect").value = state.preset;
-
-  $("groom").textContent = state.groom;
-  $("bride").textContent = state.bride;
-  $("inviteText").textContent = state.inviteText;
-
-  $("dateText").textContent = "📅 " + state.dateText;
-  $("timeText").textContent = "⏰ " + state.timeText;
-  $("venueText").textContent = "📍 " + state.venueText;
-
-  $("btnRsvp").onclick = ()=>window.open(buildWhatsApp(), "_blank");
-  $("btnMaps").onclick = ()=>window.open(buildMaps(), "_blank");
-
-  chooseMusicMode();
-  applyCustomerMode();
-  applyWatermark();
-}
-
-/* =========================
-   EDITOR
-========================= */
-function openEditor(){
-  if(!requirePin()) return;
-  $("editor").style.display="block";
-  $("saveMsg").style.display="none";
-
-  $("fPackage").value = state.package;
-  $("fPreset").value = state.preset;
-  $("fAnim").value = String(state.animOn);
-  $("fCustomerMode").value = String(state.customerMode);
-
-  $("fGroom").value = state.groom;
-  $("fBride").value = state.bride;
-  $("fInvite").value = state.inviteText;
-
-  $("fDateText").value = state.dateText;
-  $("fTimeText").value = state.timeText;
-  $("fVenueText").value = state.venueText;
-
-  $("fPhone").value = state.rsvpPhone;
-  $("fRsvpText").value = state.rsvpText;
-
-  $("fMapsLink").value = state.mapsLink;
-  $("fMapsQuery").value = state.mapsQuery;
-
-  $("fMp3").value = state.mp3Url;
-  $("fYt").value = state.ytUrl;
-
-  $("fExpOn").value = String(state.expOn);
-  $("fExpDate").value = state.expDate;
-  $("fExpTime").value = state.expTime;
-  $("fExpMsg").value = state.expMsg;
-
-  $("fWmOn").value = String(state.wmOn);
-  $("fWmText").value = state.wmText;
-
-  $("fPin").value = getSavedPin();
-  $("fAutoLogout").value = String(state.autoLogoutMin || 15);
-
-  // show admin-only link box
-  $("adminLinkBox").style.display = "block";
-  $("adminLinkText").textContent = buildInviteLink();
-}
-function closeEditor(){ $("editor").style.display="none"; }
-window.openEditor = openEditor;
-window.closeEditor = closeEditor;
-
-function saveEditor(){
-  state.package = $("fPackage").value;
-  if(!PACKAGE_DEFAULTS[state.package]) state.package="gold";
-
-  state.preset = $("fPreset").value;
-  state.animOn = Number($("fAnim").value);
-  state.customerMode = Number($("fCustomerMode").value);
-
-  state.groom = $("fGroom").value.trim() || state.groom;
-  state.bride = $("fBride").value.trim() || state.bride;
-  state.inviteText = $("fInvite").value.trim() || state.inviteText;
-
-  state.dateText = $("fDateText").value.trim() || state.dateText;
-  state.timeText = $("fTimeText").value.trim() || state.timeText;
-  state.venueText = $("fVenueText").value.trim() || state.venueText;
-
-  state.rsvpPhone = $("fPhone").value.trim() || state.rsvpPhone;
-  state.rsvpText = $("fRsvpText").value.trim() || state.rsvpText;
-
-  state.mapsLink = $("fMapsLink").value.trim();
-  state.mapsQuery = $("fMapsQuery").value.trim() || state.mapsQuery;
-
-  // auto elak konflik mp3/yt
-  const mp3 = $("fMp3").value.trim();
-  const yt  = $("fYt").value.trim();
-  if(mp3){ state.mp3Url = mp3; state.ytUrl = ""; }
-  else if(yt){ state.ytUrl = yt; state.mp3Url = ""; }
-  else { state.mp3Url=""; state.ytUrl=""; }
-
-  state.expOn = Number($("fExpOn").value);
-  state.expDate = $("fExpDate").value.trim() || state.expDate;
-  state.expTime = $("fExpTime").value.trim() || state.expTime;
-  state.expMsg  = $("fExpMsg").value.trim() || state.expMsg;
-
-  state.wmOn = Number($("fWmOn").value);
-  state.wmText = ($("fWmText").value || "").trim();
-
-  const pin = ($("fPin").value || "").trim();
-  state.adminPin = pin || state.adminPin || "1234";
-  state.autoLogoutMin = Number($("fAutoLogout").value || 15);
-
-  persist();
-  setAuthNow();
-  render();
-
-  $("saveMsg").style.display="block";
-
-  // update url for sharing
-  const link = buildInviteLink();
-  history.replaceState(null, "", link);
-
-  // update admin-only link display
-  $("adminLinkText").textContent = link;
-}
-window.saveEditor = saveEditor;
-
-function resetAll(){
-  if(!confirm("Reset semua data?")) return;
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(AUTH_KEY);
-  localStorage.removeItem(TOAST_KEY);
-  localStorage.removeItem(PIN_KEY);
-  stopAllAudio();
-  state = {...DEFAULTS};
-  applyPackageDefaults(state.package, false);
-  persist();
-  render();
-  closeEditor();
-  history.replaceState(null, "", getBaseUrl());
-}
-window.resetAll = resetAll;
-
-/* =========================
-   ADMIN LINK ACTIONS (Editor only)
-========================= */
-async function copyAdminLink(){
-  const link = buildInviteLink();
-  const ok = await copyText(link);
-  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Copy manual dari box.");
-}
-async function shareAdminLink(){
-  const link = buildInviteLink();
-  if(navigator.share){
-    try{
-      await navigator.share({ title:"Jemputan Perkahwinan", text:"Jemputan Perkahwinan", url: link });
-      return;
-    }catch(e){}
-  }
-  await copyAdminLink();
-}
-window.copyAdminLink = copyAdminLink;
-window.shareAdminLink = shareAdminLink;
-
-/* =========================
-   INVITE OPEN
-========================= */
-function openInvite(){
-  if(checkExpired()){ showExpired(); return; }
-  document.body.classList.add("open");
-  render();
-  showToastHintOnce();
-}
-window.openInvite = openInvite;
-
-/* =========================
-   SHARE/COPY/NEWLINK (Bottom bar)
-========================= */
-async function doCopy(){
-  const link = buildInviteLink();
-  const ok = await copyText(link);
-  alert(ok ? "✅ Link telah disalin" : "❌ Tak dapat copy. Sila cuba browser lain.");
-}
-async function doShare(){
-  const link = buildInviteLink();
-  if(navigator.share){
-    try{
-      await navigator.share({ title:"Jemputan Perkahwinan", text:"Jemputan Perkahwinan", url: link });
-      return;
-    }catch(e){}
-  }
-  await doCopy();
-}
-async function generateNewLink(){
-  // link unik untuk setiap customer
-  state._id = "C" + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  persist();
-  render();
-  const link = buildInviteLink();
-  history.replaceState(null, "", link);
-  await doCopy();
-}
-function adminQuick(){
-  if(!requirePin()) return;
-  openEditor();
-}
-
-/* =========================
-   SECRET ADMIN ENTRY (7 taps on title)
-========================= */
-function secretTap(){
-  tapCount++;
-  if(tapTimer) clearTimeout(tapTimer);
-  tapTimer = setTimeout(()=>{ tapCount=0; }, 1200);
-
-  if(tapCount >= 7){
-    tapCount = 0;
-    // buka admin walaupun customerMode ON
-    adminQuick();
-  }
-}
-
-/* =========================
-   INIT
-========================= */
-$("presetSelect").addEventListener("change",(e)=>{
-  state.preset = e.target.value;
-  persist();
-  render();
-});
-
-$("playBtn").addEventListener("click", playMusicManual);
-$("stopBtn").addEventListener("click", ()=>{
-  stopAllAudio();
-  $("musicInfo").textContent = "Muzik: Berhenti ⏹️";
-});
-$("muteBtn").addEventListener("click", ()=>{
-  toggleMute();
-  $("muteBtn").textContent = isMuted ? "UNMUTE" : "MUTE";
-});
-
-$("editBtn").addEventListener("click", openEditor);
-$("copyBtn").addEventListener("click", doCopy);
-$("shareBtn").addEventListener("click", doShare);
-$("newLinkBtn").addEventListener("click", generateNewLink);
-$("adminBtn").addEventListener("click", adminQuick);
-
-// Secret admin tap target
-$("titleTap").addEventListener("click", secretTap);
-
-$("toastOk").addEventListener("click", ()=>{
-  $("toastHint").style.display="none";
-  try{ localStorage.setItem(TOAST_KEY,"1"); }catch(e){}
-});
-
-// Apply package defaults hard (first load if needed)
-applyPackageDefaults(state.package, true);
-persist();
-render();
-
-// htmlpreview protection
-if(isHtmlPreview()){
-  showBlocker();
-}
-
-// expired protection
-if(checkExpired()){
-  showExpired();
-}
-</script>
+      // Touch init
+      document.addEventListener("touchstart", ()=>{}, {passive:true});
+    })();
+  </script>
 </body>
 </html>
